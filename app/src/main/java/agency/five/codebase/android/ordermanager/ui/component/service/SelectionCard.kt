@@ -70,11 +70,6 @@ fun SelectionCard(
                     .padding(paddingSize.dp)
                     .align(CenterHorizontally)
             )
-            Divider(
-                thickness = dividerSize.dp,
-                color = DarkGreen,
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-            )
             Text(
                 text = selectionCardViewState.name,
                 fontSize = fontSize.sp,
