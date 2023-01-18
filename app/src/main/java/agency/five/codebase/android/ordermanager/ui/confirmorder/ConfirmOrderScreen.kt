@@ -37,12 +37,16 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ConfirmOrderRoute(
     viewModel: ConfirmOrderViewModel,
+    onNavigateToSelectionScreen: () -> Unit,
 ) {
     val confirmOrderViewState by viewModel.confirmOrderViewState.collectAsState()
 
     ConfirmOrderScreen(
         confirmOrderViewState = confirmOrderViewState,
-        onClickCompleteOrder = { tableNumber -> viewModel.confirmOrder(tableNumber) },
+        onClickCompleteOrder = { tableNumber ->
+            viewModel.confirmOrder(tableNumber)
+            onNavigateToSelectionScreen()
+        },
         onClickRemoveItem = { id -> viewModel.subtractOrderedItemAmount(id) }
     )
 }

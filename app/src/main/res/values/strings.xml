@@ -10,7 +10,7 @@
     <string name="active_orders">Active orders</string>
     <string name="login">Login</string>
     <string name="arrow_right">Arrow right</string>
-    <string name="order_for_table_">Order for table </string>
+    <string name="order_for_table_">Order for table\u0020</string>
     <string name="complete_order">Complete order</string>
     <string name="table_number">Table number</string>
 </resources>

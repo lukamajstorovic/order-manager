@@ -32,6 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MainScreen() {
@@ -81,7 +82,7 @@ fun MainScreen() {
                                 navController.navigate(
                                     NavigationItem.SelectionDestination.route
                                 )
-                            } else {
+                            } else if(UserMock.getUserRole(it) == "waiter") {
                                 navController.navigate(
                                     NavigationItem.ActiveOrdersDestination.route
                                 )
@@ -103,15 +104,20 @@ fun MainScreen() {
                     val viewModel: ConfirmOrderViewModel = getViewModel()
                     ConfirmOrderRoute(
                         viewModel = viewModel,
+                        onNavigateToSelectionScreen = {
+                            navController.navigateUp()
+                        }
                     )
                 }
                 composable(
                     route = CompleteOrderDestination.route,
                     arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
                 ) {
-                    val viewModel: CompleteOrderViewModel = getViewModel()
+                    val orderId = it.arguments?.getInt(ORDER_KEY)
+                    val viewModel: CompleteOrderViewModel = getViewModel(parameters = { parametersOf(orderId) })
                     CompleteOrderRoute(
                         viewModel = viewModel,
+                        onCompleteOrder = { navController.navigateUp() }
                     )
                 }
                 composable(

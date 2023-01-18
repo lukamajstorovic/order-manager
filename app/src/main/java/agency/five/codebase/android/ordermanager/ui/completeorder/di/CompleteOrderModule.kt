@@ -7,10 +7,11 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val completeOrderModule = module {
-    viewModel {
+    viewModel { (orderId: Int) ->
         CompleteOrderViewModel(
             get(),
-            get()
+            get(),
+            orderId = orderId
         )
     }
     single<CompleteOrderMapper> { CompleteOrderMapperImpl() }

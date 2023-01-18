@@ -14,7 +14,7 @@ interface OrderRepository {
     suspend fun addMenuItem(menuItem: MenuItem)
     suspend fun removeMenuItem(menuItemId: Int)
     suspend fun addOrderedItem(orderedItem: OrderedItem)
-    suspend fun addOrderedItemAmount(orderedItemId: Int)
+    suspend fun incrementOrderedItemAmount(orderedItemId: Int)
     suspend fun subtractOrderedItemAmount(orderedItemId: Int)
     suspend fun confirmOrder(tableNumber: String)
     suspend fun completeOrder(activeOrderId: Int)

@@ -5,12 +5,10 @@ import agency.five.codebase.android.ordermanager.model.ActiveOrder
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.OrderedItem
 import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class OrderRepositoryImpl(
@@ -71,7 +69,11 @@ class OrderRepositoryImpl(
                     activeOrderId = dbOrderedItemInActiveOrder.activeOrderId.toInt()
                 )
             }
-        }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
 
     override suspend fun addMenuItem(menuItem: MenuItem) {
         withContext(bgDispatcher) {
@@ -95,7 +97,7 @@ class OrderRepositoryImpl(
         withContext(bgDispatcher) {
             orderedItemDao.insertOrderedItem(
                 DbOrderedItem(
-                    id = orderedItem.id.toLong(),
+                    //id = orderedItem.id.toLong(),
                     name = orderedItem.name,
                     amount = orderedItem.amount
                 )
@@ -110,8 +112,9 @@ class OrderRepositoryImpl(
                     tableNumber = tableNumber
                 )
             )
-            orderedItems().map {
-                it.forEach { orderedItem ->
+            orderedItems().first()
+                .forEach { orderedItem ->
+                    //Log.d("khgfkuahskfhas","${orderedItem}")
                     orderedItemInActiveOrderDao.insertOrderedItemInActiveOrder(
                         DbOrderedItemInActiveOrder(
                             name = orderedItem.name,
@@ -120,14 +123,13 @@ class OrderRepositoryImpl(
                         )
                     )
                 }
-            }
             orderedItemDao.deleteAllOrderedItems()
         }
     }
 
-    override suspend fun addOrderedItemAmount(orderedItemId: Int) {
+    override suspend fun incrementOrderedItemAmount(orderedItemId: Int) {
         withContext(bgDispatcher) {
-            orderedItemDao.addOrderedItemAmount(orderedItemId)
+            orderedItemDao.incrementOrderedItemAmount(orderedItemId)
         }
     }
 

@@ -26,13 +26,12 @@ fun SelectionRoute(
 ) {
     val selectionViewState by viewModel.selectionViewState.collectAsState()
 
-    viewModel.addMenuItem(MenuItemMock.getMenuItemList()[0])
-    viewModel.addMenuItem(MenuItemMock.getMenuItemList()[1])
+
 
     SelectionScreen(
         modifier = Modifier.fillMaxSize(),
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { orderedItem -> viewModel.addOrderedItem(orderedItem) }
+        onClickSelectionCard = { orderedItem -> viewModel.addOrderedItemOrIncrementAmount(orderedItem) }
     )
 }
 

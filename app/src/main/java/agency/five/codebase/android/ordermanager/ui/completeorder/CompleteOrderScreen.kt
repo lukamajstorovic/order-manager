@@ -23,12 +23,16 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CompleteOrderRoute(
     viewModel: CompleteOrderViewModel,
+    onCompleteOrder: () -> Unit,
 ) {
     val completeOrderViewState: CompleteOrderViewState by viewModel.completeOrderViewState.collectAsState()
     CompleteOrderScreen(
         modifier = Modifier.fillMaxSize(),
         completeOrderViewState = completeOrderViewState,
-        onClickCompleteOrder = { orderId -> viewModel.completeOrder(orderId) },
+        onClickCompleteOrder = { orderId ->
+            viewModel.completeOrder(orderId)
+            onCompleteOrder()
+        },
     )
 }
 
@@ -53,7 +57,7 @@ private fun CompleteOrderScreen(
                             .name,
                         itemCount = completeOrderViewState
                             .completeOrderItemViewStateCollection[index]
-                            .id,
+                            .amount,
                     ),
                     modifier = Modifier.padding(10.dp),
                 )

@@ -18,7 +18,7 @@ interface OrderedItemDao {
     fun deleteAllOrderedItems()
 
     @Query("UPDATE orderedItems SET amount=amount+1 WHERE id=:id")
-    fun addOrderedItemAmount(id: Int)
+    fun incrementOrderedItemAmount(id: Int)
 
     @Query("UPDATE orderedItems SET amount=amount-1 WHERE id=:id")
     fun subtractOrderedItemAmount(id: Int)

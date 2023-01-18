@@ -6,6 +6,7 @@ import agency.five.codebase.android.ordermanager.model.OrderedItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,7 @@ class SelectionViewModel(
 ) : ViewModel() {
     private val _selectionViewState = MutableStateFlow(SelectionViewState(emptyList()))
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val selectionViewState: StateFlow<SelectionViewState> =
         _selectionViewState
             .flatMapLatest {
@@ -41,32 +43,26 @@ class SelectionViewModel(
         }
     }
 
-    fun addOrderedItemAmount(menuItemId: Int) {
+    fun incrementOrderedItemAmount(menuItemId: Int) {
         viewModelScope.launch {
-            orderRepository.addOrderedItemAmount(menuItemId)
+            orderRepository.incrementOrderedItemAmount(menuItemId)
         }
     }
 
-    fun addOrderedItem(orderedItemName: String) {
+    fun addOrderedItemOrIncrementAmount(orderedItemName: String) {
         viewModelScope.launch {
-            var flag = false
-            val orderedItems = orderRepository.orderedItems()
-            orderedItems.map {
-                it.forEach { orderedItemFromList ->
-                    if (orderedItemFromList.name == orderedItemName) {
-                        addOrderedItemAmount(orderedItemFromList.id)
-                        flag = true
-                    }
-                }
+            val orderedItems = orderRepository.orderedItems().first()
+            val orderedItem = orderedItems.firstOrNull { orderedItemFromList ->
+                orderedItemFromList.name == orderedItemName
             }
-            if (flag) {
-                flag = false
-            } else {
+            if (orderedItem == null) {
                 orderRepository.addOrderedItem(
                     OrderedItem(
                         name = orderedItemName
                     )
                 )
+            } else {
+                orderRepository.incrementOrderedItemAmount(orderedItem.id)
             }
         }
     }

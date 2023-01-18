@@ -2,6 +2,11 @@ package agency.five.codebase.android.ordermanager.ui.confirmorder
 
 import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.confirmorder.mapper.ConfirmOrderMapper
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
@@ -32,6 +37,8 @@ class ConfirmOrderViewModel(
             orderRepository.confirmOrder(tableNumber)
         }
     }
+
+    val text = MutableStateFlow( "")
 
     fun subtractOrderedItemAmount(orderedItemId: Int) {
         viewModelScope.launch {
