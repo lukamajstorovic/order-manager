@@ -13,4 +13,9 @@
     <string name="order_for_table_">Order for table\u0020</string>
     <string name="complete_order">Complete order</string>
     <string name="table_number">Table number</string>
+    <string name="beer_0_33">Beer 0.33</string>
+    <string name="beer_0_5">Beer 0.5</string>
+    <string name="coca_cola_0_5">Coca cola 0.5</string>
+    <string name="cocktail">Cocktail</string>
+    <string name="wine_0_187">Wine 0.187</string>
 </resources>

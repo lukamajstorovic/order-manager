@@ -2,7 +2,10 @@ package agency.five.codebase.android.ordermanager.ui.login
 
 import agency.five.codebase.android.ordermanager.*
 import agency.five.codebase.android.ordermanager.R
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -44,12 +47,14 @@ private fun LoginScreen(
 ) {
     Column(
         modifier = modifier
+            .background(color = LightGray)
             .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxSize()
+
     ) {
         Text(
             text = stringResource(id = R.string.app_name),
-            color = Color.Black,
+            color = DarkGreen,
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
@@ -62,46 +67,53 @@ private fun LoginScreen(
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
         var text by remember { mutableStateOf(TextFieldValue(text = "")) }
-        OutlinedTextField(
-            value = text,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            onValueChange = {
-                text = it
-            },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = modifier
-                .width(100.dp)
-                .align(Alignment.CenterHorizontally)
-                .wrapContentSize(Alignment.Center)
-                .weight(WEIGHT_2),
+        Card(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.White,
-                cursorColor = Color.Black,
-                disabledLabelColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                unfocusedIndicatorColor = Color.Black
-            ),
-            textStyle = TextStyle(
-                fontSize = 40.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif,
-                textAlign = TextAlign.Center
-            ),
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
-                }
-            ),
-        )
+            elevation = 10.dp,
+            backgroundColor = LightGray,
+        ) {
+            OutlinedTextField(
+                value = text,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                onValueChange = {
+                    text = it
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = modifier
+                    .width(100.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .wrapContentSize(Alignment.Center)
+                    .weight(WEIGHT_2),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = LightGray,
+                    cursorColor = DarkGreen,
+                    disabledLabelColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(
+                    fontSize = 40.sp,
+                    color = DarkGreen,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Serif,
+                    textAlign = TextAlign.Center
+                ),
+                singleLine = true,
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    }
+                ),
+            )
+        }
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             onClick = { onClickLoginButton(text.text) },
-            border = BorderStroke(1.dp, Color.Black),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = LightGray, backgroundColor = LightGray),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(20.dp)
@@ -109,7 +121,7 @@ private fun LoginScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.login),
-                color = Color.Black,
+                color = DarkGreen,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,

@@ -1,6 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.component.kitchen
 
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
+import agency.five.codebase.android.ordermanager.ui.theme.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,28 +33,19 @@ fun OrderButton(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White,
-                        Color.LightGray,
-                        Color.White
-                    )
-                )
-            )
     ) {
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             onClick = { onClick() },
-            border = BorderStroke(1.dp, Color.Black),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+            //border = BorderStroke(1.dp, Color.Black),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = LightGray, backgroundColor = LightGray),
             modifier = Modifier
                 .align(Center)
                 .padding(20.dp)
         ) {
             Text(
                 text = text,
-                color = Color.Black,
+                color = DarkGreen,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,

@@ -2,10 +2,12 @@ package agency.five.codebase.android.ordermanager.ui.component.kitchen
 
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_4
-import agency.five.codebase.android.ordermanager.ui.component.NoButton
-import androidx.compose.foundation.layout.*
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +35,15 @@ fun ItemToComplete(
             modifier = modifier
                 .weight(WEIGHT_4),
             shape = CircleShape,
-            elevation = 10.dp
+            elevation = 10.dp,
+            backgroundColor = LightGray,
         ) {
             Text(
                 text = orderedItemViewState.itemName,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
                 textAlign = TextAlign.Center
@@ -51,14 +54,15 @@ fun ItemToComplete(
                 .weight(WEIGHT_1)
                 .padding(10.dp),
             shape = CircleShape,
-            elevation = 10.dp
+            elevation = 10.dp,
+            backgroundColor = LightGray,
         ) {
             Text(
                 text = orderedItemViewState.itemCount.toString(),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth(),

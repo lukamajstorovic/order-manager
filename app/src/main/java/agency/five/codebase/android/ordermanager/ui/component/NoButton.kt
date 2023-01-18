@@ -1,6 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.component
 
 import agency.five.codebase.android.ordermanager.R
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
@@ -23,7 +24,7 @@ fun NoButton(
         shape = CircleShape,
         border= BorderStroke(0.dp, Color.Transparent),
         contentPadding = PaddingValues(0.dp),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor =  Color.Black)
+        colors = ButtonDefaults.outlinedButtonColors(contentColor =  DarkGreen)
     ) {
         Icon(
             painter = painterResource(R.drawable.no),

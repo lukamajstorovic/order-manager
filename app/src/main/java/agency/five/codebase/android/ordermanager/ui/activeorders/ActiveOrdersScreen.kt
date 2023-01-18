@@ -3,6 +3,8 @@ package agency.five.codebase.android.ordermanager.ui.activeorders
 import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapper
 import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapperImpl
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ActiveOrder
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -36,6 +38,7 @@ private fun ActiveOrdersScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LightGray)
     ) {
         LazyColumn(
             modifier = Modifier

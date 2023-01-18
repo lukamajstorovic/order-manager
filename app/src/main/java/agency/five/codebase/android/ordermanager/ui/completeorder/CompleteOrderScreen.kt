@@ -6,6 +6,9 @@ import agency.five.codebase.android.ordermanager.WEIGHT_5
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ItemToComplete
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderedItemViewState
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -43,7 +46,9 @@ private fun CompleteOrderScreen(
     onClickCompleteOrder: (Int) -> Unit,
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = LightGray)
     ) {
         LazyColumn(
             modifier = Modifier
@@ -67,11 +72,6 @@ private fun CompleteOrderScreen(
             modifier = Modifier
                 .weight(WEIGHT_1)
         ) {
-            Divider(
-                thickness = 1.dp,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-            )
             OrderButton(
                 modifier = Modifier,
                 onClick = {

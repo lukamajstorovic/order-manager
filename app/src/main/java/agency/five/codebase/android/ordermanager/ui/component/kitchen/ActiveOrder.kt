@@ -4,6 +4,8 @@ import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_4
 import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrderItemViewState
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -35,6 +37,7 @@ fun ActiveOrder(
             .fillMaxWidth(),
         shape = CircleShape,
         elevation = 10.dp,
+        backgroundColor = LightGray,
     ) {
         Row(
             modifier = Modifier
@@ -46,7 +49,7 @@ fun ActiveOrder(
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp)
                     .weight(WEIGHT_4),
@@ -58,7 +61,8 @@ fun ActiveOrder(
                     .weight(WEIGHT_1)
                     .fillMaxWidth()
                     .align(CenterVertically)
-                    .size(30.dp)
+                    .size(30.dp),
+                tint = DarkGreen,
             )
         }
     }

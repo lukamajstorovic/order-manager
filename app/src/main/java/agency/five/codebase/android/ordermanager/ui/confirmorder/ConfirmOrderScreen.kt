@@ -6,14 +6,19 @@ import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_3
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
 import agency.five.codebase.android.ordermanager.ui.component.service.OrderedItem
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGray
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -66,6 +71,7 @@ private fun ConfirmOrderScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(color = LightGray)
     ) {
         Row(
             modifier = Modifier
@@ -74,48 +80,55 @@ private fun ConfirmOrderScreen(
             Text(
                 text = stringResource(id = R.string.table_number),
                 fontSize = 30.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .weight(WEIGHT_3)
                     .padding(20.dp)
                     .align(CenterVertically)
             )
-            OutlinedTextField(
-                value = text,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                onValueChange = {
-                    text = it
-                },
-                modifier = modifier
-                    .width(100.dp)
-                    .wrapContentSize(Alignment.Center)
-                    .align(CenterVertically)
-                    .padding(10.dp),
+            Card(
+                modifier = Modifier.padding(10.dp)
+                    .align(CenterVertically),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White,
-                    cursorColor = Color.Black,
-                    disabledLabelColor = Color.Black,
-                    focusedIndicatorColor = Color.Black,
-                    unfocusedIndicatorColor = Color.Black
-                ),
-                textStyle = TextStyle(
-                    fontSize = 40.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
-                    textAlign = TextAlign.Center
-                ),
-                singleLine = true,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    }
+                elevation = 10.dp,
+                backgroundColor = LightGray,
+            ) {
+                TextField(
+                    value = text,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    onValueChange = {
+                        text = it
+                    },
+                    modifier = modifier
+                        .width(100.dp)
+                        .wrapContentSize(Alignment.Center)
+                        .align(CenterVertically),
+                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = LightGray,
+                        cursorColor = DarkGreen,
+                        disabledLabelColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 40.sp,
+                        color = DarkGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Default,
+                        textAlign = TextAlign.Center
+                    ),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        }
+                    )
                 )
-            )
+            }
         }
         LazyColumn(
             modifier = Modifier
@@ -143,11 +156,11 @@ private fun ConfirmOrderScreen(
             modifier = Modifier
                 .weight(WEIGHT_1)
         ) {
-            Divider(
-                thickness = 1.dp,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-            )
+//            Divider(
+//                thickness = 1.dp,
+//                color = Color.Black,
+//                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+//            )
             OrderButton(
                 modifier = Modifier,
                 onClick = { onClickCompleteOrder(text.text) },

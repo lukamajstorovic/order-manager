@@ -2,6 +2,8 @@ package agency.five.codebase.android.ordermanager.ui.component.service
 
 import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_13
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,9 +50,10 @@ fun SelectionCard(
 
     Card(
         modifier = modifier
-            .padding(top = 10.dp, bottom = 10.dp),
-        elevation = 10.dp,
-        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_13)
+            .padding(10.dp),
+        elevation = 5.dp,
+        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_13),
+        backgroundColor = LightGray
     ) {
         Column(
             modifier = Modifier
@@ -69,15 +72,15 @@ fun SelectionCard(
             )
             Divider(
                 thickness = dividerSize.dp,
-                color = Color.Black,
-                modifier = Modifier.padding(start = paddingSize.dp, end = paddingSize.dp)
+                color = DarkGreen,
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
             )
             Text(
                 text = selectionCardViewState.name,
                 fontSize = fontSize.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(paddingSize.dp)
                     .align(CenterHorizontally)

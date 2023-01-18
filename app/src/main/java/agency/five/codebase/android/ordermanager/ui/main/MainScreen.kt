@@ -13,9 +13,14 @@ import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderVie
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGray
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -145,7 +150,7 @@ private fun BottomNavigationBar(
     currentDestination: NavDestination?,
 ) {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = LightGray
     ) {
         destinations.forEach { destination ->
             AddItem(
@@ -165,7 +170,8 @@ fun RowScope.AddItem(
     currentDestination: NavDestination?,
 ) {
     BottomNavigationItem(
-        modifier = Modifier,
+        modifier = Modifier
+            .align(CenterVertically),
         label = {
             Text(
                 text = stringResource(id = destination.labelId),
@@ -174,11 +180,14 @@ fun RowScope.AddItem(
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .align(CenterVertically)
+                    .align(CenterVertically),
+                //color = DarkGreen
             )
         },
         icon = {},
         selected = currentDestination?.route == destination.route,
+        selectedContentColor = DarkGreen,
+        unselectedContentColor = DarkerGray,
         onClick = { onNavigateToDestination(destination) }
     )
 }

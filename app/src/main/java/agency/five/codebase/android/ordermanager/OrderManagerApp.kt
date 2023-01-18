@@ -37,6 +37,9 @@ class OrderManagerApp : Application() {
             GlobalScope.launch {
                 repository.addMenuItem(MenuItemMock.getMenuItemList()[0])
                 repository.addMenuItem(MenuItemMock.getMenuItemList()[1])
+                repository.addMenuItem(MenuItemMock.getMenuItemList()[2])
+                repository.addMenuItem(MenuItemMock.getMenuItemList()[3])
+                repository.addMenuItem(MenuItemMock.getMenuItemList()[4])
             }
         }
     }

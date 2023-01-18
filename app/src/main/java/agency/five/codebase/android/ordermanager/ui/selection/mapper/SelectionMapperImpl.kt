@@ -23,11 +23,20 @@ class SelectionMapperImpl : SelectionMapper {
 
     private fun getResourceId(iconName: String): Int {
         return when (iconName) {
-            "drinks" -> {
-                R.drawable.drinks
+            "beer_0_33" -> {
+                R.drawable.beer_0_33
+            }
+            "beer_0_5" -> {
+                R.drawable.beer_0_5
+            }
+            "coca_cola_0_5" -> {
+                R.drawable.coca_cola_0_5
+            }
+            "cocktail" -> {
+                R.drawable.cocktail
             }
             else -> {
-                R.drawable.food
+                R.drawable.wine_0_187
             }
         }
     }

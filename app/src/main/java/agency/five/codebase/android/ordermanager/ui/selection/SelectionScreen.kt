@@ -5,6 +5,8 @@ import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.mock.MenuItemMock
 import agency.five.codebase.android.ordermanager.ui.component.service.SelectionCard
 import agency.five.codebase.android.ordermanager.ui.component.service.SelectionCardViewState
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,14 +43,13 @@ private fun SelectionScreen(
     selectionViewState: SelectionViewState,
     onClickSelectionCard: (String) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 20.dp)
-    ) {
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(GRID_COUNT),
             modifier = Modifier
-
+                .background(LightGray)
+                .fillMaxSize()
+                .padding(start = 5.dp, end = 5.dp, top = 15.dp)
         ) {
             items(
                 items = selectionViewState.selectionCardViewStateCollection,
@@ -58,9 +59,8 @@ private fun SelectionScreen(
             ) { currentSelectionCard: SelectionCardViewState ->
                 SelectionCard(
                     selectionCardViewState = currentSelectionCard,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(10.dp),
+                    modifier = Modifier,
+                        //.align(Alignment.CenterHorizontally),
                     onClick = {
                         onClickSelectionCard(
                             currentSelectionCard.name,
@@ -69,7 +69,6 @@ private fun SelectionScreen(
                 )
             }
         }
-    }
 }
 
 @Preview

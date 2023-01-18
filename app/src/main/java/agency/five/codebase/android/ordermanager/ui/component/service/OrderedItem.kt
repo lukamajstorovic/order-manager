@@ -3,11 +3,12 @@ package agency.five.codebase.android.ordermanager.ui.component.service
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_3
 import agency.five.codebase.android.ordermanager.ui.component.MinusButton
-import agency.five.codebase.android.ordermanager.ui.component.NoButton
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderItemViewState
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGray
+import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
+import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -38,14 +39,15 @@ fun OrderedItem(
             modifier = modifier
                 .weight(WEIGHT_3),
             shape = CircleShape,
-            elevation = 10.dp
+            elevation = 10.dp,
+            backgroundColor = LightGray,
         ) {
             Text(
                 text = confirmOrderItemViewState.name,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
                 textAlign = TextAlign.Center
@@ -56,14 +58,15 @@ fun OrderedItem(
                 .weight(WEIGHT_1)
                 .padding(10.dp),
             shape = CircleShape,
-            elevation = 10.dp
+            elevation = 10.dp,
+            backgroundColor = LightGray,
         ) {
             Text(
                 text = confirmOrderItemViewState.amount.toString(),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
-                color = Color.Black,
+                color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth(),
@@ -75,7 +78,7 @@ fun OrderedItem(
                 .weight(WEIGHT_1)
                 .padding(10.dp),
             shape = CircleShape,
-            elevation = 10.dp
+            elevation = 10.dp,
         ) {
             MinusButton(
                 modifier = Modifier
