@@ -20,6 +20,10 @@ object UserMock {
         User(
             role = "cook",
             password = "4321"
+        ),
+        User(
+            role = "admin",
+            password = "1111"
         )
     )
 }

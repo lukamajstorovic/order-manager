@@ -13,6 +13,8 @@ import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderVie
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
+import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
+import agency.five.codebase.android.ordermanager.ui.staff.StaffViewModel
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGray
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
@@ -91,6 +93,10 @@ fun MainScreen() {
                                 navController.navigate(
                                     NavigationItem.ActiveOrdersDestination.route
                                 )
+                            } else if(UserMock.getUserRole(it) == "admin") {
+                                navController.navigate(
+                                    NavigationItem.StaffDestination.route
+                                )
                             }
                         },
                     )
@@ -136,6 +142,14 @@ fun MainScreen() {
                                 CompleteOrderDestination.createNavigationRoute(it)
                             )
                         }
+                    )
+                }
+                composable(
+                    route = NavigationItem.StaffDestination.route
+                ) {
+                    val viewModel: StaffViewModel = getViewModel()
+                    StaffRoute(
+                        viewModel = viewModel,
                     )
                 }
             }

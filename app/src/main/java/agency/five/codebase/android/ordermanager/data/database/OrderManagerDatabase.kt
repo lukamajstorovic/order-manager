@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase
         DbOrderedItem::class,
         DbActiveOrder::class,
         DbOrderedItemInActiveOrder::class,
+        DbStaff::class,
     ],
     version = 1,
     exportSchema = false
@@ -18,4 +19,5 @@ abstract class OrderManagerDatabase : RoomDatabase() {
     abstract fun getOrderedItemDao(): OrderedItemDao
     abstract fun getActiveOrderDao(): ActiveOrderDao
     abstract fun getOrderedItemInActiveOrderDao(): OrderedItemInActiveOrderDao
+    abstract fun getStaffDao(): StaffDao
 }
