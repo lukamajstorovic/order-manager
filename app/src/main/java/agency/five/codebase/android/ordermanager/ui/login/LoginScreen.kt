@@ -2,6 +2,7 @@ package agency.five.codebase.android.ordermanager.ui.login
 
 import agency.five.codebase.android.ordermanager.*
 import agency.five.codebase.android.ordermanager.R
+import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
@@ -35,8 +36,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginRoute(
     onClickLoginButton: (username: String, password: String) -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     LoginScreen(
+        snackbarHostState = snackbarHostState,
         onClickLoginButton = onClickLoginButton,
     )
 }
@@ -44,6 +47,7 @@ fun LoginRoute(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun LoginScreen(
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onClickLoginButton: (username: String, password: String) -> Unit,
 ) {
@@ -70,7 +74,7 @@ private fun LoginScreen(
             modifier = Modifier
                 .padding(top=50.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally)
-                .weight(WEIGHT_1)
+                .weight(WEIGHT_2)
         )
         Text(
             text = "Username",
@@ -99,7 +103,7 @@ private fun LoginScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_2),
+                    .weight(WEIGHT_4),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -112,7 +116,7 @@ private fun LoginScreen(
                     fontSize = 40.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = FontFamily.Default,
                     textAlign = TextAlign.Center
                 ),
                 singleLine = true,
@@ -154,7 +158,7 @@ private fun LoginScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_2)
+                    .weight(WEIGHT_4)
                     .focusRequester(focusRequester),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
@@ -168,7 +172,7 @@ private fun LoginScreen(
                     fontSize = 40.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = FontFamily.Default,
                     textAlign = TextAlign.Center
                 ),
                 singleLine = true,
@@ -183,13 +187,15 @@ private fun LoginScreen(
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             onClick = { onClickLoginButton(username.text, password.text) },
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = LightGray, backgroundColor = LightGray),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = LightGray,
+                backgroundColor = LightGray
+            ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(20.dp)
-                .weight(WEIGHT_1)
+                .weight(WEIGHT_2)
         ) {
-
             Text(
                 text = stringResource(id = R.string.login),
                 color = DarkGreen,
@@ -201,7 +207,10 @@ private fun LoginScreen(
                     .padding(10.dp)
             )
         }
-        Spacer(modifier = Modifier.weight(WEIGHT_1))
+        BottomSnackbar(
+            snackbarHostState = snackbarHostState,
+            modifier = Modifier.weight(WEIGHT_1)
+        )
     }
 }
 
@@ -212,5 +221,6 @@ private fun LoginScreenPreview() {
     val password = "password"
     LoginScreen(
         onClickLoginButton = { username, password -> },
+        snackbarHostState = SnackbarHostState()
     )
 }
