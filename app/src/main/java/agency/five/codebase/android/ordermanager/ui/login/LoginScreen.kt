@@ -44,7 +44,6 @@ fun LoginRoute(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun LoginScreen(
     snackbarHostState: SnackbarHostState,

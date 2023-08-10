@@ -27,9 +27,4 @@ class ActiveOrdersViewModel(
                 initialValue = activeOrdersMapper.toActiveOrderViewState(emptyList())
             )
 
-    fun completeOrder(activeOrderId: Int) {
-        viewModelScope.launch {
-            orderRepository.completeOrder(activeOrderId)
-        }
-    }
 }

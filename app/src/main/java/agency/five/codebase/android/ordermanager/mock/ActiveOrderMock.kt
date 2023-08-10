@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.mock
 
 import agency.five.codebase.android.ordermanager.model.ActiveOrder
-import agency.five.codebase.android.ordermanager.model.MenuItem
 
 
 object ActiveOrderMock {

@@ -31,7 +31,6 @@ fun SelectionRoute(
 
 
     SelectionScreen(
-        modifier = Modifier.fillMaxSize(),
         selectionViewState = selectionViewState,
         onClickSelectionCard = { orderedItem -> viewModel.addOrderedItemOrIncrementAmount(orderedItem) }
     )
@@ -39,7 +38,6 @@ fun SelectionRoute(
 
 @Composable
 private fun SelectionScreen(
-    modifier: Modifier = Modifier,
     selectionViewState: SelectionViewState,
     onClickSelectionCard: (String) -> Unit,
 ) {
@@ -73,9 +71,7 @@ private fun SelectionScreen(
 
 @Preview
 @Composable
-private fun FavoritesScreenPreview() {
-    val selectionCardModifier = Modifier
-        .fillMaxSize()
+private fun SelectionScreenPreview() {
 
     val selectionViewState = SelectionViewState(
         listOf(
@@ -91,9 +87,7 @@ private fun FavoritesScreenPreview() {
             )
         )
     )
-
     SelectionScreen(
-        modifier = selectionCardModifier,
         selectionViewState = selectionViewState,
         onClickSelectionCard = { },
     )

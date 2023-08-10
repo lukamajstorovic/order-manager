@@ -4,8 +4,7 @@ import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderItemViewState
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewState
 
-class CompleteOrderMapperImpl(
-) : CompleteOrderMapper {
+class CompleteOrderMapperImpl : CompleteOrderMapper {
     override fun toCompleteOrderViewState(
         orderId: Int,
         orderedItems: List<OrderedItemInActiveOrder>

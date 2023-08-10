@@ -1,14 +1,24 @@
 package agency.five.codebase.android.ordermanager.data.repository
 
-import agency.five.codebase.android.ordermanager.data.database.*
+import agency.five.codebase.android.ordermanager.data.database.ActiveOrderDao
+import agency.five.codebase.android.ordermanager.data.database.DbActiveOrder
+import agency.five.codebase.android.ordermanager.data.database.DbMenuItem
+import agency.five.codebase.android.ordermanager.data.database.DbOrderedItem
+import agency.five.codebase.android.ordermanager.data.database.DbOrderedItemInActiveOrder
+import agency.five.codebase.android.ordermanager.data.database.MenuItemDao
+import agency.five.codebase.android.ordermanager.data.database.OrderedItemDao
+import agency.five.codebase.android.ordermanager.data.database.OrderedItemInActiveOrderDao
 import agency.five.codebase.android.ordermanager.model.ActiveOrder
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.OrderedItem
 import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
 class OrderRepositoryImpl(
@@ -114,7 +124,6 @@ class OrderRepositoryImpl(
             )
             orderedItems().first()
                 .forEach { orderedItem ->
-                    //Log.d("khgfkuahskfhas","${orderedItem}")
                     orderedItemInActiveOrderDao.insertOrderedItemInActiveOrder(
                         DbOrderedItemInActiveOrder(
                             name = orderedItem.name,

@@ -1,14 +1,10 @@
 package agency.five.codebase.android.ordermanager.ui.theme
 
-import agency.five.codebase.android.ordermanager.R
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,

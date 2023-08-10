@@ -63,11 +63,6 @@ fun MainScreen() {
                     || navBackStackEntry?.destination?.route == NavigationItem.ActiveOrdersDestination.route
         }
     }
-    val showSnackbar by remember {
-        derivedStateOf {
-            navBackStackEntry?.destination?.route == NavigationItem.LoginDestination.route
-        }
-    }
     val snackbarHostState = remember { SnackbarHostState() }
     //val showBackIcon = !showBottomBar
     Box {
@@ -91,10 +86,7 @@ fun MainScreen() {
                     )
             }
         ) { padding ->
-            Surface(
-                //color = MaterialTheme.colors.background,
-                /*                modifier = Modifier.fillMaxSize()*/
-            ) {
+            Surface {
                 NavHost(
                     navController = navController,
                     startDestination = NavigationItem.LoginDestination.route,
@@ -111,19 +103,19 @@ fun MainScreen() {
                             if(!isLoading && clickedButton.value) {
                                 when (val role = viewModel.staffRole.value) {
                                     StaffRoles.ADMIN -> {
-                                        println("NAVIGATE ADMIN: " + role)
+                                        println("NAVIGATE ADMIN: $role")
                                         navController.navigate(
                                             NavigationItem.StaffDestination.route
                                         )
                                     }
                                     StaffRoles.WAITER -> {
-                                        println("NAVIGATE WAITER: " + role)
+                                        println("NAVIGATE WAITER: $role")
                                         navController.navigate(
                                             NavigationItem.SelectionDestination.route
                                         )
                                     }
                                     StaffRoles.NONE -> {
-                                        println("NAVIGATE NONE: " + role)
+                                        println("NAVIGATE NONE: $role")
                                         snackbarHostState.currentSnackbarData?.dismiss()
                                         snackbarHostState.showSnackbar("Invalid username or password")
                                     }

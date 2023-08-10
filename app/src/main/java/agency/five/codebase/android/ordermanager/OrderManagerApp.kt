@@ -13,10 +13,8 @@ import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModul
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
 import agency.five.codebase.android.ordermanager.ui.staff.di.staffModule
 import android.app.Application
-import android.content.Context
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

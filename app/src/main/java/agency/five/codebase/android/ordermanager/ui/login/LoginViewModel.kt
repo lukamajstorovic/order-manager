@@ -2,24 +2,10 @@ package agency.five.codebase.android.ordermanager.ui.login
 
 import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewState
-import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /*class LoginViewModel(

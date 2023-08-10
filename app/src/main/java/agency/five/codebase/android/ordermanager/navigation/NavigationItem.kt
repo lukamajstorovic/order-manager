@@ -13,27 +13,27 @@ sealed class NavigationItem(
     val labelId: Int,
 ) : OrderManagerDestination(route) {
 
-    object SelectionDestination : NavigationItem(
+    data object SelectionDestination : NavigationItem(
         route = SELECTION_ROUTE,
         labelId = R.string.add_items
     )
 
-    object ConfirmOrderDestination : NavigationItem(
+    data object ConfirmOrderDestination : NavigationItem(
         route = CONFIRM_ORDER_ROUTE,
         labelId = R.string.confirm_order
     )
 
-    object ActiveOrdersDestination : NavigationItem(
+    data object ActiveOrdersDestination : NavigationItem(
         route = ACTIVE_ORDERS_ROUTE,
         labelId = R.string.active_orders
     )
 
-    object LoginDestination : NavigationItem(
+    data object LoginDestination : NavigationItem(
         route = LOGIN_ROUTE,
         labelId = R.string.login
     )
 
-    object StaffDestination : NavigationItem(
+    data object StaffDestination : NavigationItem(
         route = STAFF_ROUTE,
         labelId = R.string.staff
     )

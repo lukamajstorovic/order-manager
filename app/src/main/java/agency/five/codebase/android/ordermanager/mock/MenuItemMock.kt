@@ -1,8 +1,6 @@
 package agency.five.codebase.android.ordermanager.mock
 
-import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.model.MenuItem
-import androidx.compose.ui.res.stringResource
 
 object MenuItemMock {
     fun getMenuItemList(): List<MenuItem> = listOf(

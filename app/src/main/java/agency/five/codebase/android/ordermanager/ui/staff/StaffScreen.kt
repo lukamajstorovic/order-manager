@@ -25,14 +25,12 @@ fun StaffRoute(
     val staffViewState by viewModel.staffViewState.collectAsState()
 
     StaffScreen(
-        modifier = Modifier.fillMaxSize(),
         staffViewState = staffViewState,
     )
 }
 
 @Composable
 private fun StaffScreen(
-    modifier: Modifier = Modifier,
     staffViewState: StaffViewState,
 ) {
 
@@ -60,9 +58,7 @@ private fun StaffScreen(
 
 @Preview
 @Composable
-private fun FavoritesScreenPreview() {
-    val staffCardModifier = Modifier
-        .fillMaxSize()
+private fun StaffScreenPreview() {
 
     val staffViewState = StaffViewState(
         listOf(
@@ -80,7 +76,6 @@ private fun FavoritesScreenPreview() {
     )
 
     StaffScreen(
-        modifier = staffCardModifier,
         staffViewState = staffViewState,
     )
 }

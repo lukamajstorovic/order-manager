@@ -1,7 +1,5 @@
 package agency.five.codebase.android.ordermanager.ui.activeorders
 
-import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapper
-import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapperImpl
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ActiveOrder
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
