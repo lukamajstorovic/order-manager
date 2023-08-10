@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "staff")
 data class DbStaff(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String,
+    val username: String,
     val password: String,
+    val name: String,
     val role: StaffRoles,
 )

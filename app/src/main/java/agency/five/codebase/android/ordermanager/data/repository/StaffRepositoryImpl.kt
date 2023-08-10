@@ -15,13 +15,14 @@ class StaffRepositoryImpl(
     private val staffDao: StaffDao,
     private val bgDispatcher: CoroutineDispatcher,
 ) : StaffRepository {
-    override suspend fun allStaff(): Flow<List<Staff>> = withContext(bgDispatcher) {
+    override fun allStaff(): Flow<List<Staff>> =
         staffDao.getAllStaff().map {
             it.map { dbStaff ->
                 Staff(
                     id = dbStaff.id,
-                    name = dbStaff.name,
+                    username = dbStaff.username,
                     password = dbStaff.password,
+                    name = dbStaff.name,
                     role = dbStaff.role,
                 )
             }
@@ -30,26 +31,44 @@ class StaffRepositoryImpl(
             started = SharingStarted.WhileSubscribed(1000L),
             replay = 1,
         )
-    }
-    override suspend fun staffById(staffId: Long): Flow<Staff> {
+
+    override fun staffById(staffId: Long): Flow<Staff> =
+        staffDao.getStaffById(staffId).map { dbStaff ->
+            Staff(
+                id = dbStaff.id,
+                username = dbStaff.username,
+                password = dbStaff.password,
+                name = dbStaff.name,
+                role = dbStaff.role,
+            )
+        }
+
+    override suspend fun staffByCredentials(username: String, password: String): Staff? {
         return withContext(bgDispatcher) {
-            staffDao.getStaffById(staffId).map { dbStaff ->
-                Staff(
-                    id = dbStaff.id,
-                    name = dbStaff.name,
-                    password = dbStaff.password,
-                    role = dbStaff.role,
-                )
-            }
+            val dbStaff = staffDao.getStaffByCredentials(username, password)
+            dbStaff?.toModel()
         }
     }
+
+
+    private fun DbStaff.toModel(): Staff {
+        return Staff(
+            id = id,
+            username = username,
+            password = password,
+            name = name,
+            role = role,
+        )
+    }
+
     override suspend fun addStaff(staff: Staff) {
         withContext(bgDispatcher) {
             staffDao.insertStaff(
                 DbStaff(
                     id = staff.id,
-                    name = staff.name,
+                    username = staff.username,
                     password = staff.password,
+                    name = staff.name,
                     role = staff.role,
                 )
             )

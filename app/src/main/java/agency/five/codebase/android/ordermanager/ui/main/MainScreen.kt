@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.main
 
-import agency.five.codebase.android.ordermanager.mock.UserMock
+import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.navigation.CompleteOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
@@ -11,18 +11,29 @@ import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderV
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
+import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
+import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
 import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
 import agency.five.codebase.android.ordermanager.ui.staff.StaffViewModel
-import agency.five.codebase.android.ordermanager.ui.theme.DarkGray
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +49,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -83,21 +96,38 @@ fun MainScreen() {
                 composable(
                     NavigationItem.LoginDestination.route
                 ) {
-                    LoginRoute(
-                        onClickLoginButton = {
-                            if (UserMock.getUserRole(it) == "cook") {
-                                navController.navigate(
-                                    NavigationItem.SelectionDestination.route
-                                )
-                            } else if(UserMock.getUserRole(it) == "waiter") {
-                                navController.navigate(
-                                    NavigationItem.ActiveOrdersDestination.route
-                                )
-                            } else if(UserMock.getUserRole(it) == "admin") {
-                                navController.navigate(
-                                    NavigationItem.StaffDestination.route
-                                )
+                    val clickedButton = remember { mutableStateOf(false) }
+                    val viewModel: LoginViewModel = getViewModel()
+                    val isLoading = viewModel.isLoading.value
+                    LaunchedEffect(key1 = isLoading) {
+                        if(!isLoading && clickedButton.value) {
+                            when (val role = viewModel.staffRole.value) {
+                                StaffRoles.WAITER -> {
+                                    println("NAVIGATE WAITER: " + role)
+                                    navController.navigate(
+                                        NavigationItem.SelectionDestination.route
+                                    )
+                                }
+                                StaffRoles.NONE -> {
+                                    println("NAVIGATE NONE: " + role)
+                                    navController.navigate(
+                                        NavigationItem.ActiveOrdersDestination.route
+                                    )
+                                }
+                                StaffRoles.ADMIN -> {
+                                    println("NAVIGATE ADMIN: " + role)
+                                    navController.navigate(
+                                        NavigationItem.StaffDestination.route
+                                    )
+                                }
                             }
+                            clickedButton.value = false
+                        }
+                    }
+                    LoginRoute(
+                        onClickLoginButton = { username, password ->
+                            clickedButton.value = true
+                            viewModel.authenticateStaff(username, password)
                         },
                     )
                 }

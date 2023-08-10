@@ -9,6 +9,7 @@ import agency.five.codebase.android.ordermanager.mock.StaffMock
 import agency.five.codebase.android.ordermanager.ui.activeorders.di.activeOrdersModule
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
+import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
 import agency.five.codebase.android.ordermanager.ui.staff.di.staffModule
 import android.app.Application
@@ -38,6 +39,7 @@ class OrderManagerApp : Application() {
                 confirmOrderModule,
                 databaseModule,
                 staffModule,
+                authenticationModule,
             )
             GlobalScope.launch {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[0])
@@ -45,9 +47,9 @@ class OrderManagerApp : Application() {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[2])
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[3])
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[4])
-                staffRepository.addStaff(StaffMock.getStaffList()[0])
-                staffRepository.addStaff(StaffMock.getStaffList()[1])
-                staffRepository.addStaff(StaffMock.getStaffList()[2])
+                staffRepository.addStaff(StaffMock.getStaff()[0])
+                staffRepository.addStaff(StaffMock.getStaff()[1])
+                staffRepository.addStaff(StaffMock.getStaff()[2])
             }
         }
     }

@@ -14,6 +14,9 @@ interface StaffDao {
     @Query("SELECT * FROM staff WHERE id=:id")
     fun getStaffById(id: Long) : Flow<DbStaff>
 
+    @Query("SELECT * FROM staff WHERE username=:username AND password=:password")
+    fun getStaffByCredentials(username: String, password: String) : DbStaff?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStaff(staff: DbStaff)
 
