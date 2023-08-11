@@ -2,6 +2,7 @@ package agency.five.codebase.android.ordermanager.data.repository
 
 import agency.five.codebase.android.ordermanager.data.database.DbStaff
 import agency.five.codebase.android.ordermanager.data.database.StaffDao
+import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -65,11 +66,10 @@ class StaffRepositoryImpl(
         withContext(bgDispatcher) {
             staffDao.insertStaff(
                 DbStaff(
-                    id = staff.id,
                     username = staff.username,
                     password = staff.password,
                     name = staff.name,
-                    role = staff.role,
+                    role = StaffRoles.WAITER,
                 )
             )
         }

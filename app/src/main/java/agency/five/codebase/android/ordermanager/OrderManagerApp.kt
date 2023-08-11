@@ -10,6 +10,7 @@ import agency.five.codebase.android.ordermanager.ui.activeorders.di.activeOrders
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
 import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
+import agency.five.codebase.android.ordermanager.ui.registerstaff.di.registerStaffModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
 import agency.five.codebase.android.ordermanager.ui.staff.di.staffModule
 import android.app.Application
@@ -38,6 +39,7 @@ class OrderManagerApp : Application() {
                 databaseModule,
                 staffModule,
                 authenticationModule,
+                registerStaffModule,
             )
             GlobalScope.launch {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[0])

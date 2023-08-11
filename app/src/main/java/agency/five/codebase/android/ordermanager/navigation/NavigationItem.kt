@@ -7,6 +7,7 @@ const val CONFIRM_ORDER_ROUTE = "ConfirmOrder"
 const val ACTIVE_ORDERS_ROUTE = "ActiveOrders"
 const val LOGIN_ROUTE = "Login"
 const val STAFF_ROUTE = "Staff"
+const val REGISTER_ROUTE = "RegisterStaff"
 
 sealed class NavigationItem(
     override val route: String,
@@ -36,5 +37,10 @@ sealed class NavigationItem(
     data object StaffDestination : NavigationItem(
         route = STAFF_ROUTE,
         labelId = R.string.staff
+    )
+
+    data object RegisterStaffDestination : NavigationItem(
+        route = REGISTER_ROUTE,
+        labelId = R.string.register_staff
     )
 }

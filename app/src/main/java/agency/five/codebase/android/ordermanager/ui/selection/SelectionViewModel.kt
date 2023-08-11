@@ -66,40 +66,4 @@ class SelectionViewModel(
             }
         }
     }
-
-    /*
-    fun addOrderedItem(orderedItem: OrderedItem) {
-        viewModelScope.launch {
-            var flag = false
-            val orderedItems = orderRepository.orderedItems()
-            orderedItems.map {
-                it.forEach { orderedItemFromList ->
-                    if(orderedItemFromList.id == orderedItem.id) {
-                        flag = true
-                    }
-                }
-            }
-            if(flag){
-                addOrderedItemAmount(orderedItem.id)
-                flag = false
-            }else{
-                orderRepository.addOrderedItem(orderedItem)
-            }
-        }
-    }
-
-     */
-    /*
-    fun confirmOrder(activeOrderId: Int) {
-        viewModelScope.launch {
-            orderRepository.confirmOrder(activeOrderId)
-        }
-    }
-
-    fun completeOrder(activeOrderId: Int) {
-        viewModelScope.launch {
-            orderRepository.completeOrder(activeOrderId)
-        }
-    }
-     */
 }

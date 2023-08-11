@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.ui.login
+package agency.five.codebase.android.ordermanager.ui.registerstaff
 
 import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
@@ -52,24 +52,21 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginRoute(
-    onClickLoginButton: (username: String, password: String) -> Unit,
+fun RegisterStaffRoute(
+    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
     snackbarHostState: SnackbarHostState,
-    onClickNavigateRegisterButton: () -> Unit,
 ) {
-    LoginScreen(
+    RegisterStaffScreen(
         snackbarHostState = snackbarHostState,
-        onClickLoginButton = onClickLoginButton,
-        onClickNavigateRegisterButton = onClickNavigateRegisterButton,
+        onClickRegisterButton = onClickRegisterButton,
     )
 }
 
 @Composable
-private fun LoginScreen(
+private fun RegisterStaffScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
-    onClickLoginButton: (username: String, password: String) -> Unit,
-    onClickNavigateRegisterButton: () -> Unit,
+    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -80,12 +77,14 @@ private fun LoginScreen(
     ) {
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
+        var name by remember { mutableStateOf(TextFieldValue(text = "")) }
         var username by remember { mutableStateOf(TextFieldValue(text = "")) }
         var password by remember { mutableStateOf(TextFieldValue(text = "")) }
         val scope = rememberCoroutineScope()
-        val focusRequester = remember { FocusRequester() }
+        val focusRequesterUsername = remember { FocusRequester() }
+        val focusRequesterPassword = remember { FocusRequester() }
         Text(
-            text = stringResource(id = R.string.app_name),
+            text = "Staff Register",
             color = DarkGreen,
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
@@ -94,8 +93,61 @@ private fun LoginScreen(
             modifier = Modifier
                 .padding(top=50.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally)
-                .weight(WEIGHT_2)
+                .weight(WEIGHT_1)
         )
+        Text(
+            text = "Name",
+            color = DarkGreen,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(10.dp)
+                .align(Alignment.Start)
+        )
+        Card(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+            elevation = 10.dp,
+            backgroundColor = LightGray,
+        ) {
+            OutlinedTextField(
+                value = name,
+                onValueChange = {
+                    name = it
+                },
+                modifier = modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .wrapContentSize(Alignment.Center)
+                    .weight(WEIGHT_4),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = LightGray,
+                    cursorColor = DarkGreen,
+                    disabledLabelColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(
+                    fontSize = 40.sp,
+                    color = DarkGreen,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default,
+                    textAlign = TextAlign.Center
+                ),
+                singleLine = true,
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                        scope.launch { focusRequesterUsername.requestFocus() }
+                    }
+                ),
+            )
+        }
         Text(
             text = "Username",
             color = DarkGreen,
@@ -123,7 +175,8 @@ private fun LoginScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_4),
+                    .weight(WEIGHT_4)
+                    .focusRequester(focusRequesterUsername),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -144,7 +197,7 @@ private fun LoginScreen(
                     onDone = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        scope.launch { focusRequester.requestFocus() }
+                        scope.launch { focusRequesterPassword.requestFocus() }
                     }
                 ),
             )
@@ -179,7 +232,7 @@ private fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
                     .weight(WEIGHT_4)
-                    .focusRequester(focusRequester),
+                    .focusRequester(focusRequesterPassword),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -206,41 +259,18 @@ private fun LoginScreen(
         }
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClickLoginButton(username.text, password.text) },
+            onClick = { onClickRegisterButton(name.text, username.text, password.text) },
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = LightGray,
                 backgroundColor = LightGray
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(10.dp)
+                .padding(20.dp)
                 .weight(WEIGHT_1)
         ) {
             Text(
-                text = stringResource(id = R.string.login),
-                color = DarkGreen,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Default,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(10.dp)
-            )
-        }
-        Button(
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClickNavigateRegisterButton() },
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = LightGray,
-                backgroundColor = LightGray
-            ),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(10.dp)
-                .weight(WEIGHT_1)
-        ) {
-            Text(
-                text = "Go to register →",
+                text = "Register",
                 color = DarkGreen,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
@@ -260,11 +290,11 @@ private fun LoginScreen(
 @Preview
 @Composable
 private fun LoginScreenPreview() {
+    val name = "name"
     val username = "username"
     val password = "password"
-    LoginScreen(
-        onClickLoginButton = { username, password -> },
-        snackbarHostState = SnackbarHostState(),
-        onClickNavigateRegisterButton = { }
+    RegisterStaffScreen(
+        onClickRegisterButton = { name, username, password -> },
+        snackbarHostState = SnackbarHostState()
     )
 }

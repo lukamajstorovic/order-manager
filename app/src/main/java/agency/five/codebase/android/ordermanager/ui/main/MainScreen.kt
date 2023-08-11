@@ -12,6 +12,8 @@ import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRou
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
+import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffRoute
+import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
 import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
@@ -100,7 +102,7 @@ fun MainScreen() {
                         val isLoading = viewModel.isLoading.value
 
                         LaunchedEffect(key1 = isLoading) {
-                            if(!isLoading && clickedButton.value) {
+                            if (!isLoading && clickedButton.value) {
                                 when (val role = viewModel.staffRole.value) {
                                     StaffRoles.ADMIN -> {
                                         println("NAVIGATE ADMIN: $role")
@@ -108,12 +110,14 @@ fun MainScreen() {
                                             NavigationItem.StaffDestination.route
                                         )
                                     }
+
                                     StaffRoles.WAITER -> {
                                         println("NAVIGATE WAITER: $role")
                                         navController.navigate(
                                             NavigationItem.SelectionDestination.route
                                         )
                                     }
+
                                     StaffRoles.NONE -> {
                                         println("NAVIGATE NONE: $role")
                                         snackbarHostState.currentSnackbarData?.dismiss()
@@ -123,15 +127,18 @@ fun MainScreen() {
                                 clickedButton.value = false
                             }
                         }
-                        Box {
-                            LoginRoute(
-                                snackbarHostState = snackbarHostState,
-                                onClickLoginButton = { username, password ->
-                                    clickedButton.value = true
-                                    viewModel.authenticateStaff(username, password)
-                                },
-                            )
-                        }
+                        LoginRoute(
+                            snackbarHostState = snackbarHostState,
+                            onClickLoginButton = { username, password ->
+                                clickedButton.value = true
+                                viewModel.authenticateStaff(username, password)
+                            },
+                            onClickNavigateRegisterButton = {
+                                navController.navigate(
+                                    NavigationItem.RegisterStaffDestination.route
+                                )
+                            }
+                        )
                     }
                     composable(
                         NavigationItem.SelectionDestination.route,
@@ -157,7 +164,8 @@ fun MainScreen() {
                         arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
                     ) {
                         val orderId = it.arguments?.getInt(ORDER_KEY)
-                        val viewModel: CompleteOrderViewModel = getViewModel(parameters = { parametersOf(orderId) })
+                        val viewModel: CompleteOrderViewModel =
+                            getViewModel(parameters = { parametersOf(orderId) })
                         CompleteOrderRoute(
                             viewModel = viewModel,
                             onCompleteOrder = { navController.navigateUp() }
@@ -182,6 +190,37 @@ fun MainScreen() {
                         val viewModel: StaffViewModel = getViewModel()
                         StaffRoute(
                             viewModel = viewModel,
+                        )
+                    }
+                    composable(
+                        route = NavigationItem.RegisterStaffDestination.route
+                    ) {
+                        val clickedButton = remember { mutableStateOf(false) }
+                        val viewModel: RegisterStaffViewModel = getViewModel()
+                        val isLoading = viewModel.isLoading.value
+
+                        LaunchedEffect(isLoading) {
+                            println("ISLOADING TRIGGERED")
+                            println("$isLoading - ${clickedButton.value}")
+                            if (!isLoading && clickedButton.value) {
+                                println("NAVIGATE LOGIN")
+                                navController.navigate(
+                                    NavigationItem.LoginDestination.route
+                                )
+                                clickedButton.value = false
+                                println("CLICKEDBUTTON FALSE")
+                                /*snackbarHostState.currentSnackbarData?.dismiss()*/
+                                snackbarHostState.showSnackbar("Registration successful")
+                            }
+                        }
+                        RegisterStaffRoute(
+                            snackbarHostState = snackbarHostState,
+                            onClickRegisterButton = { name, username, password ->
+                                println("CLICK REGISTRATION")
+                                clickedButton.value = true
+                                viewModel.addStaff(name, username, password)
+                                println("ACTIVATED VIEWMODEL")
+                            },
                         )
                     }
                 }
