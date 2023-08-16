@@ -54,9 +54,6 @@ class OrderManagerApp : Application() {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[2])
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[3])
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[4])
-                staffRepository.addStaff(StaffMock.getStaff()[0])
-                staffRepository.addStaff(StaffMock.getStaff()[1])
-                staffRepository.addStaff(StaffMock.getStaff()[2])
             }
         }
     }

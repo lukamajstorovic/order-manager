@@ -62,8 +62,8 @@ class StaffRepositoryImpl(
 
     override suspend fun addStaff(staff: Staff) {
         withContext(bgDispatcher) {
-            staffDao.insertStaff(
-                DbStaff(
+            staffService.addStaff(
+                agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff(
                     username = staff.username,
                     password = staff.password,
                     name = staff.name,

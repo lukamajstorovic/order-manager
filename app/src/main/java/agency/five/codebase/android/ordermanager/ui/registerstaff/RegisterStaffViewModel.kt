@@ -38,7 +38,6 @@ class RegisterStaffViewModel(
                 password = password,
                 name = name,
                 role = StaffRoles.WAITER,
-                createdAt = Timestamp.now(),
             )
             try {
                 staffRepository.addStaff(staff)

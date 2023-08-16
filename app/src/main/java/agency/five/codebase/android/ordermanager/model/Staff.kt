@@ -9,5 +9,5 @@ data class Staff(
     val password: String,
     val name: String,
     val role: StaffRoles = StaffRoles.WAITER,
-    val createdAt: Timestamp,
+    val createdAt: Timestamp = Timestamp.now(),
 )

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.DocumentId
 
 data class DbStaff(
     @DocumentId
-    val id: String,
+    val id: String = "placeholder",
     val name: String,
     val username: String,
     val password: String,

@@ -1,9 +1,7 @@
 package agency.five.codebase.android.ordermanager.data.firebase
 
-import agency.five.codebase.android.ordermanager.data.firebase.StaffService
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
-import agency.five.codebase.android.ordermanager.model.Staff
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -11,7 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_STAFF = "staff"
 
@@ -85,13 +82,19 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
 
     override suspend fun getStaffByCredentials(username: String, password: String): DbStaff? {
         TODO("Not yet implemented")
-    }
+    }*/
 
     override suspend fun addStaff(staff: DbStaff) {
-        TODO("Not yet implemented")
+        fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+            .document(staff.name)
+            .set(staff)
+            .addOnFailureListener {
+                Log.d("Something went wrong: ", it.message.toString())
+            }
     }
 
-    override suspend fun removeStaff(staffId: String) {
+
+   /* override suspend fun removeStaff(staffId: String) {
         TODO("Not yet implemented")
     }*/
 }
