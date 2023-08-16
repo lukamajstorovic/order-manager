@@ -43,8 +43,8 @@ class StaffRepositoryImpl(
 
     override suspend fun staffByCredentials(username: String, password: String): Staff? {
         return withContext(bgDispatcher) {
-            val dbStaff = staffDao.getStaffByCredentials(username, password)
-            dbStaff?.toModel()
+            val dbStaff = staffService.getStaffByCredentials(username, password)
+            dbStaff?.toStaff()
         }
     }
 

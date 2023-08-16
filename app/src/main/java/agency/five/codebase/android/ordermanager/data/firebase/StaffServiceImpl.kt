@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_STAFF = "staff"
 
@@ -22,7 +23,7 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
         }
     }
 
-    private fun mapStaffDocumentToStaff(staff: DocumentSnapshot): DbStaff {
+    private fun mapStaffDocumentToDbStaff(staff: DocumentSnapshot): DbStaff {
         return DbStaff(
             id = staff.id,
             name = staff.getString("name") ?: "",
@@ -61,7 +62,7 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
                             return@addSnapshotListener
                         }
                         if (snapshot != null) {
-                            val staffCollection = snapshot.documents.map(::mapStaffDocumentToStaff)
+                            val staffCollection = snapshot.documents.map(::mapStaffDocumentToDbStaff)
                             try {
                                 trySend(staffCollection)
                             } catch (sendException: Exception) {
@@ -78,11 +79,21 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
 
     /*override fun getStaffById(staffId: Long): Flow<DbStaff> {
         TODO("Not yet implemented")
-    }
+    }*/
 
     override suspend fun getStaffByCredentials(username: String, password: String): DbStaff? {
-        TODO("Not yet implemented")
-    }*/
+        val query = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+            .whereEqualTo("username", username)
+            .whereEqualTo("password", password)
+            .limit(1)
+
+        val querySnapshot = query.get().await()
+        if(!querySnapshot.isEmpty) {
+            val staffDocument = querySnapshot.documents[0]
+            return mapStaffDocumentToDbStaff(staffDocument)
+        }
+        return null
+    }
 
     override suspend fun addStaff(staff: DbStaff) {
         fireStore.collection(FIRESTORE_COLLECTION_STAFF)
