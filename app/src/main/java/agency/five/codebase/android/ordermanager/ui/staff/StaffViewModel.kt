@@ -39,7 +39,7 @@ class StaffViewModel(
             staffRepository.addStaff(staff)
         }
     }
-    fun removeStaff(staffId: Long) {
+    fun removeStaff(staffId: String) {
         viewModelScope.launch {
             staffRepository.removeStaff(staffId)
         }

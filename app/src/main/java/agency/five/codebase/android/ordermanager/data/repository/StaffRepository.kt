@@ -8,5 +8,5 @@ interface StaffRepository {
     suspend fun staffById(staffId: String): Staff?
     suspend fun staffByCredentials(username: String, password: String): Staff?
     suspend fun addStaff(staff: Staff)
-    suspend fun removeStaff(staffId: Long)
+    suspend fun removeStaff(staffId: String)
 }

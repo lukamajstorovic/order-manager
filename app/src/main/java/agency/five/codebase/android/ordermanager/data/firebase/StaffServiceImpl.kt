@@ -77,9 +77,9 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
         }
     }
 
-    override suspend fun getStaffById(staffId: String): DbStaff? {
+    override suspend fun getStaffById(id: String): DbStaff? {
         val staffDocument = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-            .document(staffId)
+            .document(id)
             .get()
             .await()
 
@@ -113,7 +113,10 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
     }
 
 
-   /* override suspend fun removeStaff(staffId: String) {
-        TODO("Not yet implemented")
-    }*/
+    override suspend fun removeStaff(id: String) {
+        fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+            .document(id)
+            .delete()
+            .await()
+    }
 }

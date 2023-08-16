@@ -55,9 +55,9 @@ class StaffRepositoryImpl(
             )
         }
     }
-    override suspend fun removeStaff(staffId: Long) {
+    override suspend fun removeStaff(staffId: String) {
         withContext(bgDispatcher) {
-            staffDao.deleteStaff(id = staffId)
+            staffService.removeStaff(staffId)
         }
     }
 }

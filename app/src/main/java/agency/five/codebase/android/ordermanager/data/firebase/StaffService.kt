@@ -8,5 +8,5 @@ interface StaffService {
     suspend fun getStaffById(staffId: String): DbStaff?
     suspend fun getStaffByCredentials(username: String, password: String): DbStaff?
     suspend fun addStaff(staff: DbStaff)
-    /*suspend fun removeStaff(staffId: String)*/
+    suspend fun removeStaff(staffId: String)
 }
