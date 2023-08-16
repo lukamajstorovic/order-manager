@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class StaffCardViewState(
-    val id: Long,
+    val id: String,
     val name: String,
     val role: StaffRoles,
 )
@@ -90,12 +90,12 @@ private fun SelectionCardPreview() {
             .fillMaxSize()
     ) {
         val staffCardInstance1 = StaffCardViewState(
-            id = 1,
+            id = "1",
             name = "Luka Majstorovic",
             role = StaffRoles.ADMIN,
         )
         val staffCardInstance2 = StaffCardViewState(
-            id = 2,
+            id = "2",
             name = "Konobar 1",
             role = StaffRoles.WAITER,
         )

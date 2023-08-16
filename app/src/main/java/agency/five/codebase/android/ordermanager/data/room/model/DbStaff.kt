@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.database
+package agency.five.codebase.android.ordermanager.data.room.model
 
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import androidx.room.Entity
@@ -10,5 +10,5 @@ data class DbStaff(
     val username: String,
     val password: String,
     val name: String,
-    val role: StaffRoles,
+    val role: StaffRoles = StaffRoles.WAITER,
 )

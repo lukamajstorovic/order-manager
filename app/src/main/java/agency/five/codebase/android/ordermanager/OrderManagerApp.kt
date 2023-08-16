@@ -2,6 +2,7 @@ package agency.five.codebase.android.ordermanager
 
 import agency.five.codebase.android.ordermanager.data.di.dataModule
 import agency.five.codebase.android.ordermanager.data.di.databaseModule
+import agency.five.codebase.android.ordermanager.data.di.firebaseModule
 import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
 import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
 import agency.five.codebase.android.ordermanager.mock.MenuItemMock
@@ -13,7 +14,11 @@ import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModul
 import agency.five.codebase.android.ordermanager.ui.registerstaff.di.registerStaffModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
 import agency.five.codebase.android.ordermanager.ui.staff.di.staffModule
+import agency.five.codebase.android.ordermanager.utils.module.dateTimeFormatterModule
 import android.app.Application
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -40,6 +45,8 @@ class OrderManagerApp : Application() {
                 staffModule,
                 authenticationModule,
                 registerStaffModule,
+                dateTimeFormatterModule,
+                firebaseModule,
             )
             GlobalScope.launch {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[0])

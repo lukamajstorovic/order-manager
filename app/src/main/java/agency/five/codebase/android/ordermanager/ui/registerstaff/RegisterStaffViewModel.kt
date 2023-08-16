@@ -12,6 +12,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,6 +38,7 @@ class RegisterStaffViewModel(
                 password = password,
                 name = name,
                 role = StaffRoles.WAITER,
+                createdAt = Timestamp.now(),
             )
             try {
                 staffRepository.addStaff(staff)

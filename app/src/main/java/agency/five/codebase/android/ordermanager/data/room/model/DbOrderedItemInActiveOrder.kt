@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.database
+package agency.five.codebase.android.ordermanager.data.room.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

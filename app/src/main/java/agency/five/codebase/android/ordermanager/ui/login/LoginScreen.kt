@@ -80,8 +80,8 @@ private fun LoginScreen(
     ) {
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
-        var username by remember { mutableStateOf(TextFieldValue(text = "")) }
-        var password by remember { mutableStateOf(TextFieldValue(text = "")) }
+        var username by remember { mutableStateOf(TextFieldValue(text = "lmajstorovic")) }
+        var password by remember { mutableStateOf(TextFieldValue(text = "12345678")) }
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
         Text(

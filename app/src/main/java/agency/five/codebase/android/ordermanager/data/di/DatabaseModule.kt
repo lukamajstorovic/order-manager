@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.di
 
-import agency.five.codebase.android.ordermanager.data.database.OrderManagerDatabase
+import agency.five.codebase.android.ordermanager.data.room.OrderManagerDatabase
 import androidx.room.Room
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

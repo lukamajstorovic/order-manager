@@ -1,9 +1,10 @@
 package agency.five.codebase.android.ordermanager.data.repository
 
-import agency.five.codebase.android.ordermanager.data.database.DbStaff
-import agency.five.codebase.android.ordermanager.data.database.StaffDao
-import agency.five.codebase.android.ordermanager.enums.StaffRoles
+import agency.five.codebase.android.ordermanager.data.firebase.StaffService
+import agency.five.codebase.android.ordermanager.data.room.model.DbStaff
+import agency.five.codebase.android.ordermanager.data.room.dao.StaffDao
 import agency.five.codebase.android.ordermanager.model.Staff
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -15,32 +16,28 @@ import kotlinx.coroutines.withContext
 class StaffRepositoryImpl(
     private val staffDao: StaffDao,
     private val bgDispatcher: CoroutineDispatcher,
+    private val staffService: StaffService,
 ) : StaffRepository {
     override fun allStaff(): Flow<List<Staff>> =
-        staffDao.getAllStaff().map {
+        staffService.getAllStaff().map {
             it.map { dbStaff ->
-                Staff(
-                    id = dbStaff.id,
-                    username = dbStaff.username,
-                    password = dbStaff.password,
-                    name = dbStaff.name,
-                    role = dbStaff.role,
-                )
+                dbStaff.toStaff()
             }
         }.shareIn(
-            scope = CoroutineScope(bgDispatcher),
-            started = SharingStarted.WhileSubscribed(1000L),
-            replay = 1,
+        scope = CoroutineScope(bgDispatcher),
+        started = SharingStarted.WhileSubscribed(1000L),
+        replay = 1,
         )
 
     override fun staffById(staffId: Long): Flow<Staff> =
         staffDao.getStaffById(staffId).map { dbStaff ->
             Staff(
-                id = dbStaff.id,
+                id = "dbStaff.id",
                 username = dbStaff.username,
                 password = dbStaff.password,
                 name = dbStaff.name,
                 role = dbStaff.role,
+                createdAt = Timestamp.now()
             )
         }
 
@@ -54,11 +51,12 @@ class StaffRepositoryImpl(
 
     private fun DbStaff.toModel(): Staff {
         return Staff(
-            id = id,
+            id = "id",
             username = username,
             password = password,
             name = name,
             role = role,
+            createdAt = Timestamp.now()
         )
     }
 
@@ -69,7 +67,7 @@ class StaffRepositoryImpl(
                     username = staff.username,
                     password = staff.password,
                     name = staff.name,
-                    role = StaffRoles.WAITER,
+                    role = staff.role,
                 )
             )
         }

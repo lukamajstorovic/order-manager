@@ -63,12 +63,12 @@ private fun StaffScreenPreview() {
     val staffViewState = StaffViewState(
         listOf(
             StaffCardViewState(
-                id = 1,
+                id = "1",
                 name = "Luka Majstorovic",
                 role = StaffRoles.ADMIN,
             ),
             StaffCardViewState(
-                id = 2,
+                id = "2",
                 name = "Konobar 1",
                 role = StaffRoles.WAITER,
             )

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "874423038627",
+    "project_id": "order-manager-a0aa3",
+    "storage_bucket": "order-manager-a0aa3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874423038627:android:3cb2022adc2cd17b768516",
+        "android_client_info": {
+          "package_name": "agency.five.codebase.android.ordermanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874423038627-q0tjehdhjj8it96bfq1qcmpfqh59r2mv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz-9k-ZKo2pamZNj5W8rzszvgMCslKXbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874423038627-q0tjehdhjj8it96bfq1qcmpfqh59r2mv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

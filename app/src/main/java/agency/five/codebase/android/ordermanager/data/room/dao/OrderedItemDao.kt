@@ -1,5 +1,6 @@
-package agency.five.codebase.android.ordermanager.data.database
+package agency.five.codebase.android.ordermanager.data.room.dao
 
+import agency.five.codebase.android.ordermanager.data.room.model.DbOrderedItem
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy

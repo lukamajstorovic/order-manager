@@ -1,10 +1,16 @@
 package agency.five.codebase.android.ordermanager.data.di
 
-import agency.five.codebase.android.ordermanager.data.database.*
+import agency.five.codebase.android.ordermanager.data.room.*
 import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
 import agency.five.codebase.android.ordermanager.data.repository.OrderRepositoryImpl
 import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
 import agency.five.codebase.android.ordermanager.data.repository.StaffRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.room.dao.ActiveOrderDao
+import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao
+import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemDao
+import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemInActiveOrderDao
+import agency.five.codebase.android.ordermanager.data.room.dao.StaffDao
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
@@ -13,7 +19,7 @@ val dataModule = module {
         OrderRepositoryImpl(get(), get(), get(), get(), Dispatchers.IO)
     }
     single<StaffRepository> {
-        StaffRepositoryImpl(get(), Dispatchers.IO)
+        StaffRepositoryImpl(get(), Dispatchers.IO, get())
     }
     fun provideMenuItemDao(db: OrderManagerDatabase): MenuItemDao = db.getMenuItemDao()
     single {
