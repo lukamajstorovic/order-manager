@@ -29,35 +29,18 @@ class StaffRepositoryImpl(
         replay = 1,
         )
 
-    override fun staffById(staffId: Long): Flow<Staff> =
-        staffDao.getStaffById(staffId).map { dbStaff ->
-            Staff(
-                id = "dbStaff.id",
-                username = dbStaff.username,
-                password = dbStaff.password,
-                name = dbStaff.name,
-                role = dbStaff.role,
-                createdAt = Timestamp.now()
-            )
+    override suspend fun staffById(staffId: String): Staff? {
+        return withContext(bgDispatcher) {
+            val dbStaff = staffService.getStaffById(staffId)
+            dbStaff?.toStaff()
         }
+    }
 
     override suspend fun staffByCredentials(username: String, password: String): Staff? {
         return withContext(bgDispatcher) {
             val dbStaff = staffService.getStaffByCredentials(username, password)
             dbStaff?.toStaff()
         }
-    }
-
-
-    private fun DbStaff.toModel(): Staff {
-        return Staff(
-            id = "id",
-            username = username,
-            password = password,
-            name = name,
-            role = role,
-            createdAt = Timestamp.now()
-        )
     }
 
     override suspend fun addStaff(staff: Staff) {

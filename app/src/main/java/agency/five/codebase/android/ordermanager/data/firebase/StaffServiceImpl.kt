@@ -77,9 +77,17 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
         }
     }
 
-    /*override fun getStaffById(staffId: Long): Flow<DbStaff> {
-        TODO("Not yet implemented")
-    }*/
+    override suspend fun getStaffById(staffId: String): DbStaff? {
+        val staffDocument = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+            .document(staffId)
+            .get()
+            .await()
+
+        if(!staffDocument.exists()) {
+           return mapStaffDocumentToDbStaff(staffDocument)
+        }
+        return null
+    }
 
     override suspend fun getStaffByCredentials(username: String, password: String): DbStaff? {
         val query = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
