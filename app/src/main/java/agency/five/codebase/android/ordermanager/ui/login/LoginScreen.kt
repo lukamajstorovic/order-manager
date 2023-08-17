@@ -9,7 +9,6 @@ import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -80,8 +79,8 @@ private fun LoginScreen(
     ) {
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
-        var username by remember { mutableStateOf(TextFieldValue(text = "lmajstorovic")) }
-        var password by remember { mutableStateOf(TextFieldValue(text = "12345678")) }
+        var username by remember { mutableStateOf(TextFieldValue(text = "lmajstor")) }
+        var password by remember { mutableStateOf(TextFieldValue(text = "123456")) }
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
         Text(

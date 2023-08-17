@@ -2,12 +2,10 @@ package agency.five.codebase.android.ordermanager.ui.selection
 
 import agency.five.codebase.android.ordermanager.GRID_COUNT
 import agency.five.codebase.android.ordermanager.R
-import agency.five.codebase.android.ordermanager.mock.MenuItemMock
 import agency.five.codebase.android.ordermanager.ui.component.service.SelectionCard
 import agency.five.codebase.android.ordermanager.ui.component.service.SelectionCardViewState
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
