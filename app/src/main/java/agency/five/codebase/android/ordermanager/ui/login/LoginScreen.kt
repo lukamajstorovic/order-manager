@@ -9,6 +9,7 @@ import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.OrderManager" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/light_gray</item>
         <item name="android:statusBarColor">@color/dark_gray</item>
         <item name="android:navigationBarColor">@color/dark_gray</item>
     </style>

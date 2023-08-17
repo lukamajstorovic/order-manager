@@ -1,5 +1,10 @@
 package agency.five.codebase.android.ordermanager.ui.main
 
+import agency.five.codebase.android.ordermanager.R
+import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
+import agency.five.codebase.android.ordermanager.WEIGHT_1
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
+import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.navigation.CompleteOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
@@ -21,21 +26,29 @@ import agency.five.codebase.android.ordermanager.ui.staff.StaffViewModel
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,19 +56,22 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun MainScreen() {
+fun MainScreen(userDataViewModel: UserDataViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar by remember {
@@ -66,9 +82,29 @@ fun MainScreen() {
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
-    //val showBackIcon = !showBottomBar
+    val scope = rememberCoroutineScope()
+    val userData by userDataViewModel.userDataFlow.collectAsState(initial = UserData())
+    val topBarVisible = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route
     Box {
         Scaffold(
+            topBar = {
+                if(topBarVisible) {
+                    TopBar(
+                        logoutButton = {
+                            LogoutButton(onClick = {
+                                scope.launch {
+                                    userDataViewModel.clearUserData()
+                                    navController.navigate(
+                                        NavigationItem.LoginDestination.route
+                                    )
+                                }
+                            })
+                        },
+                        userData = userData,
+                    )
+
+                }
+            },
             bottomBar = {
                 if (showBottomBar)
                     BottomNavigationBar(
@@ -95,7 +131,9 @@ fun MainScreen() {
                     modifier = Modifier.padding(padding)
                 ) {
                     composable(
-                        NavigationItem.LoginDestination.route
+                        NavigationItem.LoginDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val clickedButton = remember { mutableStateOf(false) }
                         val viewModel: LoginViewModel = getViewModel()
@@ -103,28 +141,17 @@ fun MainScreen() {
 
                         LaunchedEffect(key1 = isLoading) {
                             if (!isLoading && clickedButton.value) {
-                                when (val role = viewModel.staffRole.value) {
-                                    StaffRoles.ADMIN -> {
-                                        println("NAVIGATE ADMIN: $role")
-                                        navController.navigate(
-                                            NavigationItem.StaffDestination.route
+                                scope.launch {
+                                    userDataViewModel.setUserData(viewModel.staff.value).run {
+                                        navigateRoles(
+                                            role = viewModel.staffRole.value,
+                                            navController = navController,
+                                            snackbarHostState = snackbarHostState,
                                         )
                                     }
-
-                                    StaffRoles.WAITER -> {
-                                        println("NAVIGATE WAITER: $role")
-                                        navController.navigate(
-                                            NavigationItem.SelectionDestination.route
-                                        )
-                                    }
-
-                                    StaffRoles.NONE -> {
-                                        println("NAVIGATE NONE: $role")
-                                        snackbarHostState.currentSnackbarData?.dismiss()
-                                        snackbarHostState.showSnackbar("Invalid username or password")
-                                    }
+                                    clickedButton.value = false
                                 }
-                                clickedButton.value = false
+                                println("User data: $userData")
                             }
                         }
                         LoginRoute(
@@ -142,6 +169,8 @@ fun MainScreen() {
                     }
                     composable(
                         NavigationItem.SelectionDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val viewModel: SelectionViewModel = getViewModel()
                         SelectionRoute(
@@ -149,7 +178,9 @@ fun MainScreen() {
                         )
                     }
                     composable(
-                        NavigationItem.ConfirmOrderDestination.route
+                        NavigationItem.ConfirmOrderDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val viewModel: ConfirmOrderViewModel = getViewModel()
                         ConfirmOrderRoute(
@@ -161,6 +192,8 @@ fun MainScreen() {
                     }
                     composable(
                         route = CompleteOrderDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                         arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
                     ) {
                         val orderId = it.arguments?.getInt(ORDER_KEY)
@@ -172,7 +205,9 @@ fun MainScreen() {
                         )
                     }
                     composable(
-                        route = NavigationItem.ActiveOrdersDestination.route
+                        route = NavigationItem.ActiveOrdersDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val viewModel: ActiveOrdersViewModel = getViewModel()
                         ActiveOrdersRoute(
@@ -185,7 +220,9 @@ fun MainScreen() {
                         )
                     }
                     composable(
-                        route = NavigationItem.StaffDestination.route
+                        route = NavigationItem.StaffDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val viewModel: StaffViewModel = getViewModel()
                         StaffRoute(
@@ -193,7 +230,9 @@ fun MainScreen() {
                         )
                     }
                     composable(
-                        route = NavigationItem.RegisterStaffDestination.route
+                        route = NavigationItem.RegisterStaffDestination.route,
+                        enterTransition = null,
+                        exitTransition = null,
                     ) {
                         val clickedButton = remember { mutableStateOf(false) }
                         val viewModel: RegisterStaffViewModel = getViewModel()
@@ -226,6 +265,88 @@ fun MainScreen() {
                 }
             }
         }
+    }
+}
+
+private suspend fun navigateRoles(
+    role : StaffRoles,
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+) {
+    when (role) {
+        StaffRoles.ADMIN -> {
+            println("NAVIGATE ADMIN: $role")
+            navController.navigate(
+                NavigationItem.StaffDestination.route
+            )
+        }
+
+        StaffRoles.WAITER -> {
+            println("NAVIGATE WAITER: $role")
+            navController.navigate(
+                NavigationItem.SelectionDestination.route
+            )
+        }
+
+        StaffRoles.NONE -> {
+            println("NAVIGATE NONE: $role")
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar("Invalid username or password")
+        }
+    }
+}
+
+@Composable
+private fun TopBar(
+    logoutButton: @Composable (() -> Unit),
+    userData: UserData,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = LightGray),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        logoutButton.invoke()
+        Text(
+            text = userData.name,
+            color = DarkGreen,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(10.dp, end = 20.dp)
+                .align(Alignment.CenterEnd)
+        )
+    }
+}
+
+@Composable
+private fun LogoutButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+        onClick = { onClick() },
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = LightGray,
+            backgroundColor = LightGray
+        ),
+        modifier = Modifier
+            .padding(10.dp)
+    ) {
+        Text(
+            text = "Logout",
+            color = DarkGreen,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(5.dp)
+        )
     }
 }
 
@@ -280,5 +401,5 @@ fun RowScope.AddItem(
 @Preview
 @Composable
 private fun MainScreenViewState() {
-    MainScreen()
+//    MainScreen()
 }
