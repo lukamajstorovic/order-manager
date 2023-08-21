@@ -133,7 +133,7 @@ private fun LoginScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 30.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -189,7 +189,7 @@ private fun LoginScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 30.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -213,7 +213,7 @@ private fun LoginScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(10.dp)
+                .padding(15.dp)
                 .weight(WEIGHT_1)
         ) {
             Text(
@@ -224,7 +224,7 @@ private fun LoginScreen(
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(5.dp)
             )
         }
         Button(
@@ -236,18 +236,18 @@ private fun LoginScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(10.dp)
+                .padding(15.dp)
                 .weight(WEIGHT_1)
         ) {
             Text(
-                text = "Go to register →",
+                text = "To register",
                 color = DarkGreen,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(5.dp)
             )
         }
         BottomSnackbar(

@@ -1,8 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.main
 
-import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
-import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
@@ -84,7 +82,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val userData by userDataViewModel.userDataFlow.collectAsState(initial = UserData())
-    val topBarVisible = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route
+    val topBarVisible = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
+            navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route
     Box {
         Scaffold(
             topBar = {
@@ -260,6 +259,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                                 viewModel.addStaff(name, username, password)
                                 println("ACTIVATED VIEWMODEL")
                             },
+                            onClickNavigateLoginButton = {
+                                navController.navigate(
+                                    NavigationItem.LoginDestination.route
+                                )
+                            }
                         )
                     }
                 }
@@ -334,7 +338,7 @@ private fun LogoutButton(
             contentColor = LightGray,
             backgroundColor = LightGray
         ),
-        modifier = Modifier
+        modifier = modifier
             .padding(10.dp)
     ) {
         Text(

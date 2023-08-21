@@ -2,6 +2,7 @@ package agency.five.codebase.android.ordermanager.ui.registerstaff
 
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.WEIGHT_1
+import agency.five.codebase.android.ordermanager.WEIGHT_2
 import agency.five.codebase.android.ordermanager.WEIGHT_4
 import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
@@ -49,12 +50,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterStaffRoute(
-    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
     snackbarHostState: SnackbarHostState,
+    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    onClickNavigateLoginButton: () -> Unit,
 ) {
     RegisterStaffScreen(
         snackbarHostState = snackbarHostState,
         onClickRegisterButton = onClickRegisterButton,
+        onClickNavigateLoginButton = onClickNavigateLoginButton,
     )
 }
 
@@ -63,6 +66,7 @@ private fun RegisterStaffScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    onClickNavigateLoginButton: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -89,7 +93,7 @@ private fun RegisterStaffScreen(
             modifier = Modifier
                 .padding(top=50.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally)
-                .weight(WEIGHT_1)
+                .weight(WEIGHT_2)
         )
         Text(
             text = "Name",
@@ -104,7 +108,8 @@ private fun RegisterStaffScreen(
         )
         Card(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally)
+                ,
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             elevation = 10.dp,
             backgroundColor = LightGray,
@@ -118,7 +123,7 @@ private fun RegisterStaffScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_4),
+                    .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -128,7 +133,7 @@ private fun RegisterStaffScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 30.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -171,8 +176,8 @@ private fun RegisterStaffScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_4)
-                    .focusRequester(focusRequesterUsername),
+                    .focusRequester(focusRequesterUsername)
+                    .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -182,7 +187,7 @@ private fun RegisterStaffScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 30.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -227,8 +232,8 @@ private fun RegisterStaffScreen(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_4)
-                    .focusRequester(focusRequesterPassword),
+                    .focusRequester(focusRequesterPassword)
+                    .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = LightGray,
@@ -238,7 +243,7 @@ private fun RegisterStaffScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 30.sp,
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
@@ -263,7 +268,6 @@ private fun RegisterStaffScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(20.dp)
-                .weight(WEIGHT_1)
         ) {
             Text(
                 text = "Register",
@@ -273,7 +277,32 @@ private fun RegisterStaffScreen(
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(5.dp)
+                    .weight(WEIGHT_2)
+            )
+        }
+        Button(
+            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+            onClick = { onClickNavigateLoginButton() },
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = LightGray,
+                backgroundColor = LightGray
+            ),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(20.dp)
+
+        ) {
+            Text(
+                text = "To login",
+                color = DarkGreen,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(5.dp)
+                    .weight(WEIGHT_2)
             )
         }
         BottomSnackbar(
@@ -290,7 +319,8 @@ private fun LoginScreenPreview() {
     val username = "username"
     val password = "password"
     RegisterStaffScreen(
+        snackbarHostState = SnackbarHostState(),
         onClickRegisterButton = { name, username, password -> },
-        snackbarHostState = SnackbarHostState()
+        onClickNavigateLoginButton = {},
     )
 }
