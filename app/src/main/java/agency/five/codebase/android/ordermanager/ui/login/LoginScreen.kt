@@ -92,9 +92,9 @@ private fun LoginScreen(
             fontFamily = FontFamily.Default,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(top=50.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally)
                 .weight(WEIGHT_2)
+                .padding(top = 50.dp)
         )
         Text(
             text = "Username",
@@ -213,8 +213,9 @@ private fun LoginScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(15.dp)
+                .padding(horizontal = 80.dp, vertical = 15.dp)
                 .weight(WEIGHT_1)
+                .fillMaxWidth()
         ) {
             Text(
                 text = stringResource(id = R.string.login),
@@ -236,8 +237,9 @@ private fun LoginScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(15.dp)
+                .padding(horizontal = 80.dp, vertical = 15.dp)
                 .weight(WEIGHT_1)
+                .fillMaxWidth()
         ) {
             Text(
                 text = "To register",

@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class UserData(
     val username: String = "",
     val name: String = "",
-    val role: StaffRoles = StaffRoles.NONE
+    val role: StaffRoles = StaffRoles.NONE,
 )

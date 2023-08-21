@@ -64,7 +64,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -82,191 +85,175 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val userData by userDataViewModel.userDataFlow.collectAsState(initial = UserData())
-    val topBarVisible = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
-            navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route
-    Box {
-        Scaffold(
-            topBar = {
-                if(topBarVisible) {
-                    TopBar(
-                        logoutButton = {
-                            LogoutButton(onClick = {
-                                scope.launch {
-                                    userDataViewModel.clearUserData()
-                                    navController.navigate(
-                                        NavigationItem.LoginDestination.route
-                                    )
-                                }
-                            })
-                        },
-                        userData = userData,
-                    )
-
-                }
-            },
-            bottomBar = {
-                if (showBottomBar)
-                    BottomNavigationBar(
-                        destinations = listOf(
-                            NavigationItem.SelectionDestination,
-                            NavigationItem.ConfirmOrderDestination,
-                            NavigationItem.ActiveOrdersDestination
-                        ),
-                        onNavigateToDestination = {
-                            navController.navigate(it.route) {
-                                popUpTo(it.route) {
-                                    inclusive = true
-                                }
+    val topBarLoggedIn = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
+            navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
+            userData.role != StaffRoles.NONE &&
+            userData != null
+    Scaffold(
+        topBar = {
+            if(topBarLoggedIn) {
+                TopBar(
+                    logoutButton = {
+                        LogoutButton(onClick = {
+                            scope.launch {
+                                userDataViewModel.clearUserData()
+                                navController.navigate(
+                                    NavigationItem.LoginDestination.route
+                                )
                             }
-                        },
-                        currentDestination = navBackStackEntry?.destination
-                    )
+                        })
+                    },
+                    userData = userData,
+                )
             }
-        ) { padding ->
-            Surface {
-                NavHost(
-                    navController = navController,
-                    startDestination = NavigationItem.LoginDestination.route,
-                    modifier = Modifier.padding(padding)
-                ) {
-                    composable(
-                        NavigationItem.LoginDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val clickedButton = remember { mutableStateOf(false) }
-                        val viewModel: LoginViewModel = getViewModel()
-                        val isLoading = viewModel.isLoading.value
-
-                        LaunchedEffect(key1 = isLoading) {
-                            if (!isLoading && clickedButton.value) {
-                                scope.launch {
-                                    userDataViewModel.setUserData(viewModel.staff.value).run {
-                                        navigateRoles(
-                                            role = viewModel.staffRole.value,
-                                            navController = navController,
-                                            snackbarHostState = snackbarHostState,
-                                        )
-                                    }
-                                    clickedButton.value = false
-                                }
-                                println("User data: $userData")
+        },
+        bottomBar = {
+            if (showBottomBar)
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.SelectionDestination,
+                        NavigationItem.ConfirmOrderDestination,
+                        NavigationItem.ActiveOrdersDestination
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
                             }
                         }
-                        LoginRoute(
-                            snackbarHostState = snackbarHostState,
-                            onClickLoginButton = { username, password ->
-                                clickedButton.value = true
-                                viewModel.authenticateStaff(username, password)
-                            },
-                            onClickNavigateRegisterButton = {
-                                navController.navigate(
-                                    NavigationItem.RegisterStaffDestination.route
-                                )
-                            }
-                        )
-                    }
-                    composable(
-                        NavigationItem.SelectionDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val viewModel: SelectionViewModel = getViewModel()
-                        SelectionRoute(
-                            viewModel = viewModel,
-                        )
-                    }
-                    composable(
-                        NavigationItem.ConfirmOrderDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val viewModel: ConfirmOrderViewModel = getViewModel()
-                        ConfirmOrderRoute(
-                            viewModel = viewModel,
-                            onNavigateToSelectionScreen = {
-                                navController.navigateUp()
-                            }
-                        )
-                    }
-                    composable(
-                        route = CompleteOrderDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                        arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
-                    ) {
-                        val orderId = it.arguments?.getInt(ORDER_KEY)
-                        val viewModel: CompleteOrderViewModel =
-                            getViewModel(parameters = { parametersOf(orderId) })
-                        CompleteOrderRoute(
-                            viewModel = viewModel,
-                            onCompleteOrder = { navController.navigateUp() }
-                        )
-                    }
-                    composable(
-                        route = NavigationItem.ActiveOrdersDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val viewModel: ActiveOrdersViewModel = getViewModel()
-                        ActiveOrdersRoute(
-                            viewModel = viewModel,
-                            openOrder = {
-                                navController.navigate(
-                                    CompleteOrderDestination.createNavigationRoute(it)
-                                )
-                            }
-                        )
-                    }
-                    composable(
-                        route = NavigationItem.StaffDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val viewModel: StaffViewModel = getViewModel()
-                        StaffRoute(
-                            viewModel = viewModel,
-                        )
-                    }
-                    composable(
-                        route = NavigationItem.RegisterStaffDestination.route,
-                        enterTransition = null,
-                        exitTransition = null,
-                    ) {
-                        val clickedButton = remember { mutableStateOf(false) }
-                        val viewModel: RegisterStaffViewModel = getViewModel()
-                        val isLoading = viewModel.isLoading.value
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+        },
+        backgroundColor = LightGray
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = NavigationItem.LoginDestination.route,
+            modifier = Modifier.padding(padding)
+        ) {
+            composable(
+                NavigationItem.LoginDestination.route,
+            ) {
+                val clickedButton = remember { mutableStateOf(false) }
+                val viewModel: LoginViewModel = getViewModel()
+                val isLoading = viewModel.isLoading.value
 
-                        LaunchedEffect(isLoading) {
-                            println("ISLOADING TRIGGERED")
-                            println("$isLoading - ${clickedButton.value}")
-                            if (!isLoading && clickedButton.value) {
-                                println("NAVIGATE LOGIN")
-                                navController.navigate(
-                                    NavigationItem.LoginDestination.route
-                                )
-                                clickedButton.value = false
-                                println("CLICKEDBUTTON FALSE")
-                                /*snackbarHostState.currentSnackbarData?.dismiss()*/
-                                snackbarHostState.showSnackbar("Registration successful")
+                LaunchedEffect(key1 = isLoading) {
+                    if (!isLoading && clickedButton.value) {
+                        withContext(Dispatchers.Main) {
+                            navigateRoles(
+                                role = viewModel.staffRole.value,
+                                navController = navController,
+                                snackbarHostState = snackbarHostState,
+                            ).run {
+                                userDataViewModel.setUserData(viewModel.staff.value)
                             }
+                            clickedButton.value = false
                         }
-                        RegisterStaffRoute(
-                            snackbarHostState = snackbarHostState,
-                            onClickRegisterButton = { name, username, password ->
-                                println("CLICK REGISTRATION")
-                                clickedButton.value = true
-                                viewModel.addStaff(name, username, password)
-                                println("ACTIVATED VIEWMODEL")
-                            },
-                            onClickNavigateLoginButton = {
-                                navController.navigate(
-                                    NavigationItem.LoginDestination.route
-                                )
-                            }
-                        )
+                        println("User data: $userData")
                     }
                 }
+                LoginRoute(
+                    snackbarHostState = snackbarHostState,
+                    onClickLoginButton = { username, password ->
+                        clickedButton.value = true
+                        viewModel.authenticateStaff(username, password)
+                    },
+                    onClickNavigateRegisterButton = {
+                        navController.navigate(
+                            NavigationItem.RegisterStaffDestination.route
+                        )
+                    }
+                )
+            }
+            composable(
+                NavigationItem.SelectionDestination.route,
+            ) {
+                val viewModel: SelectionViewModel = getViewModel()
+                SelectionRoute(
+                    viewModel = viewModel,
+                )
+            }
+            composable(
+                NavigationItem.ConfirmOrderDestination.route,
+            ) {
+                val viewModel: ConfirmOrderViewModel = getViewModel()
+                ConfirmOrderRoute(
+                    viewModel = viewModel,
+                    onNavigateToSelectionScreen = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+            composable(
+                route = CompleteOrderDestination.route,
+                arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
+            ) {
+                val orderId = it.arguments?.getInt(ORDER_KEY)
+                val viewModel: CompleteOrderViewModel =
+                    getViewModel(parameters = { parametersOf(orderId) })
+                CompleteOrderRoute(
+                    viewModel = viewModel,
+                    onCompleteOrder = { navController.navigateUp() }
+                )
+            }
+            composable(
+                route = NavigationItem.ActiveOrdersDestination.route,
+            ) {
+                val viewModel: ActiveOrdersViewModel = getViewModel()
+                ActiveOrdersRoute(
+                    viewModel = viewModel,
+                    openOrder = {
+                        navController.navigate(
+                            CompleteOrderDestination.createNavigationRoute(it)
+                        )
+                    }
+                )
+            }
+            composable(
+                route = NavigationItem.StaffDestination.route,
+            ) {
+                val viewModel: StaffViewModel = getViewModel()
+                StaffRoute(
+                    viewModel = viewModel,
+                )
+            }
+            composable(
+                route = NavigationItem.RegisterStaffDestination.route,
+            ) {
+                val clickedButton = remember { mutableStateOf(false) }
+                val viewModel: RegisterStaffViewModel = getViewModel()
+                val isLoading = viewModel.isLoading.value
+
+                LaunchedEffect(isLoading) {
+                    println("ISLOADING TRIGGERED")
+                    println("$isLoading - ${clickedButton.value}")
+                    if (!isLoading && clickedButton.value) {
+                        println("NAVIGATE LOGIN")
+                        navController.navigate(
+                            NavigationItem.LoginDestination.route
+                        )
+                        clickedButton.value = false
+                        println("CLICKEDBUTTON FALSE")
+                        /*snackbarHostState.currentSnackbarData?.dismiss()*/
+                        snackbarHostState.showSnackbar("Registration successful")
+                    }
+                }
+                RegisterStaffRoute(
+                    snackbarHostState = snackbarHostState,
+                    onClickRegisterButton = { name, username, password ->
+                        println("CLICK REGISTRATION")
+                        clickedButton.value = true
+                        viewModel.addStaff(name, username, password)
+                        println("ACTIVATED VIEWMODEL")
+                    },
+                    onClickNavigateLoginButton = {
+                        navController.navigate(
+                            NavigationItem.LoginDestination.route
+                        )
+                    }
+                )
             }
         }
     }

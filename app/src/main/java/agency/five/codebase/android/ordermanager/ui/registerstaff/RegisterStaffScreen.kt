@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.SnackbarHostState
@@ -91,7 +92,7 @@ private fun RegisterStaffScreen(
             fontFamily = FontFamily.Default,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(top=50.dp, bottom = 10.dp)
+                .padding(top = 50.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally)
                 .weight(WEIGHT_2)
         )
@@ -267,7 +268,7 @@ private fun RegisterStaffScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(20.dp)
+                .padding(horizontal = 80.dp, vertical = 20.dp)
         ) {
             Text(
                 text = "Register",
@@ -290,8 +291,7 @@ private fun RegisterStaffScreen(
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(20.dp)
-
+                .padding(horizontal = 80.dp, vertical = 20.dp),
         ) {
             Text(
                 text = "To login",
