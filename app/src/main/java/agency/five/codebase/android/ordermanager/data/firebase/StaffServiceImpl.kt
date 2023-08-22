@@ -105,8 +105,7 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
 
     override suspend fun addStaff(staff: DbStaff) {
         fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-            .document(staff.name)
-            .set(staff)
+            .add(staff)
             .addOnFailureListener {
                 Log.d("Something went wrong: ", it.message.toString())
             }

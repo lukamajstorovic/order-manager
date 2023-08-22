@@ -225,19 +225,21 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val clickedButton = remember { mutableStateOf(false) }
                 val viewModel: RegisterStaffViewModel = getViewModel()
                 val isLoading = viewModel.isLoading.value
+                val validationResult = viewModel.validationResult.value
 
                 LaunchedEffect(isLoading) {
                     println("ISLOADING TRIGGERED")
                     println("$isLoading - ${clickedButton.value}")
                     if (!isLoading && clickedButton.value) {
-                        println("NAVIGATE LOGIN")
-                        navController.navigate(
-                            NavigationItem.LoginDestination.route
-                        )
+                        if (validationResult.isSuccess) {
+                            navController.navigate(
+                                NavigationItem.LoginDestination.route
+                            )
+                        }
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
-                        println("CLICKEDBUTTON FALSE")
-                        /*snackbarHostState.currentSnackbarData?.dismiss()*/
-                        snackbarHostState.showSnackbar("Registration successful")
                     }
                 }
                 RegisterStaffRoute(
@@ -246,7 +248,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         println("CLICK REGISTRATION")
                         clickedButton.value = true
                         viewModel.addStaff(name, username, password)
-                        println("ACTIVATED VIEWMODEL")
+                        println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
                     onClickNavigateLoginButton = {
                         navController.navigate(
