@@ -63,6 +63,7 @@ class RegisterStaffViewModel(
                 }
             }
             dif.await()
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 validationResult.value.exceptionOrNull()?.message ?:
                 validationResult.value.getOrNull().toString()
@@ -72,7 +73,7 @@ class RegisterStaffViewModel(
     }
 
     private fun validateUserData(name: String, username: String, password: String): Result<String> {
-        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])\$".toRegex()
+        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])$".toRegex()
         if (username.isEmpty() || password.isEmpty() || name.isEmpty()) {
             println("EMPTYYYY")
             return Result.failure(EmptyFieldException())
@@ -82,7 +83,7 @@ class RegisterStaffViewModel(
             return Result.failure(ShortPasswordException())
         }
 
-        if (!password.matches(passwordPattern)) {
+        if (password.matches(passwordPattern)) {
             return Result.failure(WeakPasswordException())
         }
         return Result.success("Information validated")
