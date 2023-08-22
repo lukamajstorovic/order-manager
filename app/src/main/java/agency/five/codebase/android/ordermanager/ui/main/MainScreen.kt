@@ -85,13 +85,14 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val userData by userDataViewModel.userDataFlow.collectAsState(initial = UserData())
-    val topBarLoggedIn = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
-            navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
-            userData.role != StaffRoles.NONE &&
-            userData != null
+    val topBarLoggedIn =
+        navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
+                navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
+                userData.role != StaffRoles.NONE &&
+                userData != null
     Scaffold(
         topBar = {
-            if(topBarLoggedIn) {
+            if (topBarLoggedIn) {
                 TopBar(
                     logoutButton = {
                         LogoutButton(onClick = {
@@ -247,7 +248,13 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     onClickRegisterButton = { name, username, password ->
                         println("CLICK REGISTRATION")
                         clickedButton.value = true
-                        viewModel.addStaff(name, username, password)
+                        viewModel.addStaff(
+                            name, username, password, snackbarHostState
+                        ) {
+                            navController.navigate(
+                                NavigationItem.LoginDestination.route
+                            )
+                        }
                         println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
                     onClickNavigateLoginButton = {
@@ -262,7 +269,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
 }
 
 private suspend fun navigateRoles(
-    role : StaffRoles,
+    role: StaffRoles,
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
 ) {

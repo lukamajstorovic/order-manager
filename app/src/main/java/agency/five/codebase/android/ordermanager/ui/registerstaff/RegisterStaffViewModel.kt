@@ -7,13 +7,18 @@ import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordExcepti
 import agency.five.codebase.android.ordermanager.exceptions.UserEmailAlreadyExistsException
 import agency.five.codebase.android.ordermanager.exceptions.WeakPasswordException
 import agency.five.codebase.android.ordermanager.model.Staff
+import agency.five.codebase.android.ordermanager.navigation.NavigationItem
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-const val  MIN_PASSWORD_LENGTH = 8
+const val MIN_PASSWORD_LENGTH = 8
 
 
 class RegisterStaffViewModel(
@@ -24,39 +29,50 @@ class RegisterStaffViewModel(
     private val _validationResult = mutableStateOf(Result.success("AAA"))
     val validationResult: State<Result<String>> = _validationResult
 
-    fun addStaff(name: String, username: String, password: String) {
+    fun addStaff(
+        name: String,
+        username: String,
+        password: String,
+        snackbarHostState: SnackbarHostState,
+        onNavigate: () -> Unit,
+        ) {
         _isLoading.value = true
         println("ISLOADING DONE")
         viewModelScope.launch {
-            println("LAUNCHED SCOPE")
-            val validationResult = validateUserData(name, username, password)
-            println("SUCCESS: " + validationResult.isSuccess)
-            println("FAILURE: " + validationResult.isFailure)
-            println(validationResult.exceptionOrNull()?.message)
-            _validationResult.value = validationResult
-            if (validationResult.isSuccess) {
-                val staff = Staff(
-                    username = username,
-                    password = password,
-                    name = name,
-                    role = StaffRoles.WAITER,
-                )
-                try {
-                    staffRepository.addStaff(staff).run {
-                        _validationResult.value = Result.success("Registration successful")
+            val dif = async {
+                println("LAUNCHED SCOPE")
+                _validationResult.value = validateUserData(name, username, password)
+                if (validationResult.value.isSuccess) {
+                    val staff = Staff(
+                        username = username,
+                        password = password,
+                        name = name,
+                        role = StaffRoles.WAITER,
+                    )
+                    try {
+                        staffRepository.addStaff(staff).run {
+                            _validationResult.value = Result.success("Registration successful")
+                        }.run {
+                            onNavigate()
+                        }
+                    } catch (e: UserEmailAlreadyExistsException) {
+                        _validationResult.value = Result.failure(e)
+                    } finally {
+                        _isLoading.value = false
                     }
-                } catch (e: UserEmailAlreadyExistsException) {
-                    _validationResult.value = Result.failure(e)
-                } finally {
-                    _isLoading.value = false
                 }
             }
-            _isLoading.value = false
+            dif.await()
+            snackbarHostState.showSnackbar(
+                validationResult.value.exceptionOrNull()?.message ?:
+                validationResult.value.getOrNull().toString()
+
+            )
         }
     }
 
     private fun validateUserData(name: String, username: String, password: String): Result<String> {
-        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])(?=\\\\S+\$).{4,}\$".toRegex()
+        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])\$".toRegex()
         if (username.isEmpty() || password.isEmpty() || name.isEmpty()) {
             println("EMPTYYYY")
             return Result.failure(EmptyFieldException())
