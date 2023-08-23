@@ -17,6 +17,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 const val MIN_PASSWORD_LENGTH = 8
 
@@ -33,9 +34,10 @@ class RegisterStaffViewModel(
         name: String,
         username: String,
         password: String,
+        establishmentId: String,
         snackbarHostState: SnackbarHostState,
         onNavigate: () -> Unit,
-        ) {
+    ) {
         _isLoading.value = true
         println("ISLOADING DONE")
         viewModelScope.launch {
@@ -48,6 +50,8 @@ class RegisterStaffViewModel(
                         password = password,
                         name = name,
                         role = StaffRoles.WAITER,
+                        establishmentId = establishmentId,
+                        approved = false,
                     )
                     try {
                         staffRepository.addStaff(staff).run {
@@ -65,17 +69,26 @@ class RegisterStaffViewModel(
             dif.await()
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
-                validationResult.value.exceptionOrNull()?.message ?:
-                validationResult.value.getOrNull().toString()
+                validationResult.value.exceptionOrNull()?.message
+                    ?: validationResult.value.getOrNull().toString()
 
             )
         }
     }
 
     private fun validateUserData(name: String, username: String, password: String): Result<String> {
-        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])$".toRegex()
+        val passwordREGEX = Pattern.compile(
+            "^" +
+                    "(?=.*[0-9])" +         //at least 1 digit
+                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    "(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=.*[@#$%^&+=])" +    //at least 1 special character
+                    "(?=\\S+$)" +           //no white spaces
+                    ".{8,}" +               //at least 8 characters
+                    "$"
+        );
         if (username.isEmpty() || password.isEmpty() || name.isEmpty()) {
-            println("EMPTYYYY")
             return Result.failure(EmptyFieldException())
         }
 
@@ -83,7 +96,7 @@ class RegisterStaffViewModel(
             return Result.failure(ShortPasswordException())
         }
 
-        if (password.matches(passwordPattern)) {
+        if (!passwordREGEX.matcher(password).matches()) {
             return Result.failure(WeakPasswordException())
         }
         return Result.success("Information validated")

@@ -21,6 +21,8 @@ class LoginViewModel(
             password = "",
             name = "",
             role = StaffRoles.NONE,
+            establishmentId = "",
+            approved = false,
         )
     )
     val staff: State<Staff> = _staff

@@ -4,7 +4,9 @@ import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_2
 import agency.five.codebase.android.ordermanager.WEIGHT_4
+import agency.five.codebase.android.ordermanager.model.Establishment
 import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
+import agency.five.codebase.android.ordermanager.ui.component.EstablishmentDropdown
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
@@ -52,19 +54,23 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegisterStaffRoute(
     snackbarHostState: SnackbarHostState,
+    registerStaffViewModel: RegisterStaffViewModel,
     onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
 ) {
+    val establishmentCollection = registerStaffViewModel.getEstablishments()
     RegisterStaffScreen(
         snackbarHostState = snackbarHostState,
         onClickRegisterButton = onClickRegisterButton,
         onClickNavigateLoginButton = onClickNavigateLoginButton,
+        establishmentCollection = establishmentCollection,
     )
 }
 
 @Composable
 private fun RegisterStaffScreen(
     snackbarHostState: SnackbarHostState,
+    establishmentCollection: List<Establishment>,
     modifier: Modifier = Modifier,
     onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
@@ -222,6 +228,54 @@ private fun RegisterStaffScreen(
             elevation = 10.dp,
             backgroundColor = LightGray,
         ) {
+            OutlinedTextField(
+                value = password,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                onValueChange = {
+                    password = it
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .wrapContentSize(Alignment.Center)
+                    .focusRequester(focusRequesterPassword)
+                    .weight(WEIGHT_1),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = LightGray,
+                    cursorColor = DarkGreen,
+                    disabledLabelColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(
+                    fontSize = 30.sp,
+                    color = DarkGreen,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default,
+                    textAlign = TextAlign.Center
+                ),
+                singleLine = true,
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    }
+                ),
+            )
+        }
+        Card(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+            elevation = 10.dp,
+            backgroundColor = LightGray,
+        ) {
+            EstablishmentDropdown(
+                dropdownItems = ,
+                modifier = ,
+                onItemClick = )
             OutlinedTextField(
                 value = password,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

@@ -245,11 +245,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 }
                 RegisterStaffRoute(
                     snackbarHostState = snackbarHostState,
-                    onClickRegisterButton = { name, username, password ->
+                    onClickRegisterButton = { name, username, password, establishmentId ->
                         println("CLICK REGISTRATION")
                         clickedButton.value = true
                         viewModel.addStaff(
-                            name, username, password, snackbarHostState
+                            name, username, password, establishmentId, snackbarHostState
                         ) {
                             navController.navigate(
                                 NavigationItem.LoginDestination.route

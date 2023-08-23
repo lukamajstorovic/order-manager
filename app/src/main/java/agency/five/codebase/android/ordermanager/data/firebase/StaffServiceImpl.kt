@@ -30,6 +30,8 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
             username = staff.getString("username") ?: "",
             password = staff.getString("password") ?: "",
             role = stringToStaffRole(staff.getString("role") ?: "") ?: StaffRoles.NONE,
+            establishmentId = staff.getString("establishmentId") ?: "",
+            approved = staff.getBoolean("approved") ?: false,
             createdAt = staff.getTimestamp("createdAt") ?: Timestamp.now()
         )
     }

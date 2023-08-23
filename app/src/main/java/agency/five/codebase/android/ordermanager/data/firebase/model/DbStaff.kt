@@ -13,6 +13,8 @@ data class DbStaff(
     val username: String,
     val password: String,
     val role: StaffRoles,
+    val establishmentId: String,
+    val approved: Boolean,
     val createdAt: Timestamp = Timestamp.now(),
 ) {
     fun toStaff() =
@@ -22,6 +24,8 @@ data class DbStaff(
             username = username,
             password = password,
             role = role,
+            establishmentId = establishmentId,
+            approved = approved,
             createdAt = createdAt,
         )
 }

@@ -49,6 +49,8 @@ class StaffRepositoryImpl(
                     password = staff.password,
                     name = staff.name,
                     role = staff.role,
+                    establishmentId = staff.establishmentId,
+                    approved = staff.approved,
                 )
             )
         }

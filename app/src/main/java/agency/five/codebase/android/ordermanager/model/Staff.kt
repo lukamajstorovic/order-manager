@@ -9,5 +9,7 @@ data class Staff(
     val password: String,
     val name: String,
     val role: StaffRoles = StaffRoles.WAITER,
+    val establishmentId: String,
+    val approved: Boolean,
     val createdAt: Timestamp = Timestamp.now(),
 )
