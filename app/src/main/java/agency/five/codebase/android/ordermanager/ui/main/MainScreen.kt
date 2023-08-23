@@ -85,13 +85,14 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val userData by userDataViewModel.userDataFlow.collectAsState(initial = UserData())
-    val topBarLoggedIn = navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
-            navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
-            userData.role != StaffRoles.NONE &&
-            userData != null
+    val topBarLoggedIn =
+        navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
+                navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
+                userData.role != StaffRoles.NONE &&
+                userData != null
     Scaffold(
         topBar = {
-            if(topBarLoggedIn) {
+            if (topBarLoggedIn) {
                 TopBar(
                     logoutButton = {
                         LogoutButton(onClick = {
@@ -225,19 +226,21 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val clickedButton = remember { mutableStateOf(false) }
                 val viewModel: RegisterStaffViewModel = getViewModel()
                 val isLoading = viewModel.isLoading.value
+                val validationResult = viewModel.validationResult.value
 
                 LaunchedEffect(isLoading) {
                     println("ISLOADING TRIGGERED")
                     println("$isLoading - ${clickedButton.value}")
                     if (!isLoading && clickedButton.value) {
-                        println("NAVIGATE LOGIN")
-                        navController.navigate(
-                            NavigationItem.LoginDestination.route
-                        )
+                        if (validationResult.isSuccess) {
+                            navController.navigate(
+                                NavigationItem.LoginDestination.route
+                            )
+                        }
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
-                        println("CLICKEDBUTTON FALSE")
-                        /*snackbarHostState.currentSnackbarData?.dismiss()*/
-                        snackbarHostState.showSnackbar("Registration successful")
                     }
                 }
                 RegisterStaffRoute(
@@ -245,8 +248,14 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     onClickRegisterButton = { name, username, password ->
                         println("CLICK REGISTRATION")
                         clickedButton.value = true
-                        viewModel.addStaff(name, username, password)
-                        println("ACTIVATED VIEWMODEL")
+                        viewModel.addStaff(
+                            name, username, password, snackbarHostState
+                        ) {
+                            navController.navigate(
+                                NavigationItem.LoginDestination.route
+                            )
+                        }
+                        println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
                     onClickNavigateLoginButton = {
                         navController.navigate(
@@ -260,7 +269,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
 }
 
 private suspend fun navigateRoles(
-    role : StaffRoles,
+    role: StaffRoles,
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
 ) {
