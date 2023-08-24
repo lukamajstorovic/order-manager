@@ -90,7 +90,6 @@ private fun LoginScreen(
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .weight(WEIGHT_2)
@@ -102,7 +101,6 @@ private fun LoginScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
@@ -122,7 +120,6 @@ private fun LoginScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
                     .weight(WEIGHT_4),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
@@ -137,7 +134,6 @@ private fun LoginScreen(
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
                 ),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
@@ -155,7 +151,6 @@ private fun LoginScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
@@ -177,7 +172,6 @@ private fun LoginScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
                     .weight(WEIGHT_4)
                     .focusRequester(focusRequester),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
@@ -193,7 +187,6 @@ private fun LoginScreen(
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
                 ),
                 singleLine = true,
                 keyboardActions = KeyboardActions(

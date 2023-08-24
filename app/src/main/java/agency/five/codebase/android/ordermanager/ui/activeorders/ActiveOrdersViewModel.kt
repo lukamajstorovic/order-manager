@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.activeorders
 
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

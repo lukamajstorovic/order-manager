@@ -1,21 +1,29 @@
 package agency.five.codebase.android.ordermanager.ui.registerstaff
 
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
+import agency.five.codebase.android.ordermanager.data.repository.establishment.EstablishmentRepository
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordException
 import agency.five.codebase.android.ordermanager.exceptions.UserEmailAlreadyExistsException
 import agency.five.codebase.android.ordermanager.exceptions.WeakPasswordException
+import agency.five.codebase.android.ordermanager.model.Establishment
 import agency.five.codebase.android.ordermanager.model.Staff
-import agency.five.codebase.android.ordermanager.navigation.NavigationItem
+import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewState
+import agency.five.codebase.android.ordermanager.ui.registerstaff.mapper.EstablishmentMapper
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
@@ -24,11 +32,38 @@ const val MIN_PASSWORD_LENGTH = 8
 
 class RegisterStaffViewModel(
     private val staffRepository: StaffRepository,
+    private val establishmentRepository: EstablishmentRepository,
+    private val establishmentMapper: EstablishmentMapper,
 ) : ViewModel() {
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
+
     private val _validationResult = mutableStateOf(Result.success("AAA"))
     val validationResult: State<Result<String>> = _validationResult
+
+    val _establishmentCollectionViewState = MutableStateFlow(EstablishmentCollectionViewState(
+        emptyList()
+    ))
+    val establishmentCollectionViewState: StateFlow<EstablishmentCollectionViewState> =
+        _establishmentCollectionViewState
+            .flatMapLatest {
+                establishmentRepository.allEstablishments()
+                    .map { establishments ->
+                        establishmentMapper.toEstablishmentCollectionViewState(establishments)
+                    }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = establishmentMapper.toEstablishmentCollectionViewState(emptyList())
+            )
+
+    private val _establishmentName = MutableStateFlow("")
+    val establishmentName = _establishmentName.asStateFlow()
+
+    fun setName(name: String) {
+        _establishmentName.value = name
+    }
 
     fun addStaff(
         name: String,

@@ -5,6 +5,7 @@ import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_2
 import agency.five.codebase.android.ordermanager.WEIGHT_4
 import agency.five.codebase.android.ordermanager.model.Establishment
+import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewState
 import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
 import agency.five.codebase.android.ordermanager.ui.component.EstablishmentDropdown
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
@@ -27,6 +28,7 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,32 +51,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterStaffRoute(
     snackbarHostState: SnackbarHostState,
     registerStaffViewModel: RegisterStaffViewModel,
-    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    onClickRegisterButton: (name: String, username: String, password: String, establishmentId: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
 ) {
-    val establishmentCollection = registerStaffViewModel.getEstablishments()
+    val establishmentCollectionViewState: EstablishmentCollectionViewState by registerStaffViewModel.establishmentCollectionViewState.collectAsState()
     RegisterStaffScreen(
         snackbarHostState = snackbarHostState,
         onClickRegisterButton = onClickRegisterButton,
         onClickNavigateLoginButton = onClickNavigateLoginButton,
-        establishmentCollection = establishmentCollection,
+        establishmentCollectionViewState = establishmentCollectionViewState,
     )
 }
 
 @Composable
 private fun RegisterStaffScreen(
     snackbarHostState: SnackbarHostState,
-    establishmentCollection: List<Establishment>,
+    establishmentCollectionViewState: EstablishmentCollectionViewState,
     modifier: Modifier = Modifier,
-    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    onClickRegisterButton: (name: String, username: String, password: String, establishmentId: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var name by remember { mutableStateOf(TextFieldValue(text = "")) }
+    var username by remember { mutableStateOf(TextFieldValue(text = "")) }
+    var password by remember { mutableStateOf(TextFieldValue(text = "")) }
+    val scope = rememberCoroutineScope()
+    val focusRequesterUsername = remember { FocusRequester() }
+    val focusRequesterPassword = remember { FocusRequester() }
+    val focusRequesterEstablishment = remember { FocusRequester() }
+    val registerStaffViewModel: RegisterStaffViewModel = viewModel()
     Column(
         modifier = modifier
             .background(color = LightGray)
@@ -82,14 +95,6 @@ private fun RegisterStaffScreen(
             .fillMaxSize()
 
     ) {
-        val focusManager = LocalFocusManager.current
-        val keyboardController = LocalSoftwareKeyboardController.current
-        var name by remember { mutableStateOf(TextFieldValue(text = "")) }
-        var username by remember { mutableStateOf(TextFieldValue(text = "")) }
-        var password by remember { mutableStateOf(TextFieldValue(text = "")) }
-        val scope = rememberCoroutineScope()
-        val focusRequesterUsername = remember { FocusRequester() }
-        val focusRequesterPassword = remember { FocusRequester() }
         Text(
             text = "Staff Register",
             color = DarkGreen,
@@ -108,15 +113,13 @@ private fun RegisterStaffScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
         )
         Card(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                ,
+                .align(Alignment.CenterHorizontally),
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             elevation = 10.dp,
             backgroundColor = LightGray,
@@ -129,7 +132,6 @@ private fun RegisterStaffScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
                     .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 colors = TextFieldDefaults.textFieldColors(
@@ -144,7 +146,6 @@ private fun RegisterStaffScreen(
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
                 ),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
@@ -162,7 +163,6 @@ private fun RegisterStaffScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
@@ -182,7 +182,6 @@ private fun RegisterStaffScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
                     .focusRequester(focusRequesterUsername)
                     .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
@@ -198,7 +197,6 @@ private fun RegisterStaffScreen(
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
                 ),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
@@ -216,7 +214,6 @@ private fun RegisterStaffScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
@@ -238,7 +235,6 @@ private fun RegisterStaffScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
                     .focusRequester(focusRequesterPassword)
                     .weight(WEIGHT_1),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
@@ -254,13 +250,13 @@ private fun RegisterStaffScreen(
                     color = DarkGreen,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
                 ),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
                     onDone = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
+                        scope.launch { focusRequesterEstablishment.requestFocus() }
                     }
                 ),
             )
@@ -273,49 +269,24 @@ private fun RegisterStaffScreen(
             backgroundColor = LightGray,
         ) {
             EstablishmentDropdown(
-                dropdownItems = ,
-                modifier = ,
-                onItemClick = )
-            OutlinedTextField(
-                value = password,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                onValueChange = {
-                    password = it
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
-                    .focusRequester(focusRequesterPassword)
+                establishmentCollectionViewState = establishmentCollectionViewState,
+                modifier = Modifier
                     .weight(WEIGHT_1),
-                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = LightGray,
-                    cursorColor = DarkGreen,
-                    disabledLabelColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 30.sp,
-                    color = DarkGreen,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
-                ),
-                singleLine = true,
+                onItemClick = {establishmentId ->
+                    (registerStaffViewModel::setName)(establishmentId)
+                },
                 keyboardActions = KeyboardActions(
                     onDone = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
                     }
                 ),
+                focusRequester = focusRequesterEstablishment,
             )
         }
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClickRegisterButton(name.text, username.text, password.text) },
+            onClick = { onClickRegisterButton(name.text, username.text, password.text, registerStaffViewModel.establishmentName.value) },
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = LightGray,
                 backgroundColor = LightGray
@@ -368,13 +339,28 @@ private fun RegisterStaffScreen(
 
 @Preview
 @Composable
-private fun LoginScreenPreview() {
+private fun RegisterStaffScreenPreview() {
     val name = "name"
     val username = "username"
     val password = "password"
+    val establishmentId = "establishmentId"
+    val establishmentViewStateCollection = listOf<EstablishmentViewState>(
+        EstablishmentViewState(
+            id = "1",
+            name = "name1"
+        ),
+        EstablishmentViewState(
+            id = "2",
+            name = "name2"
+        ),
+    )
+    val establishmentCollectionViewState = EstablishmentCollectionViewState(
+        establishmentViewStateCollection = establishmentViewStateCollection,
+    )
     RegisterStaffScreen(
         snackbarHostState = SnackbarHostState(),
-        onClickRegisterButton = { name, username, password -> },
+        onClickRegisterButton = { name, username, password, establishmentId -> },
         onClickNavigateLoginButton = {},
+        establishmentCollectionViewState = establishmentCollectionViewState,
     )
 }

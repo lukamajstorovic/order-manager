@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
+const val FIRESTORE_COLLECTION_ESTABLISHMENTS = "establishments"
+
 class EstablishmentServiceImpl(private val fireStore: FirebaseFirestore): EstablishmentService {
 
     private fun mapEstablishmentDocumentToDbEstablishment(establishment: DocumentSnapshot): DbEstablishment {
@@ -23,7 +25,7 @@ class EstablishmentServiceImpl(private val fireStore: FirebaseFirestore): Establ
 
     override fun getAllEstablishments(): Flow<List<DbEstablishment>> {
         return callbackFlow {
-            val listenerRegistration = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+            val listenerRegistration = fireStore.collection(FIRESTORE_COLLECTION_ESTABLISHMENTS)
                 .addSnapshotListener { snapshot, error ->
                     try {
                         if (error != null) {

@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.selection
 
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.OrderedItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper

@@ -1,5 +1,7 @@
 package agency.five.codebase.android.ordermanager.data.di
 
+import agency.five.codebase.android.ordermanager.data.firebase.EstablishmentService
+import agency.five.codebase.android.ordermanager.data.firebase.EstablishmentServiceImpl
 import agency.five.codebase.android.ordermanager.data.firebase.StaffService
 import agency.five.codebase.android.ordermanager.data.firebase.StaffServiceImpl
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,5 +13,8 @@ val firebaseModule=module{
     }
     single<StaffService> {
         StaffServiceImpl(get())
+    }
+    single<EstablishmentService> {
+        EstablishmentServiceImpl(get())
     }
 }

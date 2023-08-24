@@ -257,6 +257,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         }
                         println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
+                    registerStaffViewModel = viewModel,
                     onClickNavigateLoginButton = {
                         navController.navigate(
                             NavigationItem.LoginDestination.route

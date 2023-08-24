@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.staff
 
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.model.Staff
 import agency.five.codebase.android.ordermanager.ui.staff.mapper.StaffMapper
 import androidx.lifecycle.ViewModel

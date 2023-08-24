@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.repository
+package agency.five.codebase.android.ordermanager.data.repository.staff
 
 import agency.five.codebase.android.ordermanager.data.firebase.StaffService
 import agency.five.codebase.android.ordermanager.data.room.dao.StaffDao
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
 class StaffRepositoryImpl(
-    private val staffDao: StaffDao,
     private val bgDispatcher: CoroutineDispatcher,
     private val staffService: StaffService,
 ) : StaffRepository {

@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.repository
+package agency.five.codebase.android.ordermanager.data.repository.staff
 
 import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.flow.Flow
