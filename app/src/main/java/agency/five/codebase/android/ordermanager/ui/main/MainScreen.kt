@@ -216,6 +216,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 route = NavigationItem.StaffDestination.route,
             ) {
                 val viewModel: StaffViewModel = getViewModel()
+                viewModel.updateEstablishmentId(userDataViewModel)
                 StaffRoute(
                     viewModel = viewModel,
                 )

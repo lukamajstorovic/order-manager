@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_STAFF = "staff"
 
-class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
+class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService {
 
     private fun stringToStaffRole(value: String): StaffRoles? {
         return try {
@@ -36,23 +36,34 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
         )
     }
 
-
-    /*override fun getAllStaff(): Flow<List<DbStaff>> {
+    override suspend fun getStaffByEstablishment(establishmentId: String): Flow<List<DbStaff>> {
         return callbackFlow {
-            val listenerRegistration = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        close(error)
-                        return@addSnapshotListener
+            val listenerRegistration =
+                fireStore
+                    .collection(FIRESTORE_COLLECTION_STAFF)
+                    .whereEqualTo("establishmentId", establishmentId)
+                    .addSnapshotListener { snapshot, error ->
+                        try {
+                            if (error != null) {
+                                close(error)
+                                return@addSnapshotListener
+                            }
+                            if (snapshot != null) {
+                                val staffCollection =
+                                    snapshot.documents.map(::mapStaffDocumentToDbStaff)
+                                try {
+                                    trySend(staffCollection)
+                                } catch (sendException: Exception) {
+                                    Log.e("getAllStaff", "Failed to send data", sendException)
+                                }
+                            }
+                        } catch (snapshotException: Exception) {
+                            Log.e("getAllStaff", "SnapshotListener error", snapshotException)
+                        }
                     }
-                    if (snapshot != null) {
-                        val staffCollection = snapshot.documents.map(::mapStaffDocumentToStaff)
-                        trySend(staffCollection).isSuccess
-                    }
-                }
             awaitClose { listenerRegistration.remove() }
         }
-    }*/
+    }
 
     override fun getAllStaff(): Flow<List<DbStaff>> {
         return callbackFlow {
@@ -64,7 +75,8 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
                             return@addSnapshotListener
                         }
                         if (snapshot != null) {
-                            val staffCollection = snapshot.documents.map(::mapStaffDocumentToDbStaff)
+                            val staffCollection =
+                                snapshot.documents.map(::mapStaffDocumentToDbStaff)
                             try {
                                 trySend(staffCollection)
                             } catch (sendException: Exception) {
@@ -85,8 +97,8 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
             .get()
             .await()
 
-        if(!staffDocument.exists()) {
-           return mapStaffDocumentToDbStaff(staffDocument)
+        if (!staffDocument.exists()) {
+            return mapStaffDocumentToDbStaff(staffDocument)
         }
         return null
     }
@@ -98,7 +110,7 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore): StaffService {
             .limit(1)
 
         val querySnapshot = query.get().await()
-        if(!querySnapshot.isEmpty) {
+        if (!querySnapshot.isEmpty) {
             val staffDocument = querySnapshot.documents[0]
             return mapStaffDocumentToDbStaff(staffDocument)
         }

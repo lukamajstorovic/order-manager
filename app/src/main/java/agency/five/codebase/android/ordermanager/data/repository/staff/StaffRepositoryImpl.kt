@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.repository.staff
 
 import agency.five.codebase.android.ordermanager.data.firebase.StaffService
-import agency.five.codebase.android.ordermanager.data.room.dao.StaffDao
 import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +38,17 @@ class StaffRepositoryImpl(
             dbStaff?.toStaff()
         }
     }
+
+    override suspend fun staffByEstablishment(establishmentId: String): Flow<List<Staff>> =
+        staffService.getStaffByEstablishment(establishmentId).map {
+            it.map { dbStaff ->
+                dbStaff.toStaff()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
 
     override suspend fun addStaff(staff: Staff) {
         withContext(bgDispatcher) {

@@ -7,7 +7,7 @@ import agency.five.codebase.android.ordermanager.data.firebase.StaffServiceImpl
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.dsl.module
 
-val firebaseModule=module{
+val firebaseModule = module {
     single<FirebaseFirestore> {
         FirebaseFirestore.getInstance()
     }

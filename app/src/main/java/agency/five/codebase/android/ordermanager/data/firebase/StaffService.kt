@@ -7,6 +7,7 @@ interface StaffService {
     fun getAllStaff(): Flow<List<DbStaff>>
     suspend fun getStaffById(staffId: String): DbStaff?
     suspend fun getStaffByCredentials(username: String, password: String): DbStaff?
+    suspend fun getStaffByEstablishment(establishmentId: String): Flow<List<DbStaff>>
     suspend fun addStaff(staff: DbStaff)
     suspend fun removeStaff(staffId: String)
 }

@@ -8,6 +8,9 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class UserDataViewModel(application: Application) : AndroidViewModel(application) {
@@ -17,12 +20,17 @@ class UserDataViewModel(application: Application) : AndroidViewModel(application
 
     val userDataFlow: Flow<UserData> = userDataStore.data
 
+    val establishmentId: Flow<String> = userDataFlow.map { userData ->
+        userData.establishmentId
+    }
+
     suspend fun setUserData(staff: Staff) {
         userDataStore.updateData { currentUserData ->
             currentUserData.copy(
                 username = staff.username,
                 name = staff.name,
-                role = staff.role
+                role = staff.role,
+                establishmentId = staff.establishmentId,
             )
         }
     }
@@ -32,7 +40,8 @@ class UserDataViewModel(application: Application) : AndroidViewModel(application
             currentUserData.copy(
                 username = "",
                 name = "",
-                role = StaffRoles.NONE
+                role = StaffRoles.NONE,
+                establishmentId = "",
             )
         }
     }
