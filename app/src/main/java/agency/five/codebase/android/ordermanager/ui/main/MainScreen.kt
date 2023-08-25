@@ -239,7 +239,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             )
                         }
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        snackbarHostState.showSnackbar(validationResult.getOrNull().toString() + validationResult.exceptionOrNull()?.message + "TEEST")
                         println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
                     }

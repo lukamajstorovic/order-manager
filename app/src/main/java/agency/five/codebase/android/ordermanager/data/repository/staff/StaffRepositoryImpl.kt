@@ -1,6 +1,7 @@
 package agency.five.codebase.android.ordermanager.data.repository.staff
 
 import agency.five.codebase.android.ordermanager.data.firebase.StaffService
+import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +21,9 @@ class StaffRepositoryImpl(
                 dbStaff.toStaff()
             }
         }.shareIn(
-        scope = CoroutineScope(bgDispatcher),
-        started = SharingStarted.WhileSubscribed(1000L),
-        replay = 1,
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
         )
 
     override suspend fun staffById(staffId: String): Staff? {
@@ -50,20 +51,19 @@ class StaffRepositoryImpl(
             replay = 1,
         )
 
-    override suspend fun addStaff(staff: Staff) {
-        withContext(bgDispatcher) {
-            staffService.addStaff(
-                agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff(
-                    username = staff.username,
-                    password = staff.password,
-                    name = staff.name,
-                    role = staff.role,
-                    establishmentId = staff.establishmentId,
-                    approved = staff.approved,
-                )
+    override suspend fun addStaff(staff: Staff): Result<Unit> {
+        return staffService.addStaff(
+            DbStaff(
+                username = staff.username,
+                password = staff.password,
+                name = staff.name,
+                role = staff.role,
+                establishmentId = staff.establishmentId,
+                approved = staff.approved,
             )
-        }
+        )
     }
+
     override suspend fun removeStaff(staffId: String) {
         withContext(bgDispatcher) {
             staffService.removeStaff(staffId)

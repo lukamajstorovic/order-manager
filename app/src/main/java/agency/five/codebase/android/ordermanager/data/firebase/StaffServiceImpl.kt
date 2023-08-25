@@ -2,6 +2,7 @@ package agency.five.codebase.android.ordermanager.data.firebase
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
+import agency.five.codebase.android.ordermanager.exceptions.FirestoreException
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -117,14 +118,28 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
         return null
     }
 
-    override suspend fun addStaff(staff: DbStaff) {
-        fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-            .add(staff)
-            .addOnFailureListener {
-                Log.d("Something went wrong: ", it.message.toString())
-            }
+    override suspend fun addStaff(staff: DbStaff): Result<Unit> {
+        return try {
+            fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+                .add(staff)
+                .await()
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(FirestoreException(exception))
+        }
     }
 
+    override suspend fun updateApprovedStatus(staffId: String, isApproved: Boolean): Result<Unit> {
+        return try {
+            fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+                .document(staffId)
+                .update("approved", isApproved)
+                .await()
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(FirestoreException(exception))
+        }
+    }
 
     override suspend fun removeStaff(id: String) {
         fireStore.collection(FIRESTORE_COLLECTION_STAFF)

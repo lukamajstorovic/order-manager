@@ -8,6 +8,6 @@ interface StaffRepository {
     suspend fun staffById(staffId: String): Staff?
     suspend fun staffByCredentials(username: String, password: String): Staff?
     suspend fun staffByEstablishment(establishmentId: String): Flow<List<Staff>>
-    suspend fun addStaff(staff: Staff)
+    suspend fun addStaff(staff: Staff): Result<Unit>
     suspend fun removeStaff(staffId: String)
 }

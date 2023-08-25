@@ -45,39 +45,4 @@ class StaffViewModel(
                 }
         }
     }
-
-    /*private val _staffViewState = MutableStateFlow(StaffViewState(emptyList()))
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val staffViewState: StateFlow<StaffViewState>
-        get() = if (_establishmentId.value.isNotEmpty()) {
-            _staffViewState
-                .flatMapLatest { staffRepository.staffByEstablishment(_establishmentId.value) }
-                .map { staff ->
-                    staffMapper.toStaffViewState(staff)
-                }
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000),
-                    initialValue = staffMapper.toStaffViewState(emptyList())
-                )
-        } else {
-            MutableStateFlow(staffMapper.toStaffViewState(emptyList()))
-        }*/
-
-    fun updateEstablishmentId(newId: String) {
-        _establishmentId.value = newId
-    }
-
-    fun addStaff(staff: Staff) {
-        viewModelScope.launch {
-            staffRepository.addStaff(staff)
-        }
-    }
-
-    fun removeStaff(staffId: String) {
-        viewModelScope.launch {
-            staffRepository.removeStaff(staffId)
-        }
-    }
 }

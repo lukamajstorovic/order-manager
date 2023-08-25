@@ -39,12 +39,14 @@ class RegisterStaffViewModel(
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
-    private val _validationResult = mutableStateOf(Result.success("AAA"))
-    val validationResult: State<Result<String>> = _validationResult
+    private val _validationResult = mutableStateOf(Result.success(Unit))
+    val validationResult: State<Result<Unit>> = _validationResult
 
-    val _establishmentCollectionViewState = MutableStateFlow(EstablishmentCollectionViewState(
-        emptyList()
-    ))
+    val _establishmentCollectionViewState = MutableStateFlow(
+        EstablishmentCollectionViewState(
+            emptyList()
+        )
+    )
     val establishmentCollectionViewState: StateFlow<EstablishmentCollectionViewState> =
         _establishmentCollectionViewState
             .flatMapLatest {
@@ -77,7 +79,7 @@ class RegisterStaffViewModel(
         _isLoading.value = true
         println("ISLOADING DONE")
         viewModelScope.launch {
-            val dif = async {
+            /*val dif = async {
                 println("LAUNCHED SCOPE")
                 _validationResult.value = validateUserData(name, username, password, establishmentId)
                 if (validationResult.value.isSuccess) {
@@ -90,9 +92,7 @@ class RegisterStaffViewModel(
                         approved = false,
                     )
                     try {
-                        staffRepository.addStaff(staff).run {
-                            _validationResult.value = Result.success("Registration successful")
-                        }.run {
+                        _validationResult.value = staffRepository.addStaff(staff).run {
                             onNavigate()
                         }
                     } catch (e: UserEmailAlreadyExistsException) {
@@ -102,17 +102,42 @@ class RegisterStaffViewModel(
                     }
                 }
             }
+            dif.await()*/
+
+            val dif = async {
+                _validationResult.value =
+                    validateUserData(name, username, password, establishmentId)
+                if (validationResult.value.isSuccess) {
+                    val staff = Staff(
+                        username = username,
+                        password = password,
+                        name = name,
+                        role = StaffRoles.WAITER,
+                        establishmentId = establishmentId,
+                        approved = false,
+                    )
+                    _validationResult.value = staffRepository.addStaff(staff)
+                }
+            }
             dif.await()
+            if (validationResult.value.isSuccess) {
+                onNavigate()
+            }
+            _isLoading.value = false
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 validationResult.value.exceptionOrNull()?.message
                     ?: validationResult.value.getOrNull().toString()
-
             )
         }
     }
 
-    private fun validateUserData(name: String, username: String, password: String, establishmentId: String): Result<String> {
+    private fun validateUserData(
+        name: String,
+        username: String,
+        password: String,
+        establishmentId: String
+    ): Result<Unit> {
         val passwordREGEX = Pattern.compile(PASSWORD_REGEX);
         if (username.isEmpty() || password.isEmpty() || name.isEmpty() || establishmentId.isEmpty()) {
             return Result.failure(EmptyFieldException())
@@ -125,6 +150,6 @@ class RegisterStaffViewModel(
         if (!passwordREGEX.matcher(password).matches()) {
             return Result.failure(WeakPasswordException())
         }
-        return Result.success("Information validated")
+        return Result.success(Unit)
     }
 }
