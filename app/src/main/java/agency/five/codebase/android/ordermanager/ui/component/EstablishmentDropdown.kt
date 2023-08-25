@@ -64,9 +64,9 @@ fun EstablishmentDropdown(
             },
             placeholder = {
                 Text(
-                    "Pick an establishment",
+                    "Pick establishment",
                     color = DarkGreen,
-                    fontSize = 30.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = FontFamily.Default,
                 )
@@ -86,7 +86,7 @@ fun EstablishmentDropdown(
                 errorIndicatorColor = Color.Transparent,
             ),
             textStyle = TextStyle(
-                fontSize = 30.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
             ),
@@ -108,16 +108,17 @@ fun EstablishmentDropdown(
                 onDismissRequest = { isExpanded = false },
                 modifier = Modifier
                     .exposedDropdownSize()
-                    .background(LightGray)
-                    .padding(0.dp),
+                    .padding(0.dp)
+                    .background(LightGray),
             ) {
-                establishmentCollectionViewState.establishmentViewStateCollection.forEach { establishmentViewState ->
+                establishmentCollectionViewState
+                    .establishmentViewStateCollection.forEach { establishmentViewState ->
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = establishmentViewState.name,
                                 color = DarkGreen,
-                                fontSize = 30.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 fontFamily = FontFamily.Default,
                             )

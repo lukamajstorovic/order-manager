@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.registerstaff
 
+import agency.five.codebase.android.ordermanager.PASSWORD_REGEX
 import agency.five.codebase.android.ordermanager.data.repository.establishment.EstablishmentRepository
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
@@ -78,7 +79,7 @@ class RegisterStaffViewModel(
         viewModelScope.launch {
             val dif = async {
                 println("LAUNCHED SCOPE")
-                _validationResult.value = validateUserData(name, username, password)
+                _validationResult.value = validateUserData(name, username, password, establishmentId)
                 if (validationResult.value.isSuccess) {
                     val staff = Staff(
                         username = username,
@@ -111,19 +112,9 @@ class RegisterStaffViewModel(
         }
     }
 
-    private fun validateUserData(name: String, username: String, password: String): Result<String> {
-        val passwordREGEX = Pattern.compile(
-            "^" +
-                    "(?=.*[0-9])" +         //at least 1 digit
-                    "(?=.*[a-z])" +         //at least 1 lower case letter
-                    "(?=.*[A-Z])" +         //at least 1 upper case letter
-                    "(?=.*[a-zA-Z])" +      //any letter
-                    "(?=.*[@#$%^&+=])" +    //at least 1 special character
-                    "(?=\\S+$)" +           //no white spaces
-                    ".{8,}" +               //at least 8 characters
-                    "$"
-        );
-        if (username.isEmpty() || password.isEmpty() || name.isEmpty()) {
+    private fun validateUserData(name: String, username: String, password: String, establishmentId: String): Result<String> {
+        val passwordREGEX = Pattern.compile(PASSWORD_REGEX);
+        if (username.isEmpty() || password.isEmpty() || name.isEmpty() || establishmentId.isEmpty()) {
             return Result.failure(EmptyFieldException())
         }
 
