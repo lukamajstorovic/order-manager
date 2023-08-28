@@ -1,15 +1,16 @@
 package agency.five.codebase.android.ordermanager.data.di
 
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepositoryImpl
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.repository.establishment.EstablishmentRepository
+import agency.five.codebase.android.ordermanager.data.repository.establishment.EstablishmentRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepositoryImpl
 import agency.five.codebase.android.ordermanager.data.room.OrderManagerDatabase
 import agency.five.codebase.android.ordermanager.data.room.dao.ActiveOrderDao
 import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao
 import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemDao
 import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemInActiveOrderDao
-import agency.five.codebase.android.ordermanager.data.room.dao.StaffDao
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
@@ -18,7 +19,10 @@ val dataModule = module {
         OrderRepositoryImpl(get(), get(), get(), get(), Dispatchers.IO)
     }
     single<StaffRepository> {
-        StaffRepositoryImpl(get(), Dispatchers.IO, get())
+        StaffRepositoryImpl(Dispatchers.IO, get())
+    }
+    single<EstablishmentRepository> {
+        EstablishmentRepositoryImpl(Dispatchers.IO, get())
     }
     fun provideMenuItemDao(db: OrderManagerDatabase): MenuItemDao = db.getMenuItemDao()
     single {
@@ -36,10 +40,5 @@ val dataModule = module {
         db.getOrderedItemInActiveOrderDao()
     single {
         provideOrderedItemInActiveOrderDao(get())
-    }
-    fun provideStaffDao(db: OrderManagerDatabase): StaffDao =
-        db.getStaffDao()
-    single {
-        provideStaffDao(get())
     }
 }

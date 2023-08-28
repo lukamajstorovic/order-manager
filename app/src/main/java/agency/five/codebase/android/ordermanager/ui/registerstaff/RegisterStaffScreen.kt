@@ -2,29 +2,34 @@ package agency.five.codebase.android.ordermanager.ui.registerstaff
 
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.WEIGHT_1
-import agency.five.codebase.android.ordermanager.WEIGHT_2
-import agency.five.codebase.android.ordermanager.WEIGHT_4
 import agency.five.codebase.android.ordermanager.ui.component.BottomSnackbar
+import agency.five.codebase.android.ordermanager.ui.component.EstablishmentDropdown
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,280 +52,320 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterStaffRoute(
     snackbarHostState: SnackbarHostState,
-    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    registerStaffViewModel: RegisterStaffViewModel,
+    onClickRegisterButton: (name: String, username: String, password: String, establishmentId: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
 ) {
+    val establishmentCollectionViewState: EstablishmentCollectionViewState by registerStaffViewModel.establishmentCollectionViewState.collectAsState()
     RegisterStaffScreen(
         snackbarHostState = snackbarHostState,
         onClickRegisterButton = onClickRegisterButton,
         onClickNavigateLoginButton = onClickNavigateLoginButton,
+        establishmentCollectionViewState = establishmentCollectionViewState,
     )
 }
 
 @Composable
 private fun RegisterStaffScreen(
     snackbarHostState: SnackbarHostState,
+    establishmentCollectionViewState: EstablishmentCollectionViewState,
     modifier: Modifier = Modifier,
-    onClickRegisterButton: (name: String, username: String, password: String) -> Unit,
+    onClickRegisterButton: (name: String, username: String, password: String, establishmentId: String) -> Unit,
     onClickNavigateLoginButton: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .background(color = LightGray)
-            .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 20.dp)
-            .fillMaxSize()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var name by remember { mutableStateOf(TextFieldValue(text = "")) }
+    var username by remember { mutableStateOf(TextFieldValue(text = "")) }
+    var password by remember { mutableStateOf(TextFieldValue(text = "")) }
+    val scope = rememberCoroutineScope()
+    val focusRequesterUsername = remember { FocusRequester() }
+    val focusRequesterPassword = remember { FocusRequester() }
+    val focusRequesterEstablishment = remember { FocusRequester() }
+    val registerStaffViewModel: RegisterStaffViewModel = viewModel()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .background(color = LightGray)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
 
-    ) {
-        val focusManager = LocalFocusManager.current
-        val keyboardController = LocalSoftwareKeyboardController.current
-        var name by remember { mutableStateOf(TextFieldValue(text = "")) }
-        var username by remember { mutableStateOf(TextFieldValue(text = "")) }
-        var password by remember { mutableStateOf(TextFieldValue(text = "")) }
-        val scope = rememberCoroutineScope()
-        val focusRequesterUsername = remember { FocusRequester() }
-        val focusRequesterPassword = remember { FocusRequester() }
-        Text(
-            text = "Staff Register",
-            color = DarkGreen,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(top = 50.dp, bottom = 10.dp)
-                .align(Alignment.CenterHorizontally)
-                .weight(WEIGHT_2)
-        )
-        Text(
-            text = "Name",
-            color = DarkGreen,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(10.dp)
-                .align(Alignment.Start)
-        )
-        Card(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                ,
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            elevation = 10.dp,
-            backgroundColor = LightGray,
-        ) {
-            OutlinedTextField(
-                value = name,
-                onValueChange = {
-                    name = it
-                },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
-                    .weight(WEIGHT_1),
-                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = LightGray,
-                    cursorColor = DarkGreen,
-                    disabledLabelColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 30.sp,
-                    color = DarkGreen,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
-                ),
-                singleLine = true,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                        scope.launch { focusRequesterUsername.requestFocus() }
-                    }
-                ),
-            )
-        }
-        Text(
-            text = "Username",
-            color = DarkGreen,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(10.dp)
-                .align(Alignment.Start)
-        )
-        Card(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally),
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            elevation = 10.dp,
-            backgroundColor = LightGray,
-        ) {
-            OutlinedTextField(
-                value = username,
-                onValueChange = {
-                    username = it
-                },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
-                    .focusRequester(focusRequesterUsername)
-                    .weight(WEIGHT_1),
-                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = LightGray,
-                    cursorColor = DarkGreen,
-                    disabledLabelColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 30.sp,
-                    color = DarkGreen,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
-                ),
-                singleLine = true,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                        scope.launch { focusRequesterPassword.requestFocus() }
-                    }
-                ),
-            )
-        }
-        Text(
-            text = "Password",
-            color = DarkGreen,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(10.dp)
-                .align(Alignment.Start)
-        )
-        Card(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally),
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            elevation = 10.dp,
-            backgroundColor = LightGray,
-        ) {
-            OutlinedTextField(
-                value = password,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                onValueChange = {
-                    password = it
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .wrapContentSize(Alignment.Center)
-                    .focusRequester(focusRequesterPassword)
-                    .weight(WEIGHT_1),
-                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = LightGray,
-                    cursorColor = DarkGreen,
-                    disabledLabelColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 30.sp,
-                    color = DarkGreen,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default,
-                    textAlign = TextAlign.Center
-                ),
-                singleLine = true,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    }
-                ),
-            )
-        }
-        Button(
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClickRegisterButton(name.text, username.text, password.text) },
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = LightGray,
-                backgroundColor = LightGray
-            ),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(horizontal = 80.dp, vertical = 20.dp)
         ) {
             Text(
-                text = "Register",
+                text = "Staff Register",
                 color = DarkGreen,
-                fontSize = 30.sp,
+                fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(5.dp)
-                    .weight(WEIGHT_2)
+                    .padding(vertical = 30.dp)
+                    .align(Alignment.CenterHorizontally)
             )
-        }
-        Button(
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClickNavigateLoginButton() },
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = LightGray,
-                backgroundColor = LightGray
-            ),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(horizontal = 80.dp, vertical = 20.dp),
-        ) {
             Text(
-                text = "To login",
+                text = "Name",
                 color = DarkGreen,
-                fontSize = 30.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
-                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(5.dp)
-                    .weight(WEIGHT_2)
+                    .padding(10.dp)
+                    .align(Alignment.Start)
             )
+            Card(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                elevation = 10.dp,
+                backgroundColor = LightGray,
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = {
+                        name = it
+                    },
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = LightGray,
+                        cursorColor = DarkGreen,
+                        disabledLabelColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = DarkGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Default,
+                    ),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                            scope.launch { focusRequesterUsername.requestFocus() }
+                        }
+                    ),
+                )
+            }
+            Text(
+                text = "Username",
+                color = DarkGreen,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .align(Alignment.Start)
+            )
+            Card(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                elevation = 10.dp,
+                backgroundColor = LightGray,
+            ) {
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = {
+                        username = it
+                    },
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .focusRequester(focusRequesterUsername),
+                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = LightGray,
+                        cursorColor = DarkGreen,
+                        disabledLabelColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = DarkGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Default,
+                    ),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                            scope.launch { focusRequesterPassword.requestFocus() }
+                        }
+                    ),
+                )
+            }
+            Text(
+                text = "Password",
+                color = DarkGreen,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .align(Alignment.Start)
+            )
+            Card(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                elevation = 10.dp,
+                backgroundColor = LightGray,
+            ) {
+                OutlinedTextField(
+                    value = password,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    onValueChange = {
+                        password = it
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .focusRequester(focusRequesterPassword),
+                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = LightGray,
+                        cursorColor = DarkGreen,
+                        disabledLabelColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = DarkGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Default,
+                    ),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                            scope.launch { focusRequesterEstablishment.requestFocus() }
+                        }
+                    ),
+                )
+            }
+            Card(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 20.dp),
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                elevation = 10.dp,
+                backgroundColor = LightGray,
+            ) {
+                EstablishmentDropdown(
+                    establishmentCollectionViewState = establishmentCollectionViewState,
+                    modifier = Modifier,
+                    onItemClick = { establishmentId ->
+                        (registerStaffViewModel::setName)(establishmentId)
+                    },
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        }
+                    ),
+                    focusRequester = focusRequesterEstablishment,
+                )
+            }
+            Button(
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                onClick = {
+                    onClickRegisterButton(
+                        name.text,
+                        username.text,
+                        password.text,
+                        registerStaffViewModel.establishmentName.value
+                    )
+                },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = LightGray,
+                    backgroundColor = LightGray
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 80.dp)
+            ) {
+                Text(
+                    text = "Register",
+                    color = DarkGreen,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(5.dp)
+                )
+            }
+            Button(
+                shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                onClick = { onClickNavigateLoginButton() },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = LightGray,
+                    backgroundColor = LightGray
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 80.dp)
+                    .padding(top = 20.dp),
+            ) {
+                Text(
+                    text = "To login",
+                    color = DarkGreen,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(5.dp)
+                )
+            }
         }
         BottomSnackbar(
             snackbarHostState = snackbarHostState,
-            modifier = Modifier.weight(WEIGHT_1)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
 
 @Preview
 @Composable
-private fun LoginScreenPreview() {
+private fun RegisterStaffScreenPreview() {
     val name = "name"
     val username = "username"
     val password = "password"
+    val establishmentId = "establishmentId"
+    val establishmentViewStateCollection = listOf<EstablishmentViewState>(
+        EstablishmentViewState(
+            id = "1",
+            name = "name1"
+        ),
+        EstablishmentViewState(
+            id = "2",
+            name = "name2"
+        ),
+    )
+    val establishmentCollectionViewState = EstablishmentCollectionViewState(
+        establishmentViewStateCollection = establishmentViewStateCollection,
+    )
     RegisterStaffScreen(
         snackbarHostState = SnackbarHostState(),
-        onClickRegisterButton = { name, username, password -> },
+        onClickRegisterButton = { name, username, password, establishmentId -> },
         onClickNavigateLoginButton = {},
+        establishmentCollectionViewState = establishmentCollectionViewState,
     )
 }

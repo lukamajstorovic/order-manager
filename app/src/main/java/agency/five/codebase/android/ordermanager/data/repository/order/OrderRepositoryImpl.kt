@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.repository
+package agency.five.codebase.android.ordermanager.data.repository.order
 
 import agency.five.codebase.android.ordermanager.data.room.dao.ActiveOrderDao
 import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao

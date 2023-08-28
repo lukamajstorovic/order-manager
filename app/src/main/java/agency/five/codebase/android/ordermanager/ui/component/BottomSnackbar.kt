@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun BottomSnackbar(
@@ -25,10 +27,12 @@ fun BottomSnackbar(
 ) {
     SnackbarHost(
         hostState = snackbarHostState,
-        modifier = modifier,
+        modifier = modifier
+            .padding(bottom = 16.dp)
+            .padding(horizontal = 16.dp),
     ) { snackbarData ->
         Snackbar(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier,
             backgroundColor = LightGray,
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             elevation = 10.dp,
@@ -36,11 +40,12 @@ fun BottomSnackbar(
         ) {
             Text(
                 text = snackbarData.message,
+                fontSize = 20.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center),
+                    .fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
+                textAlign = TextAlign.Center,
             )
         }
     }

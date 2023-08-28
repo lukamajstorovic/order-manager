@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.login
 
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.model.Staff
 import androidx.compose.runtime.State
@@ -21,6 +21,8 @@ class LoginViewModel(
             password = "",
             name = "",
             role = StaffRoles.NONE,
+            establishmentId = "",
+            approved = false,
         )
     )
     val staff: State<Staff> = _staff

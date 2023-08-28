@@ -10,7 +10,7 @@ val staffModule = module {
     viewModel {
         StaffViewModel(
             get(),
-            get()
+            get(),
         )
     }
     single<StaffMapper> { StaffMapperImpl() }

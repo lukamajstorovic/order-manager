@@ -3,12 +3,13 @@ package agency.five.codebase.android.ordermanager
 import agency.five.codebase.android.ordermanager.data.di.dataModule
 import agency.five.codebase.android.ordermanager.data.di.databaseModule
 import agency.five.codebase.android.ordermanager.data.di.firebaseModule
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.mock.MenuItemMock
 import agency.five.codebase.android.ordermanager.ui.activeorders.di.activeOrdersModule
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
+import agency.five.codebase.android.ordermanager.ui.individualstaff.di.individualStaffModule
 import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
 import agency.five.codebase.android.ordermanager.ui.registerstaff.di.registerStaffModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
@@ -43,6 +44,7 @@ class OrderManagerApp : Application() {
                 registerStaffModule,
                 dateTimeFormatterModule,
                 firebaseModule,
+                individualStaffModule,
             )
             GlobalScope.launch {
                 orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[0])

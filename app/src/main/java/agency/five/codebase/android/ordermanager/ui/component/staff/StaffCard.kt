@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,10 +31,12 @@ data class StaffCardViewState(
     val role: StaffRoles,
 )
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StaffCard(
     staffCardViewState: StaffCardViewState,
     modifier: Modifier = Modifier,
+    onClick: (String) -> Unit,
 ) {
     val fontSize: Int = 20
     val paddingSize: Int = 5
@@ -43,7 +46,10 @@ fun StaffCard(
             .padding(10.dp),
         elevation = 5.dp,
         shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_13),
-        backgroundColor = LightGray
+        backgroundColor = LightGray,
+        onClick = {
+            onClick(staffCardViewState.id)
+        }
     ) {
         Column(
             modifier = Modifier
@@ -104,12 +110,14 @@ private fun SelectionCardPreview() {
             modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth(),
+            onClick = {},
         )
         StaffCard(
             staffCardViewState = staffCardInstance2,
             modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth(),
+            onClick = {},
         )
     }
 }

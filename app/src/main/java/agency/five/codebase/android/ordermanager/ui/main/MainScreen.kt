@@ -5,6 +5,8 @@ import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.navigation.CompleteOrderDestination
+import agency.five.codebase.android.ordermanager.navigation.INDIVIDUAL_STAFF_KEY
+import agency.five.codebase.android.ordermanager.navigation.IndividualStaffDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
 import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersRoute
@@ -13,6 +15,8 @@ import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderR
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderViewModel
+import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffRoute
+import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffRoute
@@ -216,8 +220,27 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 route = NavigationItem.StaffDestination.route,
             ) {
                 val viewModel: StaffViewModel = getViewModel()
+                viewModel.updateEstablishmentId(userDataViewModel)
                 StaffRoute(
                     viewModel = viewModel,
+                    onClickStaff = {staffId ->
+                        navController.navigate(
+                            IndividualStaffDestination.createNavigationRoute(staffId)
+                        )
+                        println("CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(staffId))
+                    }
+                )
+            }
+            composable(
+                route = IndividualStaffDestination.route,
+                arguments = listOf(navArgument(INDIVIDUAL_STAFF_KEY) { type = NavType.StringType }),
+            ) {
+                val staffId = it.arguments?.getString(INDIVIDUAL_STAFF_KEY)
+                val viewModel: IndividualStaffViewModel =
+                    getViewModel(parameters = { parametersOf(snackbarHostState, staffId) })
+                IndividualStaffRoute(
+                    viewModel = viewModel,
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -238,18 +261,18 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             )
                         }
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        snackbarHostState.showSnackbar(validationResult.getOrNull().toString() + validationResult.exceptionOrNull()?.message + "TEEST")
                         println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
                     }
                 }
                 RegisterStaffRoute(
                     snackbarHostState = snackbarHostState,
-                    onClickRegisterButton = { name, username, password ->
+                    onClickRegisterButton = { name, username, password, establishmentId ->
                         println("CLICK REGISTRATION")
                         clickedButton.value = true
                         viewModel.addStaff(
-                            name, username, password, snackbarHostState
+                            name, username, password, establishmentId, snackbarHostState
                         ) {
                             navController.navigate(
                                 NavigationItem.LoginDestination.route
@@ -257,6 +280,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         }
                         println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
+                    registerStaffViewModel = viewModel,
                     onClickNavigateLoginButton = {
                         navController.navigate(
                             NavigationItem.LoginDestination.route

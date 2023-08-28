@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.repository
+package agency.five.codebase.android.ordermanager.data.repository.order
 
 import agency.five.codebase.android.ordermanager.model.ActiveOrder
 import agency.five.codebase.android.ordermanager.model.MenuItem

@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.confirmorder
 
-import agency.five.codebase.android.ordermanager.data.repository.OrderRepository
+import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.confirmorder.mapper.ConfirmOrderMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

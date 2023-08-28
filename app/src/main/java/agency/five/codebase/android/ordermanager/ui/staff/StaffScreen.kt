@@ -21,17 +21,20 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StaffRoute(
     viewModel: StaffViewModel,
+    onClickStaff: (String) -> Unit,
 ) {
     val staffViewState by viewModel.staffViewState.collectAsState()
 
     StaffScreen(
         staffViewState = staffViewState,
+        onClickStaff = onClickStaff,
     )
 }
 
 @Composable
 private fun StaffScreen(
     staffViewState: StaffViewState,
+    onClickStaff: (String) -> Unit,
 ) {
 
     LazyVerticalGrid(
@@ -50,7 +53,7 @@ private fun StaffScreen(
             StaffCard(
                 staffCardViewState = currentStaffCard,
                 modifier = Modifier,
-                //.align(Alignment.CenterHorizontally),
+                onClick = onClickStaff,
             )
         }
     }
@@ -77,5 +80,6 @@ private fun StaffScreenPreview() {
 
     StaffScreen(
         staffViewState = staffViewState,
+        onClickStaff = {},
     )
 }

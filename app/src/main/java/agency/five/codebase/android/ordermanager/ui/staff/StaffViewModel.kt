@@ -1,6 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.staff
 
-import agency.five.codebase.android.ordermanager.data.repository.StaffRepository
+import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
+import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.model.Staff
 import agency.five.codebase.android.ordermanager.ui.staff.mapper.StaffMapper
 import androidx.lifecycle.ViewModel
@@ -18,30 +19,30 @@ class StaffViewModel(
     private val staffRepository: StaffRepository,
     private val staffMapper: StaffMapper,
 ) : ViewModel() {
-    private val _staffViewState = MutableStateFlow(StaffViewState(emptyList()))
+    private val _establishmentId = MutableStateFlow("")
+    val establishmentId: StateFlow<String> = _establishmentId
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val staffViewState: StateFlow<StaffViewState> =
-        _staffViewState
-            .flatMapLatest {
-                staffRepository.allStaff()
-                    .map { staff ->
-                        staffMapper.toStaffViewState(staff)
-                    }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = staffMapper.toStaffViewState(emptyList())
-            )
-    fun addStaff(staff: Staff) {
+    private var currentEstablishmentId: String? = null
+
+    fun updateEstablishmentId(userDataViewModel: UserDataViewModel) {
         viewModelScope.launch {
-            staffRepository.addStaff(staff)
+            userDataViewModel.establishmentId.collect { newId ->
+                currentEstablishmentId = newId
+                refreshStaffViewState()
+            }
         }
     }
-    fun removeStaff(staffId: String) {
+
+    private val _staffViewState = MutableStateFlow(StaffViewState(emptyList()))
+    val staffViewState: StateFlow<StaffViewState> = _staffViewState
+
+    private fun refreshStaffViewState() {
         viewModelScope.launch {
-            staffRepository.removeStaff(staffId)
+            staffRepository.staffByEstablishment(currentEstablishmentId ?: "")
+                .collect { staffList ->
+                    val staffViewState = staffMapper.toStaffViewState(staffList)
+                    _staffViewState.value = staffViewState
+                }
         }
     }
 }
