@@ -26,10 +26,9 @@ class StaffRepositoryImpl(
             replay = 1,
         )
 
-    override suspend fun staffById(staffId: String): Staff? {
-        return withContext(bgDispatcher) {
-            val dbStaff = staffService.getStaffById(staffId)
-            dbStaff?.toStaff()
+    override suspend fun staffById(staffId: String): Result<Staff> {
+        return staffService.getStaffById(staffId).map { dbStaff ->
+            dbStaff.toStaff()
         }
     }
 
@@ -51,17 +50,16 @@ class StaffRepositoryImpl(
             replay = 1,
         )
 
+    override suspend fun staffUsernameExists(username: String): Result<Boolean> {
+        return staffService.getStaffUsernameExists(username)
+    }
+
     override suspend fun addStaff(staff: Staff): Result<Unit> {
-        return staffService.addStaff(
-            DbStaff(
-                username = staff.username,
-                password = staff.password,
-                name = staff.name,
-                role = staff.role,
-                establishmentId = staff.establishmentId,
-                approved = staff.approved,
-            )
-        )
+        return staffService.addStaff(staff.toDbStaff())
+    }
+
+    override suspend fun updateStaff(staff: Staff): Result<Unit> {
+        return staffService.updateStaff(staff.toDbStaff())
     }
 
     override suspend fun removeStaff(staffId: String) {

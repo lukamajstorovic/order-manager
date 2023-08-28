@@ -3,10 +3,13 @@ package agency.five.codebase.android.ordermanager.data.firebase
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.FirestoreException
+import agency.five.codebase.android.ordermanager.exceptions.StaffNotFoundException
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -43,6 +46,7 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
                 fireStore
                     .collection(FIRESTORE_COLLECTION_STAFF)
                     .whereEqualTo("establishmentId", establishmentId)
+                    .orderBy("role", Query.Direction.ASCENDING)
                     .addSnapshotListener { snapshot, error ->
                         try {
                             if (error != null) {
@@ -63,6 +67,19 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
                         }
                     }
             awaitClose { listenerRegistration.remove() }
+        }
+    }
+
+    override suspend fun getStaffUsernameExists(username: String): Result<Boolean> {
+        try {
+            val staffDocument = fireStore
+                .collection(FIRESTORE_COLLECTION_STAFF)
+                .whereEqualTo("username", username)
+                .get()
+                .await()
+            return Result.success(!staffDocument.isEmpty)
+        } catch (exception: Exception) {
+            return Result.failure(FirestoreException(exception))
         }
     }
 
@@ -92,16 +109,20 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
         }
     }
 
-    override suspend fun getStaffById(id: String): DbStaff? {
-        val staffDocument = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-            .document(id)
-            .get()
-            .await()
-
-        if (!staffDocument.exists()) {
-            return mapStaffDocumentToDbStaff(staffDocument)
+    override suspend fun getStaffById(id: String): Result<DbStaff> {
+        return try {
+            val staffDocument = fireStore.collection(FIRESTORE_COLLECTION_STAFF)
+                .document(id)
+                .get()
+                .await()
+            if (staffDocument.exists()) {
+                Result.success(mapStaffDocumentToDbStaff(staffDocument))
+            } else {
+                Result.failure(StaffNotFoundException())
+            }
+        } catch (exception: Exception) {
+            Result.failure(FirestoreException(exception))
         }
-        return null
     }
 
     override suspend fun getStaffByCredentials(username: String, password: String): DbStaff? {
@@ -129,11 +150,11 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
         }
     }
 
-    override suspend fun updateApprovedStatus(staffId: String, isApproved: Boolean): Result<Unit> {
+    override suspend fun updateStaff(staff: DbStaff): Result<Unit> {
         return try {
             fireStore.collection(FIRESTORE_COLLECTION_STAFF)
-                .document(staffId)
-                .update("approved", isApproved)
+                .document(staff.id)
+                .set(staff, SetOptions.merge())
                 .await()
             Result.success(Unit)
         } catch (exception: Exception) {

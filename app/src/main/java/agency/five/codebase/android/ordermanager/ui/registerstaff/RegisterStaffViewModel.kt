@@ -6,11 +6,9 @@ import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepo
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordException
-import agency.five.codebase.android.ordermanager.exceptions.UserEmailAlreadyExistsException
+import agency.five.codebase.android.ordermanager.exceptions.UsernameAlreadyExistsException
 import agency.five.codebase.android.ordermanager.exceptions.WeakPasswordException
-import agency.five.codebase.android.ordermanager.model.Establishment
 import agency.five.codebase.android.ordermanager.model.Staff
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewState
 import agency.five.codebase.android.ordermanager.ui.registerstaff.mapper.EstablishmentMapper
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.State
@@ -79,31 +77,6 @@ class RegisterStaffViewModel(
         _isLoading.value = true
         println("ISLOADING DONE")
         viewModelScope.launch {
-            /*val dif = async {
-                println("LAUNCHED SCOPE")
-                _validationResult.value = validateUserData(name, username, password, establishmentId)
-                if (validationResult.value.isSuccess) {
-                    val staff = Staff(
-                        username = username,
-                        password = password,
-                        name = name,
-                        role = StaffRoles.WAITER,
-                        establishmentId = establishmentId,
-                        approved = false,
-                    )
-                    try {
-                        _validationResult.value = staffRepository.addStaff(staff).run {
-                            onNavigate()
-                        }
-                    } catch (e: UserEmailAlreadyExistsException) {
-                        _validationResult.value = Result.failure(e)
-                    } finally {
-                        _isLoading.value = false
-                    }
-                }
-            }
-            dif.await()*/
-
             val dif = async {
                 _validationResult.value =
                     validateUserData(name, username, password, establishmentId)
@@ -132,7 +105,7 @@ class RegisterStaffViewModel(
         }
     }
 
-    private fun validateUserData(
+    private suspend fun validateUserData(
         name: String,
         username: String,
         password: String,
@@ -150,6 +123,18 @@ class RegisterStaffViewModel(
         if (!passwordREGEX.matcher(password).matches()) {
             return Result.failure(WeakPasswordException())
         }
-        return Result.success(Unit)
+
+        return staffRepository.staffUsernameExists(username).fold(
+            onSuccess = { usernameExists ->
+                if (usernameExists) {
+                    Result.failure(UsernameAlreadyExistsException())
+                } else {
+                    Result.success(Unit)
+                }
+            },
+            onFailure = { exception ->
+                Result.failure(exception)
+            }
+        )
     }
 }
