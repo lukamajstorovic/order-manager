@@ -15,15 +15,15 @@ import kotlinx.coroutines.launch
 class CompleteOrderViewModel(
     private val orderRepository: OrderRepository,
     private val completeOrderMapper: CompleteOrderMapper,
-    private val orderId: Int,
+    private val orderId: String,
 ) : ViewModel() {
     private val _completeOrderViewState = MutableStateFlow(CompleteOrderViewState(orderId, emptyList()))
     val completeOrderViewState: StateFlow<CompleteOrderViewState> =
         _completeOrderViewState
             .flatMapLatest {
-                orderRepository.orderedItemsInActiveOrder(it.orderId)
-                    .map { orderedItems ->
-                        completeOrderMapper.toCompleteOrderViewState(orderId, orderedItems)
+                orderRepository.orderItems(it.orderId)
+                    .map { orderItems ->
+                        completeOrderMapper.toCompleteOrderViewState(orderId, orderItems)
                     }
             }
             .stateIn(
@@ -35,9 +35,9 @@ class CompleteOrderViewModel(
                 )
             )
 
-    fun completeOrder(activeOrderId: Int) {
+    fun completeOrder(orderId: String) {
         viewModelScope.launch {
-            orderRepository.completeOrder(activeOrderId)
+            orderRepository.completeOrder(orderId)
         }
     }
 }

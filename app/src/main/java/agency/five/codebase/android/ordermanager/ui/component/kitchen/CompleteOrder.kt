@@ -73,7 +73,7 @@ private fun CompleteOrderPreview() {
         ) {
             items(products.size) { index ->
                 ItemToComplete(
-                    orderedItemViewState = OrderedItemViewState(
+                    orderItemViewState = OrderItemViewState(
                         itemName = products[index],
                         itemCount = 2,
                     ),
@@ -105,7 +105,7 @@ private fun CompleteOrderPreview() {
         Column(
         ) {
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),
@@ -113,7 +113,7 @@ private fun CompleteOrderPreview() {
                 onClick = { }
             )
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),
@@ -121,7 +121,7 @@ private fun CompleteOrderPreview() {
                 onClick = { }
             )
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),
@@ -129,7 +129,7 @@ private fun CompleteOrderPreview() {
                 onClick = { }
             )
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),
@@ -137,7 +137,7 @@ private fun CompleteOrderPreview() {
                 onClick = { }
             )
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),
@@ -145,7 +145,7 @@ private fun CompleteOrderPreview() {
                 onClick = { }
             )
             ItemToComplete(
-                orderedItemViewState = OrderedItemViewState(
+                orderItemViewState = OrderItemViewState(
                     itemName = "Coca cola 0.5",
                     itemCount = 2,
                 ),

@@ -19,14 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class OrderedItemViewState(
+data class OrderItemViewState(
     val itemName: String,
     val itemCount: Int
 )
 
 @Composable
 fun ItemToComplete(
-    orderedItemViewState: OrderedItemViewState,
+    orderItemViewState: OrderItemViewState,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -38,7 +38,7 @@ fun ItemToComplete(
             backgroundColor = LightGray,
         ) {
             Text(
-                text = orderedItemViewState.itemName,
+                text = orderItemViewState.itemName,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
@@ -57,7 +57,7 @@ fun ItemToComplete(
             backgroundColor = LightGray,
         ) {
             Text(
-                text = orderedItemViewState.itemCount.toString(),
+                text = orderItemViewState.itemCount.toString(),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
@@ -75,7 +75,7 @@ fun ItemToComplete(
 @Composable
 private fun ItemToCompletePreview() {
     ItemToComplete(
-        orderedItemViewState = OrderedItemViewState(
+        orderItemViewState = OrderItemViewState(
             itemName = "Coca cola 0.5",
             itemCount = 2,
         ),

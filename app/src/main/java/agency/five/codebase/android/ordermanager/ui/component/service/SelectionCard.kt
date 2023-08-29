@@ -28,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.math.BigDecimal
 
 
 data class SelectionCardViewState(
     val id: Int,
     val name: String,
     val iconId: Int,
+    val price: String,
 )
 
 @Composable
@@ -114,12 +116,14 @@ private fun SelectionCardPreview() {
         val selectionCardInstance1 = SelectionCardViewState(
             iconId = R.drawable.drinks,
             name = stringResource(id = R.string.drinks),
-            id = 1
+            id = 1,
+            price = "1.50"
         )
         val selectionCardInstance2 = SelectionCardViewState(
             iconId = R.drawable.food,
             name = stringResource(id = R.string.food),
             id = 2,
+            price = "1.50"
         )
         SelectionCard(
             selectionCardViewState = selectionCardInstance1,

@@ -4,7 +4,7 @@ import agency.five.codebase.android.ordermanager.R
 
 const val SELECTION_ROUTE = "Selection"
 const val CONFIRM_ORDER_ROUTE = "ConfirmOrder"
-const val ACTIVE_ORDERS_ROUTE = "ActiveOrders"
+const val ACTIVE_ORDERS_ROUTE = "Orders"
 const val LOGIN_ROUTE = "Login"
 const val STAFF_ROUTE = "Staff"
 const val REGISTER_ROUTE = "RegisterStaff"
@@ -24,7 +24,7 @@ sealed class NavigationItem(
         labelId = R.string.confirm_order
     )
 
-    data object ActiveOrdersDestination : NavigationItem(
+    data object OrdersDestination : NavigationItem(
         route = ACTIVE_ORDERS_ROUTE,
         labelId = R.string.active_orders
     )

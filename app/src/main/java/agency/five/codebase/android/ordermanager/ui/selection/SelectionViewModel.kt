@@ -2,13 +2,15 @@ package agency.five.codebase.android.ordermanager.ui.selection
 
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.model.MenuItem
-import agency.five.codebase.android.ordermanager.model.OrderedItem
+import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
+import agency.five.codebase.android.ordermanager.model.OrderItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class SelectionViewModel(
     private val orderRepository: OrderRepository,
@@ -31,38 +33,22 @@ class SelectionViewModel(
                 initialValue = selectionMapper.toSelectionViewState(emptyList())
             )
 
-    fun addMenuItem(menuItem: MenuItem) {
+    fun addOrderItemOrIncrementAmount(orderItemName: String, price: String) {
         viewModelScope.launch {
-            orderRepository.addMenuItem(menuItem)
-        }
-    }
-
-    fun removeMenuItem(menuItemId: Int) {
-        viewModelScope.launch {
-            orderRepository.removeMenuItem(menuItemId)
-        }
-    }
-
-    fun incrementOrderedItemAmount(menuItemId: Int) {
-        viewModelScope.launch {
-            orderRepository.incrementOrderedItemAmount(menuItemId)
-        }
-    }
-
-    fun addOrderedItemOrIncrementAmount(orderedItemName: String) {
-        viewModelScope.launch {
-            val orderedItems = orderRepository.orderedItems().first()
-            val orderedItem = orderedItems.firstOrNull { orderedItemFromList ->
-                orderedItemFromList.name == orderedItemName
+            val orderItems = orderRepository.notConfirmedOrderedItems().first()
+            val orderItem = orderItems.firstOrNull { orderItemFromList ->
+                orderItemFromList.name == orderItemName
             }
-            if (orderedItem == null) {
-                orderRepository.addOrderedItem(
-                    OrderedItem(
-                        name = orderedItemName
+            if (orderItem == null) {
+                orderRepository.addNotConfirmedOrderedItem(
+                    NotConfirmedOrderItem(
+                        name = orderItemName,
+                        amount = 1,
+                        price = price,
                     )
                 )
             } else {
-                orderRepository.incrementOrderedItemAmount(orderedItem.id)
+                orderRepository.incrementNotCompletedOrderItemAmount(orderItem.name)
             }
         }
     }

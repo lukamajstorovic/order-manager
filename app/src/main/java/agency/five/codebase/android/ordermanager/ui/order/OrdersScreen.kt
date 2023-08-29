@@ -1,6 +1,6 @@
-package agency.five.codebase.android.ordermanager.ui.activeorders
+package agency.five.codebase.android.ordermanager.ui.order
 
-import agency.five.codebase.android.ordermanager.ui.component.kitchen.ActiveOrder
+import agency.five.codebase.android.ordermanager.ui.component.kitchen.Order
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,23 +15,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ActiveOrdersRoute(
-    viewModel: ActiveOrdersViewModel,
-    openOrder: (Int) -> Unit
+fun OrdersRoute(
+    viewModel: OrdersViewModel,
+    openOrder: (String) -> Unit
 ) {
-    val activeOrdersViewState: ActiveOrdersViewState by viewModel.activeOrdersViewState.collectAsState()
+    val ordersViewState: OrdersViewState by viewModel.ordersViewState.collectAsState()
 
-    ActiveOrdersScreen(
-        activeOrdersViewState = activeOrdersViewState,
+    OrdersScreen(
+        ordersViewState = ordersViewState,
         onClickOrder = openOrder
     )
 }
 
 @Composable
-private fun ActiveOrdersScreen(
+private fun OrdersScreen(
     modifier: Modifier = Modifier,
-    activeOrdersViewState: ActiveOrdersViewState,
-    onClickOrder: (Int) -> Unit,
+    ordersViewState: OrdersViewState,
+    onClickOrder: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -42,17 +42,17 @@ private fun ActiveOrdersScreen(
             modifier = Modifier
         ) {
             items(
-                activeOrdersViewState
-                    .activeOrderItemViewStateCollection
+                ordersViewState
+                    .orderItemViewStateCollection
                     .size
             ) { index ->
-                ActiveOrder(
-                    activeOrderItemViewState = activeOrdersViewState
-                        .activeOrderItemViewStateCollection[index],
+                Order(
+                    orderItemViewState = ordersViewState
+                        .orderItemViewStateCollection[index],
                     onClickOrder = {
                         onClickOrder(
-                            activeOrdersViewState
-                                .activeOrderItemViewStateCollection[index]
+                            ordersViewState
+                                .orderItemViewStateCollection[index]
                                 .id
                         )
                     },
@@ -65,35 +65,35 @@ private fun ActiveOrdersScreen(
 
 @Preview
 @Composable
-private fun ActiveOrderScreenPreview() {
-    val activeOrderItemViewStateCollection = listOf(
-        ActiveOrderItemViewState(
-            id = 1,
+private fun OrderScreenPreview() {
+    val orderItemViewStateCollection = listOf(
+        OrderItemViewState(
+            id = "1",
             tableNumber = "13",
             //itemIdCollection = listOf(1, 2)
         ),
-        ActiveOrderItemViewState(
-            id = 2,
+        OrderItemViewState(
+            id = "2",
             tableNumber = "14",
             //itemIdCollection = listOf(1, 2)
         ),
-        ActiveOrderItemViewState(
-            id = 3,
+        OrderItemViewState(
+            id = "3",
             tableNumber = "15",
             //itemIdCollection = listOf(1, 2)
         ),
-        ActiveOrderItemViewState(
-            id = 4,
+        OrderItemViewState(
+            id = "4",
             tableNumber = "16",
             //itemIdCollection = listOf(1, 2)
         ),
     )
 
-    val activeOrdersViewState = ActiveOrdersViewState(
-        activeOrderItemViewStateCollection = activeOrderItemViewStateCollection
+    val ordersViewState = OrdersViewState(
+        orderItemViewStateCollection = orderItemViewStateCollection
     )
-    ActiveOrdersScreen(
-        activeOrdersViewState = activeOrdersViewState
+    OrdersScreen(
+        ordersViewState = ordersViewState
     ) {
 
     }

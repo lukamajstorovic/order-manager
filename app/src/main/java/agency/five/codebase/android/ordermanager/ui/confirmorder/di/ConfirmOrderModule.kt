@@ -10,7 +10,7 @@ val confirmOrderModule = module {
     viewModel {
         ConfirmOrderViewModel(
             get(),
-            get()
+            get(),
         )
     }
     single<ConfirmOrderMapper> { ConfirmOrderMapperImpl() }

@@ -17,7 +17,8 @@ class SelectionMapperImpl : SelectionMapper {
         return SelectionCardViewState(
             id = menuItem.id,
             name = menuItem.name,
-            iconId = getResourceId(menuItem.iconName)
+            iconId = getResourceId(menuItem.iconName),
+            price = menuItem.price,
         )
     }
 

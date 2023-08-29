@@ -1,19 +1,19 @@
 package agency.five.codebase.android.ordermanager.data.firebase.model
 
-import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
+import agency.five.codebase.android.ordermanager.model.OrderItem
 import java.math.BigDecimal
 
-data class DbOrderedItemInActiveOrder(
-    val id: String,
-    val activeOrderId: String,
+data class DbOrderItem(
+    val id: String = "placeholder",
+    val orderId: String,
     val name: String,
     val amount: Int,
     val price: BigDecimal,
 ) {
-    fun toOrderedItemInActiveOrder() =
-        OrderedItemInActiveOrder(
+    fun toOrderItem() =
+        OrderItem(
             id = id,
-            activeOrderId = activeOrderId,
+            orderId = orderId,
             name = name,
             amount = amount,
             price = price,

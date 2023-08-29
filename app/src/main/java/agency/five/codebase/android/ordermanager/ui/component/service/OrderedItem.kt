@@ -24,14 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /*
-data class OrderedItemViewState(
+data class OrderItemViewState(
     val itemName: String,
     val itemCount: Int
 )
  */
 
 @Composable
-fun OrderedItem(
+fun OrderItem(
     confirmOrderItemViewState: ConfirmOrderItemViewState,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -93,8 +93,8 @@ fun OrderedItem(
 
 @Preview
 @Composable
-private fun OrderedItemPreview() {
-    OrderedItem(
+private fun OrderItemPreview() {
+    OrderItem(
         confirmOrderItemViewState = ConfirmOrderItemViewState(
             id = 1,
             name = "Coca cola 0.5",

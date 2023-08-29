@@ -25,45 +25,44 @@ fun SelectionRoute(
 ) {
     val selectionViewState by viewModel.selectionViewState.collectAsState()
 
-
-
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { orderedItem -> viewModel.addOrderedItemOrIncrementAmount(orderedItem) }
+        onClickSelectionCard = { orderItemName, price -> viewModel.addOrderItemOrIncrementAmount(orderItemName, price) }
     )
 }
 
 @Composable
 private fun SelectionScreen(
     selectionViewState: SelectionViewState,
-    onClickSelectionCard: (String) -> Unit,
+    onClickSelectionCard: (String, String) -> Unit,
 ) {
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(GRID_COUNT),
-            modifier = Modifier
-                .background(LightGray)
-                .fillMaxSize()
-                .padding(start = 5.dp, end = 5.dp, top = 15.dp)
-        ) {
-            items(
-                items = selectionViewState.selectionCardViewStateCollection,
-                key = { selectionCardViewState: SelectionCardViewState ->
-                    selectionCardViewState.id
-                }
-            ) { currentSelectionCard: SelectionCardViewState ->
-                SelectionCard(
-                    selectionCardViewState = currentSelectionCard,
-                    modifier = Modifier,
-                        //.align(Alignment.CenterHorizontally),
-                    onClick = {
-                        onClickSelectionCard(
-                            currentSelectionCard.name,
-                        )
-                    }
-                )
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(GRID_COUNT),
+        modifier = Modifier
+            .background(LightGray)
+            .fillMaxSize()
+            .padding(start = 5.dp, end = 5.dp, top = 15.dp)
+    ) {
+        items(
+            items = selectionViewState.selectionCardViewStateCollection,
+            key = { selectionCardViewState: SelectionCardViewState ->
+                selectionCardViewState.id
             }
+        ) { currentSelectionCard: SelectionCardViewState ->
+            SelectionCard(
+                selectionCardViewState = currentSelectionCard,
+                modifier = Modifier,
+                //.align(Alignment.CenterHorizontally),
+                onClick = {
+                    onClickSelectionCard(
+                        currentSelectionCard.name,
+                        currentSelectionCard.price,
+                    )
+                }
+            )
         }
+    }
 }
 
 @Preview
@@ -76,16 +75,18 @@ private fun SelectionScreenPreview() {
                 id = 1,
                 iconId = R.drawable.drinks,
                 name = stringResource(id = R.string.drinks),
+                price = "1.50"
             ),
             SelectionCardViewState(
                 id = 2,
                 iconId = R.drawable.food,
                 name = stringResource(id = R.string.food),
+                price = "1.50"
             )
         )
     )
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { },
+        onClickSelectionCard = { _, _ ->},
     )
 }

@@ -6,15 +6,14 @@ import agency.five.codebase.android.ordermanager.data.di.firebaseModule
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.mock.MenuItemMock
-import agency.five.codebase.android.ordermanager.ui.activeorders.di.activeOrdersModule
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
 import agency.five.codebase.android.ordermanager.ui.individualstaff.di.individualStaffModule
 import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
+import agency.five.codebase.android.ordermanager.ui.order.di.ordersModule
 import agency.five.codebase.android.ordermanager.ui.registerstaff.di.registerStaffModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
 import agency.five.codebase.android.ordermanager.ui.staff.di.staffModule
-import agency.five.codebase.android.ordermanager.utils.module.dateTimeFormatterModule
 import android.app.Application
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,7 +33,7 @@ class OrderManagerApp : Application() {
             androidContext(this@OrderManagerApp)
             modules(
                 dataModule,
-                activeOrdersModule,
+                ordersModule,
                 completeOrderModule,
                 selectionModule,
                 confirmOrderModule,
@@ -42,7 +41,6 @@ class OrderManagerApp : Application() {
                 staffModule,
                 authenticationModule,
                 registerStaffModule,
-                dateTimeFormatterModule,
                 firebaseModule,
                 individualStaffModule,
             )

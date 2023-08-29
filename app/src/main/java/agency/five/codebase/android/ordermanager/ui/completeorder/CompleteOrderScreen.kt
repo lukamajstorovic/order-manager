@@ -5,7 +5,7 @@ import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_5
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ItemToComplete
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
-import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderedItemViewState
+import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderItemViewState
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -40,7 +40,7 @@ fun CompleteOrderRoute(
 private fun CompleteOrderScreen(
     modifier: Modifier = Modifier,
     completeOrderViewState: CompleteOrderViewState,
-    onClickCompleteOrder: (Int) -> Unit,
+    onClickCompleteOrder: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -53,7 +53,7 @@ private fun CompleteOrderScreen(
         ) {
             items(completeOrderViewState.completeOrderItemViewStateCollection.size) { index ->
                 ItemToComplete(
-                    orderedItemViewState = OrderedItemViewState(
+                    orderItemViewState = OrderItemViewState(
                         itemName = completeOrderViewState
                             .completeOrderItemViewStateCollection[index]
                             .name,
@@ -85,29 +85,29 @@ private fun CompleteOrderScreen(
 private fun CompleteOrderScreenPreview() {
     val completeOrderItemViewStateCollection = listOf(
         CompleteOrderItemViewState(
-            id = 1,
+            id = "1",
             name = "whatever 1",
             amount = 3
         ),
         CompleteOrderItemViewState(
-            id = 2,
+            id = "2",
             name = "whatever 2",
             amount = 2
         ),
         CompleteOrderItemViewState(
-            id = 3,
+            id = "3",
             name = "whatever 3",
             amount = 1
         ),
         CompleteOrderItemViewState(
-            id = 4,
+            id = "4",
             name = "whatever 4",
             amount = 4
         ),
     )
 
     val completeOrderViewState = CompleteOrderViewState(
-        orderId = 1,
+        orderId = "1",
         completeOrderItemViewStateCollection = completeOrderItemViewStateCollection
     )
     CompleteOrderScreen(

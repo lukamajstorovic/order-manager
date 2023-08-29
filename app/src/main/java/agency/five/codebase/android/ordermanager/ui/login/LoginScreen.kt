@@ -79,8 +79,8 @@ private fun LoginScreen(
         ) {
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
-            var username by remember { mutableStateOf(TextFieldValue(text = "lmajstor")) }
-            var password by remember { mutableStateOf(TextFieldValue(text = "123456")) }
+            var username by remember { mutableStateOf(TextFieldValue(text = "asd")) }
+            var password by remember { mutableStateOf(TextFieldValue(text = "asdASADASD")) }
             val scope = rememberCoroutineScope()
             val focusRequester = remember { FocusRequester() }
             Text(

@@ -3,7 +3,7 @@ package agency.five.codebase.android.ordermanager.ui.component.kitchen
 import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_4
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrderItemViewState
+import agency.five.codebase.android.ordermanager.ui.order.OrderItemViewState
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.clickable
@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ActiveOrder(
-    activeOrderItemViewState: ActiveOrderItemViewState,
+fun Order(
+    orderItemViewState: OrderItemViewState,
     modifier: Modifier = Modifier,
     onClickOrder: () -> Unit
 ) {
@@ -46,7 +46,7 @@ fun ActiveOrder(
                 .clickable { onClickOrder() }
         ) {
             Text(
-                text = stringResource(id = R.string.order_for_table_) + activeOrderItemViewState.tableNumber,
+                text = stringResource(id = R.string.order_for_table_) + orderItemViewState.tableNumber,
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Default,
@@ -71,10 +71,10 @@ fun ActiveOrder(
 
 @Preview
 @Composable
-private fun ActiveOrderPreview() {
-    ActiveOrder(
-        activeOrderItemViewState = ActiveOrderItemViewState(
-            id = 1,
+private fun OrderPreview() {
+    Order(
+        orderItemViewState = OrderItemViewState(
+            id = "1",
             tableNumber = "13",
             //itemIdCollection = listOf(1, 2)
         ),

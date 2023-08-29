@@ -1,31 +1,26 @@
 package agency.five.codebase.android.ordermanager.data.repository.order
 
-import agency.five.codebase.android.ordermanager.data.room.dao.ActiveOrderDao
+import agency.five.codebase.android.ordermanager.data.firebase.OrderService
+import agency.five.codebase.android.ordermanager.data.room.NotConfirmedOrderService
 import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao
-import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemDao
-import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemInActiveOrderDao
-import agency.five.codebase.android.ordermanager.data.room.model.DbActiveOrder
+import agency.five.codebase.android.ordermanager.data.room.dao.NotConfirmedOrderItemDao
 import agency.five.codebase.android.ordermanager.data.room.model.DbMenuItem
-import agency.five.codebase.android.ordermanager.data.room.model.DbOrderedItem
-import agency.five.codebase.android.ordermanager.data.room.model.DbOrderedItemInActiveOrder
-import agency.five.codebase.android.ordermanager.model.ActiveOrder
 import agency.five.codebase.android.ordermanager.model.MenuItem
-import agency.five.codebase.android.ordermanager.model.OrderedItem
-import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
+import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
+import agency.five.codebase.android.ordermanager.model.Order
+import agency.five.codebase.android.ordermanager.model.OrderItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
 class OrderRepositoryImpl(
     private val menuItemDao: MenuItemDao,
-    private val orderedItemDao: OrderedItemDao,
-    private val activeOrderDao: ActiveOrderDao,
-    private val orderedItemInActiveOrderDao: OrderedItemInActiveOrderDao,
+    private val orderService: OrderService,
+    private val notConfirmedOrderService: NotConfirmedOrderService,
     private val bgDispatcher: CoroutineDispatcher,
 ) : OrderRepository {
     override fun menuItems(): Flow<List<MenuItem>> = menuItemDao.getMenuItems().map {
@@ -42,48 +37,44 @@ class OrderRepositoryImpl(
         replay = 1,
     )
 
-    override fun orderedItems(): Flow<List<OrderedItem>> = orderedItemDao.getOrderedItems().map {
-        it.map { dbOrderedItem ->
-            OrderedItem(
-                id = dbOrderedItem.id.toInt(),
-                name = dbOrderedItem.name,
-                amount = dbOrderedItem.amount,
-            )
-        }
-    }.shareIn(
-        scope = CoroutineScope(bgDispatcher),
-        started = SharingStarted.WhileSubscribed(1000L),
-        replay = 1,
-    )
-
-    override fun activeOrders(): Flow<List<ActiveOrder>> = activeOrderDao.getActiveOrders().map {
-        it.map { dbActiveOrder ->
-            ActiveOrder(
-                id = dbActiveOrder.id.toInt(),
-                tableNumber = dbActiveOrder.tableNumber,
-            )
-        }
-    }.shareIn(
-        scope = CoroutineScope(bgDispatcher),
-        started = SharingStarted.WhileSubscribed(1000L),
-        replay = 1,
-    )
-
-    override fun orderedItemsInActiveOrder(activeOrderId: Int): Flow<List<OrderedItemInActiveOrder>> =
-        orderedItemInActiveOrderDao.getOrderedItemsInActiveOrder(activeOrderId).map {
-            it.map { dbOrderedItemInActiveOrder ->
-                OrderedItemInActiveOrder(
-                    id = dbOrderedItemInActiveOrder.id.toInt(),
-                    name = dbOrderedItemInActiveOrder.name,
-                    amount = dbOrderedItemInActiveOrder.amount,
-                    activeOrderId = dbOrderedItemInActiveOrder.activeOrderId.toInt()
-                )
+    override fun orderItems(orderId: String): Flow<List<OrderItem>> =
+        orderService.getOrderItems(orderId).map {
+            it.map { dbOrderItem ->
+                dbOrderItem.toOrderItem()
             }
         }.shareIn(
             scope = CoroutineScope(bgDispatcher),
             started = SharingStarted.WhileSubscribed(1000L),
             replay = 1,
         )
+
+    override fun allActiveOrders(): Flow<List<Order>> =
+        orderService.getAllActiveOrders().map {
+            it.map { dbOrder ->
+                dbOrder.toOrder()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
+
+    override fun allCompletedOrders(): Flow<List<Order>> =
+        orderService.getAllCompletedOrders().map {
+            it.map { dbOrder ->
+                dbOrder.toOrder()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
+
+    override suspend fun orderById(id: String): Result<Order> {
+        return orderService.getOrderById(id).map { dbOrder ->
+            dbOrder.toOrder()
+        }
+    }
 
     override suspend fun addMenuItem(menuItem: MenuItem) {
         withContext(bgDispatcher) {
@@ -103,56 +94,99 @@ class OrderRepositoryImpl(
         }
     }
 
-    override suspend fun addOrderedItem(orderedItem: OrderedItem) {
-        withContext(bgDispatcher) {
-            orderedItemDao.insertOrderedItem(
-                DbOrderedItem(
-                    //id = orderedItem.id.toLong(),
-                    name = orderedItem.name,
-                    amount = orderedItem.amount
-                )
-            )
-        }
+    override suspend fun addOrder(order: Order): Result<String> {
+        return orderService.addOrder(
+            order.toDbOrder()
+        )
     }
 
-    override suspend fun confirmOrder(tableNumber: String) {
-        withContext(bgDispatcher) {
-            val activeOrderId = activeOrderDao.insertActiveOrder(
-                DbActiveOrder(
-                    tableNumber = tableNumber
-                )
-            )
-            orderedItems().first()
-                .forEach { orderedItem ->
-                    orderedItemInActiveOrderDao.insertOrderedItemInActiveOrder(
-                        DbOrderedItemInActiveOrder(
-                            name = orderedItem.name,
-                            amount = orderedItem.amount,
-                            activeOrderId = activeOrderId,
-                        )
-                    )
+    override suspend fun addOrderItem(orderItem: OrderItem): Result<Unit> {
+        return orderService.addOrderItem(
+            orderItem.toDbOrderItem()
+        )
+    }
+
+    override suspend fun confirmOrder(order: Order): Result<Unit> {
+        try {
+            orderService.addOrder(
+                order.toDbOrder()
+            ).fold(
+                onSuccess = { orderId ->
+                    notConfirmedOrderService.orderedItems()
+                        .collect {
+                            it.forEach { orderItem ->
+                                orderService.addOrderItem(
+                                    orderItem.toOrderItem(orderId = orderId).toDbOrderItem()
+                                ).fold(
+                                    onSuccess = {},
+                                    onFailure = { exception ->
+                                         throw(exception)
+                                    }
+                                )
+                            }
+                        }
+
+                },
+                onFailure = { exception ->
+                    return Result.failure(exception)
                 }
-            orderedItemDao.deleteAllOrderedItems()
+            )
+            notConfirmedOrderService.deleteAllOrderItems()
+        } catch (exception: Exception) {
+            return Result.failure(exception)
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun incrementNotCompletedOrderItemAmount(orderItemName: String) {
+        withContext(bgDispatcher) {
+            notConfirmedOrderService.incrementOrderedItemAmount(orderItemName)
         }
     }
 
-    override suspend fun incrementOrderedItemAmount(orderedItemId: Int) {
+    override suspend fun subtractNotCompletedOrderItemAmount(orderItemId: Int) {
         withContext(bgDispatcher) {
-            orderedItemDao.incrementOrderedItemAmount(orderedItemId)
+            notConfirmedOrderService.subtractOrderedItemAmount(orderItemId)
         }
     }
 
-    override suspend fun subtractOrderedItemAmount(orderedItemId: Int) {
-        withContext(bgDispatcher) {
-            orderedItemDao.subtractOrderedItemAmount(orderedItemId)
-            orderedItemDao.deleteOrderedItemIfNecessary(orderedItemId)
-        }
+    override suspend fun updateOrder(order: Order): Result<Unit> {
+        return orderService.updateOrder(
+            order.toDbOrder()
+        )
     }
 
-    override suspend fun completeOrder(activeOrderId: Int) {
-        withContext(bgDispatcher) {
-            orderedItemInActiveOrderDao.deleteOrderedItemsInActiveOrder(activeOrderId)
-            activeOrderDao.deleteActiveOrder(activeOrderId)
-        }
+    override suspend fun updateOrderItem(orderItem: OrderItem): Result<Unit> {
+        return orderService.updateOrderItem(
+            orderItem.toDbOrderItem()
+        )
+    }
+
+    override suspend fun completeOrder(orderId: String): Result<Unit> {
+        return orderById(orderId).fold(
+            onSuccess = { order ->
+                orderService.updateOrder(
+                    order.copy(active = false).toDbOrder()
+                )
+            },
+            onFailure = { exception ->
+                Result.failure(exception)
+            }
+        )
+    }
+
+    override fun notConfirmedOrderedItems(): Flow<List<NotConfirmedOrderItem>> =
+        notConfirmedOrderService.orderedItems().map {
+            it.map { dbNotConfirmedOrderItem ->
+                dbNotConfirmedOrderItem.toNotConfirmedOrderItem()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
+
+    override suspend fun addNotConfirmedOrderedItem(orderedItem: NotConfirmedOrderItem) {
+        notConfirmedOrderService.addOrderedItem(orderedItem.toDbNotConfirmedOrderItem())
     }
 }

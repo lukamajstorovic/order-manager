@@ -5,7 +5,7 @@ import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_3
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
-import agency.five.codebase.android.ordermanager.ui.component.service.OrderedItem
+import agency.five.codebase.android.ordermanager.ui.component.service.OrderItem
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
@@ -50,16 +50,14 @@ import androidx.compose.ui.unit.sp
 fun ConfirmOrderRoute(
     viewModel: ConfirmOrderViewModel,
     onNavigateToSelectionScreen: () -> Unit,
+    onClickCompleteOrder: (String) -> Unit
 ) {
     val confirmOrderViewState by viewModel.confirmOrderViewState.collectAsState()
 
     ConfirmOrderScreen(
         confirmOrderViewState = confirmOrderViewState,
-        onClickCompleteOrder = { tableNumber ->
-            viewModel.confirmOrder(tableNumber)
-            onNavigateToSelectionScreen()
-        },
-        onClickRemoveItem = { id -> viewModel.subtractOrderedItemAmount(id) }
+        onClickCompleteOrder = { onClickCompleteOrder },
+        onClickRemoveItem = { id -> viewModel.subtractOrderItemAmount(id) }
     )
 }
 
@@ -145,7 +143,7 @@ private fun ConfirmOrderScreen(
                     .confirmOrderItemViewStateCollection
                     .size
             ) { index ->
-                OrderedItem(
+                OrderItem(
                     confirmOrderItemViewState = confirmOrderViewState
                         .confirmOrderItemViewStateCollection[index],
                     modifier = Modifier.padding(10.dp),

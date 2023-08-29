@@ -1,15 +1,15 @@
 package agency.five.codebase.android.ordermanager.ui.completeorder.mapper
 
-import agency.five.codebase.android.ordermanager.model.OrderedItemInActiveOrder
+import agency.five.codebase.android.ordermanager.model.OrderItem
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderItemViewState
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewState
 
 class CompleteOrderMapperImpl : CompleteOrderMapper {
     override fun toCompleteOrderViewState(
-        orderId: Int,
-        orderedItems: List<OrderedItemInActiveOrder>
+        orderId: String,
+        orderItems: List<OrderItem>
     ): CompleteOrderViewState {
-        val completeOrderItemViewStateCollection = orderedItems.map {
+        val completeOrderItemViewStateCollection = orderItems.map {
             CompleteOrderItemViewState(
                 id = it.id,
                 name = it.name,
