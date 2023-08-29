@@ -16,7 +16,7 @@ interface NotConfirmedOrderItemDao {
     fun insertOrderItem(orderItem: DbNotConfirmedOrderItem)
 
     @Query("DELETE FROM orderItems")
-    fun deleteAllOrderItems()
+    suspend fun deleteAllOrderItems(): Int
 
     @Query("UPDATE orderItems SET amount=amount+1 WHERE name=:name")
     fun incrementOrderItemAmount(name: String)

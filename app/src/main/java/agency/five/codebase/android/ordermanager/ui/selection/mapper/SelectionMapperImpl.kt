@@ -18,7 +18,6 @@ class SelectionMapperImpl : SelectionMapper {
             id = menuItem.id,
             name = menuItem.name,
             iconId = getResourceId(menuItem.iconName),
-            price = menuItem.price,
         )
     }
 

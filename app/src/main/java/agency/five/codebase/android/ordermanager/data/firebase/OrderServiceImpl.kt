@@ -37,9 +37,8 @@ class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService 
         return DbOrderItem(
             id = orderItem.id,
             orderId = orderItem.getString("orderId") ?: "",
-            name = orderItem.getString("orderId") ?: "",
-            amount = orderItem.getLong("price")?.toInt() ?: 0,
-            price = orderItem.getString("price")?.toBigDecimal() ?: BigDecimal.ZERO,
+            name = orderItem.getString("name") ?: "",
+            amount = orderItem.getLong("amount")?.toInt() ?: 0,
         )
     }
 

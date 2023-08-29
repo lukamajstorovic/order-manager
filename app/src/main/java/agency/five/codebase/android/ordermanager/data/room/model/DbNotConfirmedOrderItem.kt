@@ -11,21 +11,18 @@ data class DbNotConfirmedOrderItem(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val amount: Int,
-    val price: String,
 ) {
     fun toNotConfirmedOrderItem() =
         NotConfirmedOrderItem(
             id = id.toInt(),
             name = name,
             amount = amount,
-            price = price,
         )
     fun toOrderItem(orderId: String) =
         OrderItem(
             orderId = orderId,
             name = name,
             amount = amount,
-            price = BigDecimal(price),
         )
 }
 

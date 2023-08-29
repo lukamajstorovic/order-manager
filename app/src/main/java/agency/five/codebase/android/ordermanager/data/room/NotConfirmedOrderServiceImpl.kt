@@ -41,7 +41,6 @@ class NotConfirmedOrderServiceImpl(
                     id = dbOrderedItem.id,
                     name = dbOrderedItem.name,
                     amount = dbOrderedItem.amount,
-                    price = dbOrderedItem.price,
                 )
             }
         }.shareIn(
@@ -89,9 +88,22 @@ class NotConfirmedOrderServiceImpl(
         }
     }
 
-    override suspend fun deleteAllOrderItems() {
-        withContext(bgDispatcher) {
-            orderedItemDao.deleteAllOrderItems()
+    override suspend fun deleteAllOrderItems(): Result<Int> {
+        return withContext(bgDispatcher) {
+            try {
+                val deletedRowsCount = orderedItemDao.deleteAllOrderItems()
+                if (deletedRowsCount > 0) {
+                    println("DELETED $deletedRowsCount")
+                    Result.success(deletedRowsCount)
+                } else {
+                    println("DELETED 0")
+                    Result.failure(Exception("ROOM EXCEPTION ROW COUNT: $deletedRowsCount"))
+                }
+            } catch (exception: Exception) {
+                println("Exception during deleteAllOrderItems: $exception")
+                Result.failure(exception)
+            }
         }
     }
+
 }

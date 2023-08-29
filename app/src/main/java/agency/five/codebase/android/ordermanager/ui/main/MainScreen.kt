@@ -184,10 +184,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val viewModel: ConfirmOrderViewModel = getViewModel()
                 ConfirmOrderRoute(
                     viewModel = viewModel,
-                    onNavigateToSelectionScreen = {
-
-                    },
-                    onClickCompleteOrder = {tableNumber ->
+                    onClickConfirmOrder = {tableNumber ->
                         viewModel.confirmOrder(userData.username, tableNumber)
                         navController.navigateUp()
                     }

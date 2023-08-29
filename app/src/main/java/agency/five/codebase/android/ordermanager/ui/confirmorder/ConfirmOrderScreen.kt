@@ -4,11 +4,11 @@ import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_3
-import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
 import agency.five.codebase.android.ordermanager.ui.component.service.OrderItem
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -49,14 +51,13 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ConfirmOrderRoute(
     viewModel: ConfirmOrderViewModel,
-    onNavigateToSelectionScreen: () -> Unit,
-    onClickCompleteOrder: (String) -> Unit
+    onClickConfirmOrder: (String) -> Unit
 ) {
     val confirmOrderViewState by viewModel.confirmOrderViewState.collectAsState()
 
     ConfirmOrderScreen(
         confirmOrderViewState = confirmOrderViewState,
-        onClickCompleteOrder = { onClickCompleteOrder },
+        onClickConfirmOrder = onClickConfirmOrder,
         onClickRemoveItem = { id -> viewModel.subtractOrderItemAmount(id) }
     )
 }
@@ -66,7 +67,7 @@ fun ConfirmOrderRoute(
 private fun ConfirmOrderScreen(
     modifier: Modifier = Modifier,
     confirmOrderViewState: ConfirmOrderViewState,
-    onClickCompleteOrder: (String) -> Unit,
+    onClickConfirmOrder: (String) -> Unit,
     onClickRemoveItem: (Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -93,7 +94,8 @@ private fun ConfirmOrderScreen(
                     .align(CenterVertically)
             )
             Card(
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier
+                    .padding(10.dp)
                     .align(CenterVertically),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 elevation = 10.dp,
@@ -165,11 +167,41 @@ private fun ConfirmOrderScreen(
 //                color = Color.Black,
 //                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
 //            )
-            OrderButton(
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+            ) {
+                Button(
+                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+                    onClick = {
+                        onClickConfirmOrder(text.text)
+                    },
+                    //border = BorderStroke(1.dp, Color.Black),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = LightGray,
+                        backgroundColor = LightGray
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        text = "Confirm order",
+                        color = DarkGreen,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Default,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    )
+                }
+            }
+            /*OrderButton(
                 modifier = Modifier,
-                onClick = { onClickCompleteOrder(text.text) },
+                onClick = { onClickCompleteOrder },
                 text = stringResource(id = R.string.confirm_order)
-            )
+            )*/
         }
     }
 }
@@ -205,7 +237,7 @@ private fun ConfirmOrderScreenPreview() {
     )
     ConfirmOrderScreen(
         confirmOrderViewState = confirmOrderViewState,
-        onClickCompleteOrder = { },
+        onClickConfirmOrder = { },
         onClickRemoveItem = { }
     )
 }

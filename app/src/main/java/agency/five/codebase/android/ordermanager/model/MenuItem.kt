@@ -4,5 +4,4 @@ data class MenuItem(
     val id: Int,
     val name: String,
     val iconName: String,
-    val price: String = "1.50",
 )

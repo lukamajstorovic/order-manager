@@ -13,5 +13,5 @@ interface NotConfirmedOrderService {
     suspend fun addOrderedItem(orderedItem: DbNotConfirmedOrderItem)
     suspend fun incrementOrderedItemAmount(orderedItemName: String)
     suspend fun subtractOrderedItemAmount(orderedItemId: Int)
-    suspend fun deleteAllOrderItems()
+    suspend fun deleteAllOrderItems(): Result<Int>
 }

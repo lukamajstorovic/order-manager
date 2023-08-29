@@ -27,14 +27,14 @@ fun SelectionRoute(
 
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { orderItemName, price -> viewModel.addOrderItemOrIncrementAmount(orderItemName, price) }
+        onClickSelectionCard = { orderItemName -> viewModel.addOrderItemOrIncrementAmount(orderItemName) }
     )
 }
 
 @Composable
 private fun SelectionScreen(
     selectionViewState: SelectionViewState,
-    onClickSelectionCard: (String, String) -> Unit,
+    onClickSelectionCard: (String) -> Unit,
 ) {
 
     LazyVerticalGrid(
@@ -57,7 +57,6 @@ private fun SelectionScreen(
                 onClick = {
                     onClickSelectionCard(
                         currentSelectionCard.name,
-                        currentSelectionCard.price,
                     )
                 }
             )
@@ -75,18 +74,16 @@ private fun SelectionScreenPreview() {
                 id = 1,
                 iconId = R.drawable.drinks,
                 name = stringResource(id = R.string.drinks),
-                price = "1.50"
             ),
             SelectionCardViewState(
                 id = 2,
                 iconId = R.drawable.food,
                 name = stringResource(id = R.string.food),
-                price = "1.50"
             )
         )
     )
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { _, _ ->},
+        onClickSelectionCard = {},
     )
 }

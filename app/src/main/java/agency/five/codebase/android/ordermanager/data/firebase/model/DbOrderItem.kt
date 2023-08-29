@@ -8,7 +8,6 @@ data class DbOrderItem(
     val orderId: String,
     val name: String,
     val amount: Int,
-    val price: BigDecimal,
 ) {
     fun toOrderItem() =
         OrderItem(
@@ -16,6 +15,5 @@ data class DbOrderItem(
             orderId = orderId,
             name = name,
             amount = amount,
-            price = price,
         )
 }

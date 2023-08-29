@@ -42,6 +42,13 @@ class ConfirmOrderViewModel(
                     completeOrderStaffId = "",
                     active = true,
                 )
+            ).fold(
+                onSuccess = {
+                    println("MANAGED: $it")
+                },
+                onFailure = {
+                    println("FAILED: $it")
+                }
             )
         }
     }

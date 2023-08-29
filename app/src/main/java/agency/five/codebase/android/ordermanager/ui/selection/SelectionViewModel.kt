@@ -33,7 +33,7 @@ class SelectionViewModel(
                 initialValue = selectionMapper.toSelectionViewState(emptyList())
             )
 
-    fun addOrderItemOrIncrementAmount(orderItemName: String, price: String) {
+    fun addOrderItemOrIncrementAmount(orderItemName: String) {
         viewModelScope.launch {
             val orderItems = orderRepository.notConfirmedOrderedItems().first()
             val orderItem = orderItems.firstOrNull { orderItemFromList ->
@@ -44,7 +44,6 @@ class SelectionViewModel(
                     NotConfirmedOrderItem(
                         name = orderItemName,
                         amount = 1,
-                        price = price,
                     )
                 )
             } else {
