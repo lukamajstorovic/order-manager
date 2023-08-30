@@ -9,16 +9,18 @@ import agency.five.codebase.android.ordermanager.navigation.INDIVIDUAL_STAFF_KEY
 import agency.five.codebase.android.ordermanager.navigation.IndividualStaffDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
-import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
-import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderRoute
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewModel
+import agency.five.codebase.android.ordermanager.ui.component.DrawerBody
+import agency.five.codebase.android.ordermanager.ui.component.DrawerMenuItem
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffRoute
 import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
+import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
+import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffRoute
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
@@ -29,6 +31,7 @@ import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,9 +41,15 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -74,6 +83,25 @@ import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
+fun TopBarr(
+    onNavigationItemClick: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(text = "TITLE")
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigationItemClick) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Toggle drawer"
+                )
+            }
+        },
+    )
+}
+
+@Composable
 fun MainScreen(userDataViewModel: UserDataViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -92,7 +120,31 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
                 userData.role != StaffRoles.NONE &&
                 userData != null
+    val scaffoldState = rememberScaffoldState()
     Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            DrawerBody(
+                menuItems = listOf(
+                    DrawerMenuItem(
+                        path = NavigationItem.RegisterStaffDestination.route,
+                        text = "REGISTER"
+                    ),
+                    DrawerMenuItem(
+                        path = NavigationItem.LoginDestination.route,
+                        text = "LOGIN"
+                    ),
+                ),
+                onItemClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                    navController.navigate(
+                       it.path
+                    )
+                }
+            )
+        },
         topBar = {
             if (topBarLoggedIn) {
                 TopBar(
@@ -108,7 +160,16 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     },
                     userData = userData,
                 )
+            } else {
+                TopBarr(
+                    onNavigationItemClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    }
+                )
             }
+
         },
         bottomBar = {
             if (showBottomBar)
@@ -184,7 +245,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val viewModel: ConfirmOrderViewModel = getViewModel()
                 ConfirmOrderRoute(
                     viewModel = viewModel,
-                    onClickConfirmOrder = {tableNumber ->
+                    onClickConfirmOrder = { tableNumber ->
                         viewModel.confirmOrder(userData, tableNumber)
                         navController.navigateUp()
                     }
@@ -224,11 +285,15 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 viewModel.updateEstablishmentId(userDataViewModel)
                 StaffRoute(
                     viewModel = viewModel,
-                    onClickStaff = {staffId ->
+                    onClickStaff = { staffId ->
                         navController.navigate(
                             IndividualStaffDestination.createNavigationRoute(staffId)
                         )
-                        println("CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(staffId))
+                        println(
+                            "CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(
+                                staffId
+                            )
+                        )
                     }
                 )
             }
@@ -262,7 +327,10 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             )
                         }
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(validationResult.getOrNull().toString() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        snackbarHostState.showSnackbar(
+                            validationResult.getOrNull()
+                                .toString() + validationResult.exceptionOrNull()?.message + "TEEST"
+                        )
                         println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
                     }
