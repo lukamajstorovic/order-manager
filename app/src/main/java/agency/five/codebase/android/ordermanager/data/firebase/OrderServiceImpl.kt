@@ -25,6 +25,7 @@ class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService 
     private fun mapOrderDocumentToDbOrder(order: DocumentSnapshot): DbOrder {
         return DbOrder(
             id = order.id,
+            establishmentId = order.getString("establishmentId") ?: "",
             tableNumber = order.getString("tableNumber") ?: "",
             createOrderStaffId = order.getString("createOrderStaffId") ?: "",
             completeOrderStaffId = order.getString("completeOrderStaffId") ?: "",
@@ -42,11 +43,12 @@ class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService 
         )
     }
 
-    override fun getAllActiveOrders(): Flow<List<DbOrder>> {
+    override fun getAllActiveOrders(establishmentId: String): Flow<List<DbOrder>> {
         return callbackFlow {
             val listenerRegistration =
                 fireStore
                     .collection(FIRESTORE_COLLECTION_ORDERS)
+                    .whereEqualTo("establishmentId", establishmentId)
                     .whereEqualTo("active", true)
                     .addSnapshotListener { snapshot, error ->
                         try {

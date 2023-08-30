@@ -185,7 +185,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 ConfirmOrderRoute(
                     viewModel = viewModel,
                     onClickConfirmOrder = {tableNumber ->
-                        viewModel.confirmOrder(userData.username, tableNumber)
+                        viewModel.confirmOrder(userData, tableNumber)
                         navController.navigateUp()
                     }
                 )
@@ -199,7 +199,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     getViewModel(parameters = { parametersOf(orderId) })
                 CompleteOrderRoute(
                     viewModel = viewModel,
-                    onCompleteOrder = { navController.navigateUp() }
+                    onCompleteOrder = { navController.navigateUp() },
+                    currentUser = userData,
                 )
             }
             composable(

@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.repository.order
 
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.firebase.OrderService
 import agency.five.codebase.android.ordermanager.data.room.NotConfirmedOrderService
 import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao
@@ -56,8 +57,8 @@ class OrderRepositoryImpl(
             replay = 1,
         )
 
-    override fun allActiveOrders(): Flow<List<Order>> =
-        orderService.getAllActiveOrders().map {
+    override fun allActiveOrders(establishmentId: String): Flow<List<Order>> =
+        orderService.getAllActiveOrders(establishmentId).map {
             it.map { dbOrder ->
                 dbOrder.toOrder()
             }
@@ -286,11 +287,14 @@ class OrderRepositoryImpl(
         )
     }
 
-    override suspend fun completeOrder(orderId: String): Result<Unit> {
+    override suspend fun completeOrder(currentUser: UserData, orderId: String): Result<Unit> {
         return orderById(orderId).fold(
             onSuccess = { order ->
                 orderService.updateOrder(
-                    order.copy(active = false).toDbOrder()
+                    order.copy(
+                        completeOrderStaffId = currentUser.id,
+                        active = false
+                    ).toDbOrder()
                 )
             },
             onFailure = { exception ->

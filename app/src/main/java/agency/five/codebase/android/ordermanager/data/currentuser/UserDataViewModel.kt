@@ -27,6 +27,7 @@ class UserDataViewModel(application: Application) : AndroidViewModel(application
     suspend fun setUserData(staff: Staff) {
         userDataStore.updateData { currentUserData ->
             currentUserData.copy(
+                id = staff.id,
                 username = staff.username,
                 name = staff.name,
                 role = staff.role,

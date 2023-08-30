@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.completeorder
 
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.completeorder.mapper.CompleteOrderMapper
 import androidx.lifecycle.ViewModel
@@ -35,9 +36,9 @@ class CompleteOrderViewModel(
                 )
             )
 
-    fun completeOrder(orderId: String) {
+    fun completeOrder(currentUser: UserData, orderId: String) {
         viewModelScope.launch {
-            orderRepository.completeOrder(orderId)
+            orderRepository.completeOrder(currentUser, orderId)
         }
     }
 }

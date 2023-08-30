@@ -14,13 +14,14 @@ import kotlinx.coroutines.flow.stateIn
 class OrdersViewModel(
     private val orderRepository: OrderRepository,
     private val ordersMapper: OrdersMapper,
+    private val establishmentId: String,
 ) : ViewModel() {
     private val _ordersViewState = MutableStateFlow(OrdersViewState(emptyList()))
 
     val ordersViewState: StateFlow<OrdersViewState> =
         _ordersViewState
             .flatMapLatest {
-                orderRepository.allActiveOrders()
+                orderRepository.allActiveOrders(establishmentId)
                     .map { orders ->
                         ordersMapper.toOrderViewState(orders)
                     }

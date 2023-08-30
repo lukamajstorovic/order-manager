@@ -7,7 +7,7 @@ import agency.five.codebase.android.ordermanager.model.OrderItem
 import kotlinx.coroutines.flow.Flow
 
 interface OrderService {
-    fun getAllActiveOrders(): Flow<List<DbOrder>>
+    fun getAllActiveOrders(establishmentId: String): Flow<List<DbOrder>>
     fun getAllCompletedOrders(): Flow<List<DbOrder>>
     fun getOrderItems(orderId: String): Flow<List<DbOrderItem>>
     suspend fun getOrderById(id: String): Result<DbOrder>

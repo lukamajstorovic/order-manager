@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 
 data class DbOrder(
     val id: String = "placeholder",
+    val establishmentId: String,
     val tableNumber: String,
     val createOrderStaffId: String,
     val completeOrderStaffId: String,
@@ -14,6 +15,7 @@ data class DbOrder(
     fun toOrder() =
         Order(
             id = id,
+            establishmentId = establishmentId,
             tableNumber = tableNumber,
             createOrderStaffId  = createOrderStaffId,
             completeOrderStaffId = completeOrderStaffId,

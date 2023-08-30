@@ -3,6 +3,7 @@ package agency.five.codebase.android.ordermanager.ui.completeorder
 import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_5
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ItemToComplete
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderItemViewState
@@ -24,13 +25,14 @@ import androidx.compose.ui.unit.dp
 fun CompleteOrderRoute(
     viewModel: CompleteOrderViewModel,
     onCompleteOrder: () -> Unit,
+    currentUser: UserData,
 ) {
     val completeOrderViewState: CompleteOrderViewState by viewModel.completeOrderViewState.collectAsState()
     CompleteOrderScreen(
         modifier = Modifier.fillMaxSize(),
         completeOrderViewState = completeOrderViewState,
         onClickCompleteOrder = { orderId ->
-            viewModel.completeOrder(orderId)
+            viewModel.completeOrder(currentUser, orderId)
             onCompleteOrder()
         },
     )

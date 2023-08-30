@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.confirmorder
 
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.model.Order
 import agency.five.codebase.android.ordermanager.ui.confirmorder.mapper.ConfirmOrderMapper
@@ -33,12 +34,13 @@ class ConfirmOrderViewModel(
                 initialValue = confirmOrderMapper.toConfirmOrderViewState(emptyList())
             )
 
-    fun confirmOrder(currentUserId: String, tableNumber: String) {
+    fun confirmOrder(currentUser: UserData, tableNumber: String) {
         viewModelScope.launch {
             orderRepository.confirmOrder(
                 Order(
+                    establishmentId = currentUser.establishmentId,
                     tableNumber = tableNumber,
-                    createOrderStaffId = currentUserId,
+                    createOrderStaffId = currentUser.id,
                     completeOrderStaffId = "",
                     active = true,
                 )
