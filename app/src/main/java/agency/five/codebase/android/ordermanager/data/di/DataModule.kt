@@ -6,17 +6,17 @@ import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepo
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepositoryImpl
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.room.NotConfirmedOrderService
+import agency.five.codebase.android.ordermanager.data.room.NotConfirmedOrderServiceImpl
 import agency.five.codebase.android.ordermanager.data.room.OrderManagerDatabase
-import agency.five.codebase.android.ordermanager.data.room.dao.ActiveOrderDao
 import agency.five.codebase.android.ordermanager.data.room.dao.MenuItemDao
-import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemDao
-import agency.five.codebase.android.ordermanager.data.room.dao.OrderedItemInActiveOrderDao
+import agency.five.codebase.android.ordermanager.data.room.dao.NotConfirmedOrderItemDao
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
 val dataModule = module {
     single<OrderRepository> {
-        OrderRepositoryImpl(get(), get(), get(), get(), Dispatchers.IO)
+        OrderRepositoryImpl(get(), get(), get(), Dispatchers.IO)
     }
     single<StaffRepository> {
         StaffRepositoryImpl(Dispatchers.IO, get())
@@ -24,21 +24,16 @@ val dataModule = module {
     single<EstablishmentRepository> {
         EstablishmentRepositoryImpl(Dispatchers.IO, get())
     }
+    single<NotConfirmedOrderService> {
+        NotConfirmedOrderServiceImpl(get(), get(), Dispatchers.IO)
+    }
     fun provideMenuItemDao(db: OrderManagerDatabase): MenuItemDao = db.getMenuItemDao()
     single {
         provideMenuItemDao(get())
     }
-    fun provideOrderedItemDao(db: OrderManagerDatabase): OrderedItemDao = db.getOrderedItemDao()
+    fun provideNotConfirmedOrderItemDao(db: OrderManagerDatabase): NotConfirmedOrderItemDao =
+        db.getNotConfirmedOrderItemDao()
     single {
-        provideOrderedItemDao(get())
-    }
-    fun provideActiveOrderDao(db: OrderManagerDatabase): ActiveOrderDao = db.getActiveOrderDao()
-    single {
-        provideActiveOrderDao(get())
-    }
-    fun provideOrderedItemInActiveOrderDao(db: OrderManagerDatabase): OrderedItemInActiveOrderDao =
-        db.getOrderedItemInActiveOrderDao()
-    single {
-        provideOrderedItemInActiveOrderDao(get())
+        provideNotConfirmedOrderItemDao(get())
     }
 }

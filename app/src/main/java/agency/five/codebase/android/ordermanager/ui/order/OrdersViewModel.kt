@@ -1,7 +1,7 @@
-package agency.five.codebase.android.ordermanager.ui.activeorders
+package agency.five.codebase.android.ordermanager.ui.order
 
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
-import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapper
+import agency.five.codebase.android.ordermanager.ui.order.mapper.OrdersMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,24 +11,25 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class ActiveOrdersViewModel(
+class OrdersViewModel(
     private val orderRepository: OrderRepository,
-    private val activeOrdersMapper: ActiveOrdersMapper,
+    private val ordersMapper: OrdersMapper,
+    private val establishmentId: String,
 ) : ViewModel() {
-    private val _activeOrdersViewState = MutableStateFlow(ActiveOrdersViewState(emptyList()))
+    private val _ordersViewState = MutableStateFlow(OrdersViewState(emptyList()))
 
-    val activeOrdersViewState: StateFlow<ActiveOrdersViewState> =
-        _activeOrdersViewState
+    val ordersViewState: StateFlow<OrdersViewState> =
+        _ordersViewState
             .flatMapLatest {
-                orderRepository.activeOrders()
-                    .map { activeOrders ->
-                        activeOrdersMapper.toActiveOrderViewState(activeOrders)
+                orderRepository.allActiveOrders(establishmentId)
+                    .map { orders ->
+                        ordersMapper.toOrderViewState(orders)
                     }
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = activeOrdersMapper.toActiveOrderViewState(emptyList())
+                initialValue = ordersMapper.toOrderViewState(emptyList())
             )
 
 }

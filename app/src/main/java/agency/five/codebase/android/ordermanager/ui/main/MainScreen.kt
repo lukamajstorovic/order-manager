@@ -9,8 +9,8 @@ import agency.five.codebase.android.ordermanager.navigation.INDIVIDUAL_STAFF_KEY
 import agency.five.codebase.android.ordermanager.navigation.IndividualStaffDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersRoute
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewModel
+import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
+import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderRoute
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
@@ -40,7 +40,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,7 +68,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.getViewModel
@@ -83,7 +81,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         derivedStateOf {
             navBackStackEntry?.destination?.route == NavigationItem.SelectionDestination.route
                     || navBackStackEntry?.destination?.route == NavigationItem.ConfirmOrderDestination.route
-                    || navBackStackEntry?.destination?.route == NavigationItem.ActiveOrdersDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.OrdersDestination.route
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -118,7 +116,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     destinations = listOf(
                         NavigationItem.SelectionDestination,
                         NavigationItem.ConfirmOrderDestination,
-                        NavigationItem.ActiveOrdersDestination
+                        NavigationItem.OrdersDestination
                     ),
                     onNavigateToDestination = {
                         navController.navigate(it.route) {
@@ -186,28 +184,30 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val viewModel: ConfirmOrderViewModel = getViewModel()
                 ConfirmOrderRoute(
                     viewModel = viewModel,
-                    onNavigateToSelectionScreen = {
+                    onClickConfirmOrder = {tableNumber ->
+                        viewModel.confirmOrder(userData, tableNumber)
                         navController.navigateUp()
                     }
                 )
             }
             composable(
                 route = CompleteOrderDestination.route,
-                arguments = listOf(navArgument(ORDER_KEY) { type = NavType.IntType }),
+                arguments = listOf(navArgument(ORDER_KEY) { type = NavType.StringType }),
             ) {
-                val orderId = it.arguments?.getInt(ORDER_KEY)
+                val orderId = it.arguments?.getString(ORDER_KEY)
                 val viewModel: CompleteOrderViewModel =
                     getViewModel(parameters = { parametersOf(orderId) })
                 CompleteOrderRoute(
                     viewModel = viewModel,
-                    onCompleteOrder = { navController.navigateUp() }
+                    onCompleteOrder = { navController.navigateUp() },
+                    currentUser = userData,
                 )
             }
             composable(
-                route = NavigationItem.ActiveOrdersDestination.route,
+                route = NavigationItem.OrdersDestination.route,
             ) {
-                val viewModel: ActiveOrdersViewModel = getViewModel()
-                ActiveOrdersRoute(
+                val viewModel: OrdersViewModel = getViewModel()
+                OrdersRoute(
                     viewModel = viewModel,
                     openOrder = {
                         navController.navigate(

@@ -25,11 +25,9 @@ fun SelectionRoute(
 ) {
     val selectionViewState by viewModel.selectionViewState.collectAsState()
 
-
-
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { orderedItem -> viewModel.addOrderedItemOrIncrementAmount(orderedItem) }
+        onClickSelectionCard = { orderItemName -> viewModel.addOrderItemOrIncrementAmount(orderItemName) }
     )
 }
 
@@ -39,31 +37,31 @@ private fun SelectionScreen(
     onClickSelectionCard: (String) -> Unit,
 ) {
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(GRID_COUNT),
-            modifier = Modifier
-                .background(LightGray)
-                .fillMaxSize()
-                .padding(start = 5.dp, end = 5.dp, top = 15.dp)
-        ) {
-            items(
-                items = selectionViewState.selectionCardViewStateCollection,
-                key = { selectionCardViewState: SelectionCardViewState ->
-                    selectionCardViewState.id
-                }
-            ) { currentSelectionCard: SelectionCardViewState ->
-                SelectionCard(
-                    selectionCardViewState = currentSelectionCard,
-                    modifier = Modifier,
-                        //.align(Alignment.CenterHorizontally),
-                    onClick = {
-                        onClickSelectionCard(
-                            currentSelectionCard.name,
-                        )
-                    }
-                )
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(GRID_COUNT),
+        modifier = Modifier
+            .background(LightGray)
+            .fillMaxSize()
+            .padding(start = 5.dp, end = 5.dp, top = 15.dp)
+    ) {
+        items(
+            items = selectionViewState.selectionCardViewStateCollection,
+            key = { selectionCardViewState: SelectionCardViewState ->
+                selectionCardViewState.id
             }
+        ) { currentSelectionCard: SelectionCardViewState ->
+            SelectionCard(
+                selectionCardViewState = currentSelectionCard,
+                modifier = Modifier,
+                //.align(Alignment.CenterHorizontally),
+                onClick = {
+                    onClickSelectionCard(
+                        currentSelectionCard.name,
+                    )
+                }
+            )
         }
+    }
 }
 
 @Preview
@@ -86,6 +84,6 @@ private fun SelectionScreenPreview() {
     )
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { },
+        onClickSelectionCard = {},
     )
 }

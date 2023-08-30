@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserData(
+    val id: String = "",
     val username: String = "",
     val name: String = "",
     val role: StaffRoles = StaffRoles.NONE,

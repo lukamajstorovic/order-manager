@@ -1,6 +1,8 @@
 package agency.five.codebase.android.ordermanager.ui.confirmorder
 
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.model.Order
 import agency.five.codebase.android.ordermanager.ui.confirmorder.mapper.ConfirmOrderMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,9 +23,9 @@ class ConfirmOrderViewModel(
     val confirmOrderViewState: StateFlow<ConfirmOrderViewState> =
         _confirmOrderViewState
             .flatMapLatest {
-                orderRepository.orderedItems()
-                    .map { orderedItems ->
-                        confirmOrderMapper.toConfirmOrderViewState(orderedItems)
+                orderRepository.notConfirmedOrderedItems()
+                    .map { orderItems ->
+                        confirmOrderMapper.toConfirmOrderViewState(orderItems)
                     }
             }
             .stateIn(
@@ -32,17 +34,32 @@ class ConfirmOrderViewModel(
                 initialValue = confirmOrderMapper.toConfirmOrderViewState(emptyList())
             )
 
-    fun confirmOrder(tableNumber: String) {
+    fun confirmOrder(currentUser: UserData, tableNumber: String) {
         viewModelScope.launch {
-            orderRepository.confirmOrder(tableNumber)
+            orderRepository.confirmOrder(
+                Order(
+                    establishmentId = currentUser.establishmentId,
+                    tableNumber = tableNumber,
+                    createOrderStaffId = currentUser.id,
+                    completeOrderStaffId = "",
+                    active = true,
+                )
+            ).fold(
+                onSuccess = {
+                    println("MANAGED: $it")
+                },
+                onFailure = {
+                    println("FAILED: $it")
+                }
+            )
         }
     }
 
-    val text = MutableStateFlow( "")
+    val text = MutableStateFlow("")
 
-    fun subtractOrderedItemAmount(orderedItemId: Int) {
+    fun subtractOrderItemAmount(orderItemId: Int) {
         viewModelScope.launch {
-            orderRepository.subtractOrderedItemAmount(orderedItemId)
+            orderRepository.subtractNotCompletedOrderItemAmount(orderItemId)
         }
     }
 }

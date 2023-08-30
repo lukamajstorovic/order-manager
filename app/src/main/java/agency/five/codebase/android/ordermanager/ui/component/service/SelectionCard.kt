@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.math.BigDecimal
 
 
 data class SelectionCardViewState(
@@ -114,7 +115,7 @@ private fun SelectionCardPreview() {
         val selectionCardInstance1 = SelectionCardViewState(
             iconId = R.drawable.drinks,
             name = stringResource(id = R.string.drinks),
-            id = 1
+            id = 1,
         )
         val selectionCardInstance2 = SelectionCardViewState(
             iconId = R.drawable.food,

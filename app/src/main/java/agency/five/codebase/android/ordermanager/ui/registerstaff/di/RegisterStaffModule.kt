@@ -1,7 +1,5 @@
 package agency.five.codebase.android.ordermanager.ui.registerstaff.di
 
-import agency.five.codebase.android.ordermanager.ui.activeorders.ActiveOrdersViewModel
-import agency.five.codebase.android.ordermanager.ui.activeorders.mapper.ActiveOrdersMapperImpl
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.registerstaff.mapper.EstablishmentMapper
 import agency.five.codebase.android.ordermanager.ui.registerstaff.mapper.EstablishmentMapperImpl

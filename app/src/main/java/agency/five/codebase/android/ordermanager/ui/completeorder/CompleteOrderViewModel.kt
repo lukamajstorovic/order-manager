@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.completeorder
 
+import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.completeorder.mapper.CompleteOrderMapper
 import androidx.lifecycle.ViewModel
@@ -15,15 +16,15 @@ import kotlinx.coroutines.launch
 class CompleteOrderViewModel(
     private val orderRepository: OrderRepository,
     private val completeOrderMapper: CompleteOrderMapper,
-    private val orderId: Int,
+    private val orderId: String,
 ) : ViewModel() {
     private val _completeOrderViewState = MutableStateFlow(CompleteOrderViewState(orderId, emptyList()))
     val completeOrderViewState: StateFlow<CompleteOrderViewState> =
         _completeOrderViewState
             .flatMapLatest {
-                orderRepository.orderedItemsInActiveOrder(it.orderId)
-                    .map { orderedItems ->
-                        completeOrderMapper.toCompleteOrderViewState(orderId, orderedItems)
+                orderRepository.orderItems(it.orderId)
+                    .map { orderItems ->
+                        completeOrderMapper.toCompleteOrderViewState(orderId, orderItems)
                     }
             }
             .stateIn(
@@ -35,9 +36,9 @@ class CompleteOrderViewModel(
                 )
             )
 
-    fun completeOrder(activeOrderId: Int) {
+    fun completeOrder(currentUser: UserData, orderId: String) {
         viewModelScope.launch {
-            orderRepository.completeOrder(activeOrderId)
+            orderRepository.completeOrder(currentUser, orderId)
         }
     }
 }
