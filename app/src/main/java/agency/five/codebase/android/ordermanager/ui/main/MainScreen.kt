@@ -206,7 +206,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             composable(
                 route = NavigationItem.OrdersDestination.route,
             ) {
-                val viewModel: OrdersViewModel = getViewModel()
+                val viewModel: OrdersViewModel =
+                    getViewModel(parameters = { parametersOf(userData.establishmentId) })
                 OrdersRoute(
                     viewModel = viewModel,
                     openOrder = {
