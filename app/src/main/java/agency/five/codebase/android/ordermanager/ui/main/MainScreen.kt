@@ -31,7 +31,6 @@ import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,6 +58,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -84,21 +84,35 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun TopBarr(
-    onNavigationItemClick: () -> Unit
+    currentUserName: String,
+    onNavigationItemClick: () -> Unit,
+    logoutButton: @Composable (() -> Unit)?,
 ) {
-    TopAppBar(
-        title = {
-            Text(text = "TITLE")
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigationItemClick) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Toggle drawer"
-                )
-            }
-        },
-    )
+    Box {
+        TopAppBar(
+            title = {
+                Text(
+                    text = currentUserName,
+
+                    )
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = onNavigationItemClick,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Toggle drawer",
+                    )
+                }
+            },
+            backgroundColor = LightGray,
+            contentColor = DarkGreen,
+        )
+        Box(modifier = Modifier.align(CenterEnd)) {
+            logoutButton?.invoke()
+        }
+    }
 }
 
 @Composable
@@ -118,58 +132,97 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val topBarLoggedIn =
         navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
                 navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
-                userData.role != StaffRoles.NONE &&
-                userData != null
+                userData.role != StaffRoles.NONE
     val scaffoldState = rememberScaffoldState()
+    val notLoggedInDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.LoginDestination.route,
+            text = "Login"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.RegisterStaffDestination.route,
+            text = "Register"
+        ),
+    )
+    val waiterDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.SelectionDestination.route,
+            text = "Order creation"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.OrdersDestination.route,
+            text = "Order view and edit"
+        ),
+    )
+    val adminDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.StaffDestination.route,
+            text = "Staff management"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.OrdersDestination.route,
+            text = "Order view and edit"
+        ),
+    )
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             DrawerBody(
-                menuItems = listOf(
-                    DrawerMenuItem(
-                        path = NavigationItem.RegisterStaffDestination.route,
-                        text = "REGISTER"
-                    ),
-                    DrawerMenuItem(
-                        path = NavigationItem.LoginDestination.route,
-                        text = "LOGIN"
-                    ),
-                ),
+                menuItems = if (!topBarLoggedIn) {
+                    notLoggedInDrawerMenuItem
+                } else {
+                    when (userData.role) {
+                        StaffRoles.WAITER ->
+                            waiterDrawerMenuItem
+
+                        StaffRoles.ADMIN ->
+                            adminDrawerMenuItem
+
+                        StaffRoles.NONE ->
+                            notLoggedInDrawerMenuItem
+                    }
+                },
                 onItemClick = {
                     scope.launch {
                         scaffoldState.drawerState.close()
                     }
                     navController.navigate(
-                       it.path
+                        it.path
                     )
-                }
+                },
+                modifier = Modifier
+                    .background(LightGray)
             )
         },
+        drawerBackgroundColor = LightGray,
+        drawerContentColor = DarkGreen,
         topBar = {
-            if (topBarLoggedIn) {
-                TopBar(
-                    logoutButton = {
-                        LogoutButton(onClick = {
-                            scope.launch {
-                                userDataViewModel.clearUserData()
-                                navController.navigate(
-                                    NavigationItem.LoginDestination.route
-                                )
-                            }
-                        })
-                    },
-                    userData = userData,
-                )
-            } else {
-                TopBarr(
-                    onNavigationItemClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
+            TopBarr(
+                currentUserName = if (topBarLoggedIn) {
+                    userData.name
+                } else {
+                    ""
+                },
+                onNavigationItemClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
                     }
-                )
-            }
-
+                },
+                logoutButton = {
+                    if (topBarLoggedIn) {
+                        LogoutButton(
+                            onClick = {
+                                scope.launch {
+                                    userDataViewModel.clearUserData()
+                                    navController.navigate(
+                                        NavigationItem.LoginDestination.route
+                                    )
+                                }
+                            },
+                        )
+                    }
+                },
+            )
         },
         bottomBar = {
             if (showBottomBar)
@@ -423,12 +476,11 @@ private fun LogoutButton(
     Button(
         shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
         onClick = { onClick() },
-        colors = ButtonDefaults.outlinedButtonColors(
+        colors = ButtonDefaults.buttonColors(
             contentColor = LightGray,
             backgroundColor = LightGray
         ),
         modifier = modifier
-            .padding(10.dp)
     ) {
         Text(
             text = "Logout",
