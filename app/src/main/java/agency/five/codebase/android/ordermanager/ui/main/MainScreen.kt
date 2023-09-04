@@ -22,6 +22,8 @@ import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualSt
 import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
+import agency.five.codebase.android.ordermanager.ui.menu.CreateMenuItemRoute
+import agency.five.codebase.android.ordermanager.ui.menu.MenuViewModel
 import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
 import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffRoute
@@ -173,6 +175,10 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         DrawerMenuItem(
             path = NavigationItem.ApprovedStaffDestination.route,
             text = "Staff management"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.CreateMenuItemDestination.route,
+            text = "Menu management"
         ),
         DrawerMenuItem(
             path = NavigationItem.OrdersDestination.route,
@@ -500,6 +506,24 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             NavigationItem.LoginDestination.route
                         )
                     }
+                )
+            }
+            composable(
+                route = NavigationItem.CreateMenuItemDestination.route,
+            ) {
+                val viewModel: MenuViewModel = getViewModel(
+                    parameters = { parametersOf(snackbarHostState, userData.establishmentId) }
+                )
+                val validationResult = viewModel.validationResult.value
+                CreateMenuItemRoute(
+                    snackbarHostState = snackbarHostState,
+                    onClickCreateButton = { name ->
+                        println("CLICK CREATE MENU ITEM")
+                        viewModel.addMenuItem(
+                            name,
+                        )
+                        println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
+                    },
                 )
             }
         }
