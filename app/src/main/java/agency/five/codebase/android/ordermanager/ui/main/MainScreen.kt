@@ -384,7 +384,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     viewModel = viewModel,
                     openCompletedOrder = {
                         navController.navigate(
-                            CompleteOrderDestination.createNavigationRoute(it)
+                            IndividualCompletedOrderDestination.createNavigationRoute(it)
                         )
                     }
                 )
