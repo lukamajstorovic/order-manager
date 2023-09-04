@@ -5,7 +5,6 @@ import agency.five.codebase.android.ordermanager.data.di.databaseModule
 import agency.five.codebase.android.ordermanager.data.di.firebaseModule
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
-import agency.five.codebase.android.ordermanager.mock.MenuItemMock
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
 import agency.five.codebase.android.ordermanager.ui.individualstaff.di.individualStaffModule
@@ -45,11 +44,6 @@ class OrderManagerApp : Application() {
                 individualStaffModule,
             )
             GlobalScope.launch {
-                orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[0])
-                orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[1])
-                orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[2])
-                orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[3])
-                orderRepository.addMenuItem(MenuItemMock.getMenuItemList()[4])
             }
         }
     }

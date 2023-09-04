@@ -8,6 +8,7 @@
     <string name="add_items">Add items</string>
     <string name="confirm_order">Confirm order</string>
     <string name="active_orders">Active orders</string>
+    <string name="completed_orders">Completed orders</string>
     <string name="login">Login</string>
     <string name="arrow_right">Arrow right</string>
     <string name="order_for_table_">Order for table\u0020</string>

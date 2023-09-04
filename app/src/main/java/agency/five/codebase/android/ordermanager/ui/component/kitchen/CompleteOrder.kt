@@ -37,8 +37,10 @@ fun OrderButton(
         Button(
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
             onClick = { onClick() },
-            //border = BorderStroke(1.dp, Color.Black),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = LightGray, backgroundColor = LightGray),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = LightGray,
+                backgroundColor = LightGray
+            ),
             modifier = Modifier
                 .align(Center)
                 .padding(20.dp)
@@ -98,78 +100,6 @@ private fun CompleteOrderPreview() {
             )
         }
     }
-    /*
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-        ) {
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-            ItemToComplete(
-                orderItemViewState = OrderItemViewState(
-                    itemName = "Coca cola 0.5",
-                    itemCount = 2,
-                ),
-                modifier = Modifier.padding(10.dp),
-                onClick = { }
-            )
-        }
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-        ) {
-            Divider(
-                thickness = 1.dp,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-            )
-            CompleteOrder(
-                modifier = Modifier,
-                onClick = { }
-            )
-        }
-    }
-
-     */
 }
 
 

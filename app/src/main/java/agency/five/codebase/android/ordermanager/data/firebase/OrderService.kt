@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface OrderService {
     fun getAllActiveOrders(establishmentId: String): Flow<List<DbOrder>>
-    fun getAllCompletedOrders(): Flow<List<DbOrder>>
+    fun getAllCompletedOrders(establishmentId: String): Flow<List<DbOrder>>
     fun getOrderItems(orderId: String): Flow<List<DbOrderItem>>
     suspend fun getOrderById(id: String): Result<DbOrder>
     suspend fun addOrder(order: DbOrder): Result<String> // returns orderId

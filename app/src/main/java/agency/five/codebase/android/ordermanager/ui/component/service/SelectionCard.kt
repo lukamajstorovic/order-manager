@@ -32,9 +32,8 @@ import java.math.BigDecimal
 
 
 data class SelectionCardViewState(
-    val id: Int,
+    val id: String,
     val name: String,
-    val iconId: Int,
 )
 
 @Composable
@@ -61,16 +60,6 @@ fun SelectionCard(
                 .clip(RoundedCornerShape(ROUNDED_CORNER_PERCENT_13))
                 .clickable { onClick() },
         ) {
-            Image(
-                painter = painterResource(
-                    id = selectionCardViewState.iconId
-                ),
-                contentDescription = selectionCardViewState.name,
-                modifier = Modifier
-                    .size(iconSize.dp)
-                    .padding(paddingSize.dp)
-                    .align(CenterHorizontally)
-            )
             Text(
                 text = selectionCardViewState.name,
                 fontSize = fontSize.sp,
@@ -88,17 +77,6 @@ fun SelectionCard(
 @Preview
 @Composable
 private fun SelectionCardPreview() {
-    /*
-    val selectionCardInstance = SelectionCardViewState(
-        iconId = R.drawable.drinks,
-        nameId = R.string.drinks,
-        size = "small"
-    )
-    SelectionCard(
-        selectionCardViewState = selectionCardInstance,
-        modifier = Modifier.padding(20.dp).width(150.dp)
-    )
-     */
     Column(
         modifier = Modifier
             .background(
@@ -113,14 +91,12 @@ private fun SelectionCardPreview() {
             .fillMaxSize()
     ) {
         val selectionCardInstance1 = SelectionCardViewState(
-            iconId = R.drawable.drinks,
             name = stringResource(id = R.string.drinks),
-            id = 1,
+            id = "1",
         )
         val selectionCardInstance2 = SelectionCardViewState(
-            iconId = R.drawable.food,
             name = stringResource(id = R.string.food),
-            id = 2,
+            id = "2",
         )
         SelectionCard(
             selectionCardViewState = selectionCardInstance1,

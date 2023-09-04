@@ -11,6 +11,7 @@ import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -77,12 +78,14 @@ class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService 
         }
     }
 
-    override fun getAllCompletedOrders(): Flow<List<DbOrder>> {
+    override fun getAllCompletedOrders(establishmentId: String): Flow<List<DbOrder>> {
         return callbackFlow {
             val listenerRegistration =
                 fireStore
                     .collection(FIRESTORE_COLLECTION_ORDERS)
+                    .whereEqualTo("establishmentId", establishmentId)
                     .whereEqualTo("active", false)
+                    .orderBy("createdAt", Query.Direction.DESCENDING)
                     .addSnapshotListener { snapshot, error ->
                         try {
                             if (error != null) {

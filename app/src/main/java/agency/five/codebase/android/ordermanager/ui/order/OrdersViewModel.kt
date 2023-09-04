@@ -4,6 +4,7 @@ import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepo
 import agency.five.codebase.android.ordermanager.ui.order.mapper.OrdersMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,4 +33,19 @@ class OrdersViewModel(
                 initialValue = ordersMapper.toOrderViewState(emptyList())
             )
 
+    private val _completedOrdersViewState = MutableStateFlow(CompletedOrdersViewState(emptyList()))
+
+    val completedOrdersViewState: StateFlow<CompletedOrdersViewState> =
+        _completedOrdersViewState
+            .flatMapLatest {
+                orderRepository.allCompletedOrders(establishmentId)
+                    .map { orders ->
+                        ordersMapper.toCompletedOrderViewState(orders)
+                    }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ordersMapper.toCompletedOrderViewState(emptyList())
+            )
 }

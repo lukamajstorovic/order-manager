@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.main
 
+import agency.five.codebase.android.completedOrdermanager.ui.completedOrder.CompletedOrdersRoute
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
@@ -119,11 +120,21 @@ fun TopBarr(
 fun MainScreen(userDataViewModel: UserDataViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val showBottomBar by remember {
+    val orderCreation by remember {
         derivedStateOf {
             navBackStackEntry?.destination?.route == NavigationItem.SelectionDestination.route
                     || navBackStackEntry?.destination?.route == NavigationItem.ConfirmOrderDestination.route
-                    || navBackStackEntry?.destination?.route == NavigationItem.OrdersDestination.route
+        }
+    }
+    val orderViewAndEdit by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.OrdersDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.CompletedOrdersDestination.route
+        }
+    }
+    val staffManagement by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.StaffDestination.route
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -225,12 +236,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             )
         },
         bottomBar = {
-            if (showBottomBar)
+            if (orderCreation) {
                 BottomNavigationBar(
                     destinations = listOf(
                         NavigationItem.SelectionDestination,
                         NavigationItem.ConfirmOrderDestination,
-                        NavigationItem.OrdersDestination
                     ),
                     onNavigateToDestination = {
                         navController.navigate(it.route) {
@@ -241,6 +251,36 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     },
                     currentDestination = navBackStackEntry?.destination
                 )
+            } else if (orderViewAndEdit) {
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.OrdersDestination,
+                        NavigationItem.CompletedOrdersDestination,
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+            } else if(staffManagement) {
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.StaffDestination,
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+            }
         },
         backgroundColor = LightGray
     ) { padding ->
@@ -287,7 +327,9 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             composable(
                 NavigationItem.SelectionDestination.route,
             ) {
-                val viewModel: SelectionViewModel = getViewModel()
+                val viewModel: SelectionViewModel = getViewModel(
+                    parameters = { parametersOf(userData.establishmentId) }
+                )
                 SelectionRoute(
                     viewModel = viewModel,
                 )
@@ -325,6 +367,20 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 OrdersRoute(
                     viewModel = viewModel,
                     openOrder = {
+                        navController.navigate(
+                            CompleteOrderDestination.createNavigationRoute(it)
+                        )
+                    }
+                )
+            }
+            composable(
+                route = NavigationItem.CompletedOrdersDestination.route,
+            ) {
+                val viewModel: OrdersViewModel =
+                    getViewModel(parameters = { parametersOf(userData.establishmentId) })
+                CompletedOrdersRoute(
+                    viewModel = viewModel,
+                    openCompletedOrder = {
                         navController.navigate(
                             CompleteOrderDestination.createNavigationRoute(it)
                         )
