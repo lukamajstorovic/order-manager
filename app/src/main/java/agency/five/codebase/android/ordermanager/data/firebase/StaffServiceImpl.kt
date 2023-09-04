@@ -83,6 +83,71 @@ class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService 
         }
     }
 
+    override suspend fun getApprovedStaff(establishmentId: String): Flow<List<DbStaff>> {
+        return callbackFlow {
+            val listenerRegistration =
+                fireStore
+                    .collection(FIRESTORE_COLLECTION_STAFF)
+                    .whereEqualTo("establishmentId", establishmentId)
+                    .whereEqualTo("approved", true)
+                    .orderBy("role", Query.Direction.ASCENDING)
+                    .addSnapshotListener { snapshot, error ->
+                        try {
+                            if (error != null) {
+                                close(error)
+                                return@addSnapshotListener
+                            }
+                            if (snapshot != null) {
+                                val staffCollection =
+                                    snapshot.documents.map(::mapStaffDocumentToDbStaff)
+                                try {
+                                    println(staffCollection)
+                                    trySend(staffCollection)
+                                } catch (sendException: Exception) {
+                                    println(sendException)
+                                    Log.e("getAllStaff", "Failed to send data", sendException)
+                                }
+                            }
+                        } catch (snapshotException: Exception) {
+                            println(snapshotException)
+                            Log.e("getAllStaff", "SnapshotListener error", snapshotException)
+                        }
+                    }
+            awaitClose { listenerRegistration.remove() }
+        }
+    }
+
+    override suspend fun getNotApprovedStaff(establishmentId: String): Flow<List<DbStaff>> {
+        return callbackFlow {
+            val listenerRegistration =
+                fireStore
+                    .collection(FIRESTORE_COLLECTION_STAFF)
+                    .whereEqualTo("establishmentId", establishmentId)
+                    .whereEqualTo("approved", false)
+                    .orderBy("role", Query.Direction.ASCENDING)
+                    .addSnapshotListener { snapshot, error ->
+                        try {
+                            if (error != null) {
+                                close(error)
+                                return@addSnapshotListener
+                            }
+                            if (snapshot != null) {
+                                val staffCollection =
+                                    snapshot.documents.map(::mapStaffDocumentToDbStaff)
+                                try {
+                                    trySend(staffCollection)
+                                } catch (sendException: Exception) {
+                                    Log.e("getAllStaff", "Failed to send data", sendException)
+                                }
+                            }
+                        } catch (snapshotException: Exception) {
+                            Log.e("getAllStaff", "SnapshotListener error", snapshotException)
+                        }
+                    }
+            awaitClose { listenerRegistration.remove() }
+        }
+    }
+
     override fun getAllStaff(): Flow<List<DbStaff>> {
         return callbackFlow {
             val listenerRegistration = fireStore.collection(FIRESTORE_COLLECTION_STAFF)

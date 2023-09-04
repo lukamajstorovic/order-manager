@@ -19,14 +19,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StaffRoute(
+fun ApprovedStaffRoute(
     viewModel: StaffViewModel,
     onClickStaff: (String) -> Unit,
 ) {
-    val staffViewState by viewModel.staffViewState.collectAsState()
+    val stafftaffViewState: StaffViewState by viewModel.approvedStaffViewState.collectAsState()
 
     StaffScreen(
-        staffViewState = staffViewState,
+        staffViewState = stafftaffViewState,
+        onClickStaff = onClickStaff,
+    )
+}
+@Composable
+fun NotApprovedStaffRoute(
+    viewModel: StaffViewModel,
+    onClickStaff: (String) -> Unit,
+) {
+    val stafftaffViewState: StaffViewState by viewModel.notApprovedStaffViewState.collectAsState()
+
+    StaffScreen(
+        staffViewState = stafftaffViewState,
         onClickStaff = onClickStaff,
     )
 }

@@ -1,29 +1,35 @@
 package agency.five.codebase.android.ordermanager.ui.main
 
+import agency.five.codebase.android.completedOrdermanager.ui.completedOrder.CompletedOrdersRoute
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.navigation.CompleteOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.INDIVIDUAL_STAFF_KEY
+import agency.five.codebase.android.ordermanager.navigation.IndividualCompletedOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.IndividualStaffDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
-import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
-import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderRoute
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewModel
+import agency.five.codebase.android.ordermanager.ui.completeorder.IndividualCompletedOrderRoute
+import agency.five.codebase.android.ordermanager.ui.component.DrawerBody
+import agency.five.codebase.android.ordermanager.ui.component.DrawerMenuItem
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderViewModel
 import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffRoute
 import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
+import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
+import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffRoute
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
-import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
+import agency.five.codebase.android.ordermanager.ui.staff.ApprovedStaffRoute
+import agency.five.codebase.android.ordermanager.ui.staff.NotApprovedStaffRoute
 import agency.five.codebase.android.ordermanager.ui.staff.StaffViewModel
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
@@ -38,9 +44,15 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +62,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -74,14 +87,58 @@ import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
+fun TopBarr(
+    currentUserName: String,
+    onNavigationItemClick: () -> Unit,
+    logoutButton: @Composable (() -> Unit)?,
+) {
+    Box {
+        TopAppBar(
+            title = {
+                Text(
+                    text = currentUserName,
+
+                    )
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = onNavigationItemClick,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Toggle drawer",
+                    )
+                }
+            },
+            backgroundColor = LightGray,
+            contentColor = DarkGreen,
+        )
+        Box(modifier = Modifier.align(CenterEnd)) {
+            logoutButton?.invoke()
+        }
+    }
+}
+
+@Composable
 fun MainScreen(userDataViewModel: UserDataViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val showBottomBar by remember {
+    val orderCreation by remember {
         derivedStateOf {
             navBackStackEntry?.destination?.route == NavigationItem.SelectionDestination.route
                     || navBackStackEntry?.destination?.route == NavigationItem.ConfirmOrderDestination.route
-                    || navBackStackEntry?.destination?.route == NavigationItem.OrdersDestination.route
+        }
+    }
+    val orderViewAndEdit by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.OrdersDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.CompletedOrdersDestination.route
+        }
+    }
+    val staffManagement by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.ApprovedStaffDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.NotApprovedStaffDestination.route
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -90,33 +147,104 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     val topBarLoggedIn =
         navBackStackEntry?.destination?.route != NavigationItem.LoginDestination.route &&
                 navBackStackEntry?.destination?.route != NavigationItem.RegisterStaffDestination.route &&
-                userData.role != StaffRoles.NONE &&
-                userData != null
+                userData.role != StaffRoles.NONE
+    val scaffoldState = rememberScaffoldState()
+    val notLoggedInDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.LoginDestination.route,
+            text = "Login"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.RegisterStaffDestination.route,
+            text = "Register"
+        ),
+    )
+    val waiterDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.SelectionDestination.route,
+            text = "Order creation"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.OrdersDestination.route,
+            text = "Order view and edit"
+        ),
+    )
+    val adminDrawerMenuItem = listOf(
+        DrawerMenuItem(
+            path = NavigationItem.ApprovedStaffDestination.route,
+            text = "Staff management"
+        ),
+        DrawerMenuItem(
+            path = NavigationItem.OrdersDestination.route,
+            text = "Order view and edit"
+        ),
+    )
     Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            DrawerBody(
+                menuItems = if (!topBarLoggedIn) {
+                    notLoggedInDrawerMenuItem
+                } else {
+                    when (userData.role) {
+                        StaffRoles.WAITER ->
+                            waiterDrawerMenuItem
+
+                        StaffRoles.ADMIN ->
+                            adminDrawerMenuItem
+
+                        StaffRoles.NONE ->
+                            notLoggedInDrawerMenuItem
+                    }
+                },
+                onItemClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                    navController.navigate(
+                        it.path
+                    )
+                },
+                modifier = Modifier
+                    .background(LightGray)
+            )
+        },
+        drawerBackgroundColor = LightGray,
+        drawerContentColor = DarkGreen,
         topBar = {
-            if (topBarLoggedIn) {
-                TopBar(
-                    logoutButton = {
-                        LogoutButton(onClick = {
-                            scope.launch {
-                                userDataViewModel.clearUserData()
-                                navController.navigate(
-                                    NavigationItem.LoginDestination.route
-                                )
-                            }
-                        })
-                    },
-                    userData = userData,
-                )
-            }
+            TopBarr(
+                currentUserName = if (topBarLoggedIn) {
+                    userData.name
+                } else {
+                    ""
+                },
+                onNavigationItemClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                },
+                logoutButton = {
+                    if (topBarLoggedIn) {
+                        LogoutButton(
+                            onClick = {
+                                scope.launch {
+                                    userDataViewModel.clearUserData()
+                                    navController.navigate(
+                                        NavigationItem.LoginDestination.route
+                                    )
+                                }
+                            },
+                        )
+                    }
+                },
+            )
         },
         bottomBar = {
-            if (showBottomBar)
+            if (orderCreation) {
                 BottomNavigationBar(
                     destinations = listOf(
                         NavigationItem.SelectionDestination,
                         NavigationItem.ConfirmOrderDestination,
-                        NavigationItem.OrdersDestination
                     ),
                     onNavigateToDestination = {
                         navController.navigate(it.route) {
@@ -127,6 +255,37 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     },
                     currentDestination = navBackStackEntry?.destination
                 )
+            } else if (orderViewAndEdit) {
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.OrdersDestination,
+                        NavigationItem.CompletedOrdersDestination,
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+            } else if (staffManagement) {
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.ApprovedStaffDestination,
+                        NavigationItem.NotApprovedStaffDestination,
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+            }
         },
         backgroundColor = LightGray
     ) { padding ->
@@ -173,7 +332,9 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             composable(
                 NavigationItem.SelectionDestination.route,
             ) {
-                val viewModel: SelectionViewModel = getViewModel()
+                val viewModel: SelectionViewModel = getViewModel(
+                    parameters = { parametersOf(userData.establishmentId) }
+                )
                 SelectionRoute(
                     viewModel = viewModel,
                 )
@@ -184,7 +345,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val viewModel: ConfirmOrderViewModel = getViewModel()
                 ConfirmOrderRoute(
                     viewModel = viewModel,
-                    onClickConfirmOrder = {tableNumber ->
+                    onClickConfirmOrder = { tableNumber ->
                         viewModel.confirmOrder(userData, tableNumber)
                         navController.navigateUp()
                     }
@@ -218,18 +379,67 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 )
             }
             composable(
-                route = NavigationItem.StaffDestination.route,
+                route = NavigationItem.CompletedOrdersDestination.route,
+            ) {
+                val viewModel: OrdersViewModel =
+                    getViewModel(parameters = { parametersOf(userData.establishmentId) })
+                CompletedOrdersRoute(
+                    viewModel = viewModel,
+                    openCompletedOrder = {
+                        navController.navigate(
+                            IndividualCompletedOrderDestination.createNavigationRoute(it)
+                        )
+                    }
+                )
+            }
+            composable(
+                route = IndividualCompletedOrderDestination.route,
+                arguments = listOf(navArgument(ORDER_KEY) { type = NavType.StringType }),
+            ) {
+                val orderId = it.arguments?.getString(ORDER_KEY)
+                val viewModel: CompleteOrderViewModel =
+                    getViewModel(parameters = { parametersOf(orderId) })
+                IndividualCompletedOrderRoute(
+                    viewModel = viewModel,
+                    onBack = { navController.navigateUp() },
+                )
+            }
+            composable(
+                route = NavigationItem.ApprovedStaffDestination.route,
             ) {
                 val viewModel: StaffViewModel = getViewModel()
                 viewModel.updateEstablishmentId(userDataViewModel)
-                StaffRoute(
+                ApprovedStaffRoute(
                     viewModel = viewModel,
-                    onClickStaff = {staffId ->
+                    onClickStaff = { staffId ->
                         navController.navigate(
                             IndividualStaffDestination.createNavigationRoute(staffId)
                         )
-                        println("CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(staffId))
-                    }
+                        println(
+                            "CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(
+                                staffId
+                            )
+                        )
+                    },
+                )
+            }
+            composable(
+                route = NavigationItem.NotApprovedStaffDestination.route,
+            ) {
+                val viewModel: StaffViewModel = getViewModel()
+                viewModel.updateEstablishmentId(userDataViewModel)
+                NotApprovedStaffRoute(
+                    viewModel = viewModel,
+                    onClickStaff = { staffId ->
+                        navController.navigate(
+                            IndividualStaffDestination.createNavigationRoute(staffId)
+                        )
+                        println(
+                            "CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(
+                                staffId
+                            )
+                        )
+                    },
                 )
             }
             composable(
@@ -262,7 +472,10 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             )
                         }
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(validationResult.getOrNull().toString() + validationResult.exceptionOrNull()?.message + "TEEST")
+                        snackbarHostState.showSnackbar(
+                            validationResult.getOrNull()
+                                .toString() + validationResult.exceptionOrNull()?.message + "TEEST"
+                        )
                         println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
                     }
@@ -302,7 +515,7 @@ private suspend fun navigateRoles(
         StaffRoles.ADMIN -> {
             println("NAVIGATE ADMIN: $role")
             navController.navigate(
-                NavigationItem.StaffDestination.route
+                NavigationItem.ApprovedStaffDestination.route
             )
         }
 
@@ -355,12 +568,11 @@ private fun LogoutButton(
     Button(
         shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
         onClick = { onClick() },
-        colors = ButtonDefaults.outlinedButtonColors(
+        colors = ButtonDefaults.buttonColors(
             contentColor = LightGray,
             backgroundColor = LightGray
         ),
         modifier = modifier
-            .padding(10.dp)
     ) {
         Text(
             text = "Logout",

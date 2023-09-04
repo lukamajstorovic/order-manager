@@ -71,13 +71,11 @@ private fun SelectionScreenPreview() {
     val selectionViewState = SelectionViewState(
         listOf(
             SelectionCardViewState(
-                id = 1,
-                iconId = R.drawable.drinks,
+                id = "1",
                 name = stringResource(id = R.string.drinks),
             ),
             SelectionCardViewState(
-                id = 2,
-                iconId = R.drawable.food,
+                id = "2",
                 name = stringResource(id = R.string.food),
             )
         )

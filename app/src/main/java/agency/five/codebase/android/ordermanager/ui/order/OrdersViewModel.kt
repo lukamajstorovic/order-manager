@@ -32,4 +32,19 @@ class OrdersViewModel(
                 initialValue = ordersMapper.toOrderViewState(emptyList())
             )
 
+    private val _completedOrdersViewState = MutableStateFlow(CompletedOrderViewStateItemCollectionViewState(emptyList()))
+
+    val completedOrdersViewState: StateFlow<CompletedOrderViewStateItemCollectionViewState> =
+        _completedOrdersViewState
+            .flatMapLatest {
+                orderRepository.allCompletedOrders(establishmentId)
+                    .map { orders ->
+                        ordersMapper.toCompletedOrdersMinimalInfoViewState(orders)
+                    }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ordersMapper.toCompletedOrdersMinimalInfoViewState(emptyList())
+            )
 }

@@ -1,5 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.selection
 
+import agency.five.codebase.android.ordermanager.data.repository.menuItem.MenuItemRepository
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
@@ -14,7 +15,9 @@ import java.math.BigDecimal
 
 class SelectionViewModel(
     private val orderRepository: OrderRepository,
+    private val menuItemRepository: MenuItemRepository,
     private val selectionMapper: SelectionMapper,
+    private val establishmentId: String,
 ) : ViewModel() {
     private val _selectionViewState = MutableStateFlow(SelectionViewState(emptyList()))
 
@@ -22,7 +25,7 @@ class SelectionViewModel(
     val selectionViewState: StateFlow<SelectionViewState> =
         _selectionViewState
             .flatMapLatest {
-                orderRepository.menuItems()
+                menuItemRepository.getMenuItems(establishmentId = establishmentId)
                     .map { menuItems ->
                         selectionMapper.toSelectionViewState(menuItems)
                     }
