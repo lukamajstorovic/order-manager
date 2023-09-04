@@ -7,11 +7,13 @@ import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewMo
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.navigation.CompleteOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.INDIVIDUAL_STAFF_KEY
+import agency.five.codebase.android.ordermanager.navigation.IndividualCompletedOrderDestination
 import agency.five.codebase.android.ordermanager.navigation.IndividualStaffDestination
 import agency.five.codebase.android.ordermanager.navigation.NavigationItem
 import agency.five.codebase.android.ordermanager.navigation.ORDER_KEY
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderRoute
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewModel
+import agency.five.codebase.android.ordermanager.ui.completeorder.IndividualCompletedOrderRoute
 import agency.five.codebase.android.ordermanager.ui.component.DrawerBody
 import agency.five.codebase.android.ordermanager.ui.component.DrawerMenuItem
 import agency.five.codebase.android.ordermanager.ui.confirmorder.ConfirmOrderRoute
@@ -385,6 +387,18 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             CompleteOrderDestination.createNavigationRoute(it)
                         )
                     }
+                )
+            }
+            composable(
+                route = IndividualCompletedOrderDestination.route,
+                arguments = listOf(navArgument(ORDER_KEY) { type = NavType.StringType }),
+            ) {
+                val orderId = it.arguments?.getString(ORDER_KEY)
+                val viewModel: CompleteOrderViewModel =
+                    getViewModel(parameters = { parametersOf(orderId) })
+                IndividualCompletedOrderRoute(
+                    viewModel = viewModel,
+                    onBack = { navController.navigateUp() },
                 )
             }
             composable(

@@ -3,7 +3,8 @@ package agency.five.codebase.android.completedOrdermanager.ui.component.kitchen
 import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_4
-import agency.five.codebase.android.ordermanager.ui.order.CompletedOrderItemViewState
+import agency.five.codebase.android.ordermanager.ui.order.CompleteOrderViewStateItem
+import agency.five.codebase.android.ordermanager.ui.order.CompletedOrderViewStateItemCollectionViewState
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.clickable
@@ -22,16 +23,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun CompletedOrder(
-    completedOrderItemViewState: CompletedOrderItemViewState,
+    completedOrderItemViewState: CompleteOrderViewStateItem,
     modifier: Modifier = Modifier,
     onClickCompletedOrder: () -> Unit
 ) {

@@ -1,8 +1,7 @@
 package agency.five.codebase.android.completedOrdermanager.ui.completedOrder
 
 import agency.five.codebase.android.completedOrdermanager.ui.component.kitchen.CompletedOrder
-import agency.five.codebase.android.ordermanager.ui.order.CompletedOrderItemViewState
-import agency.five.codebase.android.ordermanager.ui.order.CompletedOrdersViewState
+import agency.five.codebase.android.ordermanager.ui.order.CompletedOrderViewStateItemCollectionViewState
 import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
@@ -14,16 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.Timestamp
 
 @Composable
 fun CompletedOrdersRoute(
     viewModel: OrdersViewModel,
     openCompletedOrder: (String) -> Unit
 ) {
-    val completedOrdersViewState: CompletedOrdersViewState by viewModel.completedOrdersViewState.collectAsState()
+    val completedOrdersViewState: CompletedOrderViewStateItemCollectionViewState by viewModel.completedOrdersViewState.collectAsState()
 
     CompletedOrdersScreen(
         completedOrdersViewState = completedOrdersViewState,
@@ -34,7 +31,7 @@ fun CompletedOrdersRoute(
 @Composable
 private fun CompletedOrdersScreen(
     modifier: Modifier = Modifier,
-    completedOrdersViewState: CompletedOrdersViewState,
+    completedOrdersViewState: CompletedOrderViewStateItemCollectionViewState,
     onClickCompletedOrder: (String) -> Unit,
 ) {
     Column(
@@ -47,16 +44,17 @@ private fun CompletedOrdersScreen(
         ) {
             items(
                 completedOrdersViewState
-                    .completedOrderItemViewStateCollection
+                    .completedOrderViewStateItemCollection
                     .size
             ) { index ->
                 CompletedOrder(
-                    completedOrderItemViewState = completedOrdersViewState
-                        .completedOrderItemViewStateCollection[index],
+                    completedOrderItemViewState =
+                    completedOrdersViewState
+                        .completedOrderViewStateItemCollection[index],
                     onClickCompletedOrder = {
                         onClickCompletedOrder(
                             completedOrdersViewState
-                                .completedOrderItemViewStateCollection[index]
+                                .completedOrderViewStateItemCollection[index]
                                 .id
                         )
                     },

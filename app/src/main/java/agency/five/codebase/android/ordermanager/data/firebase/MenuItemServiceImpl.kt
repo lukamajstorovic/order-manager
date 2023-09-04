@@ -20,10 +20,11 @@ class MenuItemServiceImpl(
     private val fireStore: FirebaseFirestore
 ): MenuItemService {
 
-    private fun mapMenuItemDocumentToDbMenuItem(menuiItem: DocumentSnapshot): DbMenuItem {
+    private fun mapMenuItemDocumentToDbMenuItem(menuItem: DocumentSnapshot): DbMenuItem {
         return DbMenuItem(
-            id = menuiItem.id,
-            name = menuiItem.getString("name") ?: "",
+            id = menuItem.id,
+            name = menuItem.getString("name") ?: "",
+            establishmentId = menuItem.getString("establishmentId") ?: ""
         )
     }
 
