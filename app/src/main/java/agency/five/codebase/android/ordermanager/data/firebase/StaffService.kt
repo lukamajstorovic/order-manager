@@ -9,6 +9,8 @@ interface StaffService {
     suspend fun getStaffByCredentials(username: String, password: String): DbStaff?
     suspend fun getStaffByEstablishment(establishmentId: String): Flow<List<DbStaff>>
     suspend fun getStaffUsernameExists(username: String): Result<Boolean>
+    suspend fun getApprovedStaff(establishmentId: String): Flow<List<DbStaff>>
+    suspend fun getNotApprovedStaff(establishmentId: String): Flow<List<DbStaff>>
     suspend fun addStaff(staff: DbStaff): Result<Unit>
     suspend fun updateStaff(staff: DbStaff): Result<Unit>
     suspend fun removeStaff(staffId: String)

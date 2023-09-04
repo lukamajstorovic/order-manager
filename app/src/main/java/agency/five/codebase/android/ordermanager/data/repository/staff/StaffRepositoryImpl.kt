@@ -54,6 +54,28 @@ class StaffRepositoryImpl(
         return staffService.getStaffUsernameExists(username)
     }
 
+    override suspend fun getApprovedStaff(establishmentId: String): Flow<List<Staff>> =
+        staffService.getApprovedStaff(establishmentId).map {
+            it.map { dbStaff ->
+                dbStaff.toStaff()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
+
+    override suspend fun getNotApprovedStaff(establishmentId: String): Flow<List<Staff>> =
+        staffService.getNotApprovedStaff(establishmentId).map {
+            it.map { dbStaff ->
+                dbStaff.toStaff()
+            }
+        }.shareIn(
+            scope = CoroutineScope(bgDispatcher),
+            started = SharingStarted.WhileSubscribed(1000L),
+            replay = 1,
+        )
+
     override suspend fun addStaff(staff: Staff): Result<Unit> {
         return staffService.addStaff(staff.toDbStaff())
     }

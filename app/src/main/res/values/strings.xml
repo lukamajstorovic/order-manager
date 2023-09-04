@@ -19,6 +19,7 @@
     <string name="coca_cola_0_5">Coca cola 0.5</string>
     <string name="cocktail">Cocktail</string>
     <string name="wine_0_187">Wine 0.187</string>
-    <string name="staff">Staff</string>
+    <string name="approved_staff">Approved staff</string>
+    <string name="not_approved_staff">Not approved staff</string>
     <string name="register_staff">Register staff</string>
 </resources>

@@ -28,20 +28,34 @@ class StaffViewModel(
         viewModelScope.launch {
             userDataViewModel.establishmentId.collect { newId ->
                 currentEstablishmentId = newId
-                refreshStaffViewState()
+                refreshApprovedStaffViewState()
+                refreshNotApprovedStaffViewState()
             }
         }
     }
 
-    private val _staffViewState = MutableStateFlow(StaffViewState(emptyList()))
-    val staffViewState: StateFlow<StaffViewState> = _staffViewState
+    private val _notApprovedStaffViewState = MutableStateFlow(StaffViewState(emptyList()))
+    val notApprovedStaffViewState: StateFlow<StaffViewState> = _notApprovedStaffViewState
 
-    private fun refreshStaffViewState() {
+    private val _approvedStaffViewState = MutableStateFlow(StaffViewState(emptyList()))
+    val approvedStaffViewState: StateFlow<StaffViewState> = _approvedStaffViewState
+
+    private fun refreshApprovedStaffViewState() {
         viewModelScope.launch {
-            staffRepository.staffByEstablishment(currentEstablishmentId ?: "")
+            staffRepository.getApprovedStaff(currentEstablishmentId ?: "")
                 .collect { staffList ->
                     val staffViewState = staffMapper.toStaffViewState(staffList)
-                    _staffViewState.value = staffViewState
+                    _approvedStaffViewState.value = staffViewState
+                }
+        }
+    }
+
+    private fun refreshNotApprovedStaffViewState() {
+        viewModelScope.launch {
+            staffRepository.getNotApprovedStaff(currentEstablishmentId ?: "")
+                .collect { staffList ->
+                    val staffViewState = staffMapper.toStaffViewState(staffList)
+                    _notApprovedStaffViewState.value = staffViewState
                 }
         }
     }

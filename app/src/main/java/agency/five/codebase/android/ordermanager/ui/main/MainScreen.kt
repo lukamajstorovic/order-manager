@@ -28,7 +28,8 @@ import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffR
 import agency.five.codebase.android.ordermanager.ui.registerstaff.RegisterStaffViewModel
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionRoute
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewModel
-import agency.five.codebase.android.ordermanager.ui.staff.StaffRoute
+import agency.five.codebase.android.ordermanager.ui.staff.ApprovedStaffRoute
+import agency.five.codebase.android.ordermanager.ui.staff.NotApprovedStaffRoute
 import agency.five.codebase.android.ordermanager.ui.staff.StaffViewModel
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.DarkerGray
@@ -136,7 +137,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     }
     val staffManagement by remember {
         derivedStateOf {
-            navBackStackEntry?.destination?.route == NavigationItem.StaffDestination.route
+            navBackStackEntry?.destination?.route == NavigationItem.ApprovedStaffDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.NotApprovedStaffDestination.route
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -169,7 +171,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
     )
     val adminDrawerMenuItem = listOf(
         DrawerMenuItem(
-            path = NavigationItem.StaffDestination.route,
+            path = NavigationItem.ApprovedStaffDestination.route,
             text = "Staff management"
         ),
         DrawerMenuItem(
@@ -268,10 +270,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     },
                     currentDestination = navBackStackEntry?.destination
                 )
-            } else if(staffManagement) {
+            } else if (staffManagement) {
                 BottomNavigationBar(
                     destinations = listOf(
-                        NavigationItem.StaffDestination,
+                        NavigationItem.ApprovedStaffDestination,
+                        NavigationItem.NotApprovedStaffDestination,
                     ),
                     onNavigateToDestination = {
                         navController.navigate(it.route) {
@@ -402,11 +405,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 )
             }
             composable(
-                route = NavigationItem.StaffDestination.route,
+                route = NavigationItem.ApprovedStaffDestination.route,
             ) {
                 val viewModel: StaffViewModel = getViewModel()
                 viewModel.updateEstablishmentId(userDataViewModel)
-                StaffRoute(
+                ApprovedStaffRoute(
                     viewModel = viewModel,
                     onClickStaff = { staffId ->
                         navController.navigate(
@@ -417,7 +420,26 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                                 staffId
                             )
                         )
-                    }
+                    },
+                )
+            }
+            composable(
+                route = NavigationItem.NotApprovedStaffDestination.route,
+            ) {
+                val viewModel: StaffViewModel = getViewModel()
+                viewModel.updateEstablishmentId(userDataViewModel)
+                NotApprovedStaffRoute(
+                    viewModel = viewModel,
+                    onClickStaff = { staffId ->
+                        navController.navigate(
+                            IndividualStaffDestination.createNavigationRoute(staffId)
+                        )
+                        println(
+                            "CLICKED MAIN SCREEN" + " " + IndividualStaffDestination.createNavigationRoute(
+                                staffId
+                            )
+                        )
+                    },
                 )
             }
             composable(
@@ -493,7 +515,7 @@ private suspend fun navigateRoles(
         StaffRoles.ADMIN -> {
             println("NAVIGATE ADMIN: $role")
             navController.navigate(
-                NavigationItem.StaffDestination.route
+                NavigationItem.ApprovedStaffDestination.route
             )
         }
 

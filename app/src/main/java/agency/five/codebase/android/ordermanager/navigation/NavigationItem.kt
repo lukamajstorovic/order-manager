@@ -7,7 +7,8 @@ const val CONFIRM_ORDER_ROUTE = "ConfirmOrder"
 const val ACTIVE_ORDERS_ROUTE = "Orders"
 const val COMPLETED_ORDERS_ROUTE = "CompletedOrders"
 const val LOGIN_ROUTE = "Login"
-const val STAFF_ROUTE = "Staff"
+const val APPROVED_STAFF_ROUTE = "ApprovedStaff"
+const val NOT_APPROVED_STAFF_ROUTE = "NotApprovedStaff"
 const val REGISTER_ROUTE = "RegisterStaff"
 
 sealed class NavigationItem(
@@ -40,9 +41,14 @@ sealed class NavigationItem(
         labelId = R.string.login
     )
 
-    data object StaffDestination : NavigationItem(
-        route = STAFF_ROUTE,
-        labelId = R.string.staff
+    data object ApprovedStaffDestination : NavigationItem(
+        route = APPROVED_STAFF_ROUTE,
+        labelId = R.string.approved_staff
+    )
+
+    data object NotApprovedStaffDestination : NavigationItem(
+        route = NOT_APPROVED_STAFF_ROUTE,
+        labelId = R.string.not_approved_staff
     )
 
     data object RegisterStaffDestination : NavigationItem(
