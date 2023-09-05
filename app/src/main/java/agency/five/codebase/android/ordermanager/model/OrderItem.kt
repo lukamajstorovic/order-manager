@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.model
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
-import java.math.BigDecimal
 
 data class OrderItem(
     val id: String = "placeholder",
@@ -16,6 +15,7 @@ data class OrderItem(
             name = name,
             amount = amount,
         )
+
     fun toDbOrderItem(orderId: String) =
         DbOrderItem(
             id = id,

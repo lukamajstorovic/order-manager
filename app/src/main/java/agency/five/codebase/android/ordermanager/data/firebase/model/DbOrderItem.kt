@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.firebase.model
 
 import agency.five.codebase.android.ordermanager.model.OrderItem
-import java.math.BigDecimal
 
 data class DbOrderItem(
     val id: String = "placeholder",

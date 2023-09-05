@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -47,7 +46,7 @@ fun YesButton(
 private fun YesButtonPreview() {
     YesButton(
         modifier = Modifier,
-        onClick = {  }
+        onClick = { }
     )
 }
 

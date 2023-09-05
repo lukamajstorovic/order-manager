@@ -4,9 +4,6 @@ import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrder
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
 import agency.five.codebase.android.ordermanager.exceptions.FirestoreException
 import agency.five.codebase.android.ordermanager.exceptions.OrderNotFoundException
-import agency.five.codebase.android.ordermanager.exceptions.StaffNotFoundException
-import agency.five.codebase.android.ordermanager.model.Order
-import agency.five.codebase.android.ordermanager.model.OrderItem
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -17,7 +14,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import java.math.BigDecimal
 
 const val FIRESTORE_COLLECTION_ORDERS = "orders"
 const val FIRESTORE_COLLECTION_ORDER_ITEMS = "orderItems"

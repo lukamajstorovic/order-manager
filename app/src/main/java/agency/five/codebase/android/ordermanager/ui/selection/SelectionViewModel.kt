@@ -2,16 +2,13 @@ package agency.five.codebase.android.ordermanager.ui.selection
 
 import agency.five.codebase.android.ordermanager.data.repository.menuItem.MenuItemRepository
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
-import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
-import agency.five.codebase.android.ordermanager.model.OrderItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class SelectionViewModel(
     private val orderRepository: OrderRepository,

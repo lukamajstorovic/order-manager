@@ -12,7 +12,7 @@ const val ROUNDED_CORNER_PERCENT_30 = 30
 const val GRID_COUNT: Int = 2
 
 const val PASSWORD_REGEX: String =
-        "^" +
+    "^" +
             "(?=.*[0-9])" +         //at least 1 digit
             "(?=.*[a-z])" +         //at least 1 lower case letter
             "(?=.*[A-Z])" +         //at least 1 upper case letter
@@ -20,4 +20,4 @@ const val PASSWORD_REGEX: String =
             "(?=.*[@#$%^&+=])" +    //at least 1 special character
             "(?=\\S+$)" +           //no white spaces
             ".{8,}" +               //at least 8 characters
-        "$"
+            "$"

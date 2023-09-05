@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.order
 
 import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderItemViewState
-import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderViewState
 import com.google.firebase.Timestamp
 
 

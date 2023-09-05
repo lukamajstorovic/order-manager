@@ -78,7 +78,10 @@ class OrderRepositoryImpl(
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    private suspend fun processOrderItems(orderId: String, orderItems: List<DbNotConfirmedOrderItem>) {
+    private suspend fun processOrderItems(
+        orderId: String,
+        orderItems: List<DbNotConfirmedOrderItem>
+    ) {
         val deferredResults = orderItems.map { orderItem ->
             val dbOrderItem = orderItem.toOrderItem(orderId = orderId).toDbOrderItem()
             scope.async {

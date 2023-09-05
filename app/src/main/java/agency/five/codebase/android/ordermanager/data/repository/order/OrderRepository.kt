@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.repository.order
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
-import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.model.Order
 import agency.five.codebase.android.ordermanager.model.OrderItem
@@ -21,6 +20,7 @@ interface OrderRepository {
     suspend fun updateOrderItem(orderItem: OrderItem): Result<Unit>
     suspend fun confirmOrder(order: Order): Result<Unit>
     suspend fun completeOrder(currentUser: UserData, orderId: String): Result<Unit>
+
     /*NOT CONFIRMED ORDER SERVICE*/
     fun notConfirmedOrderedItems(): Flow<List<NotConfirmedOrderItem>>
     suspend fun addNotConfirmedOrderedItem(orderedItem: NotConfirmedOrderItem)

@@ -79,6 +79,6 @@ private fun OrderPreview() {
             //itemIdCollection = listOf(1, 2)
         ),
         modifier = Modifier.padding(10.dp),
-        onClickOrder = {  }
+        onClickOrder = { }
     )
 }

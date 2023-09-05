@@ -30,6 +30,7 @@ fun ApprovedStaffRoute(
         onClickStaff = onClickStaff,
     )
 }
+
 @Composable
 fun NotApprovedStaffRoute(
     viewModel: StaffViewModel,

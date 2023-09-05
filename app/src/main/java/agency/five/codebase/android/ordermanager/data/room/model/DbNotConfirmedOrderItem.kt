@@ -4,9 +4,8 @@ import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.model.OrderItem
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.math.BigDecimal
 
-@Entity(tableName = "orderItems",)
+@Entity(tableName = "orderItems")
 data class DbNotConfirmedOrderItem(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
@@ -18,6 +17,7 @@ data class DbNotConfirmedOrderItem(
             name = name,
             amount = amount,
         )
+
     fun toOrderItem(orderId: String) =
         OrderItem(
             orderId = orderId,
