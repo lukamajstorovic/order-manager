@@ -175,7 +175,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         ),
         DrawerMenuItem(
             path = NavigationItem.OrdersDestination.route,
-            text = "Order view and edit"
+            text = "Order view"
         ),
     )
     val adminDrawerMenuItem = listOf(
@@ -189,7 +189,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         ),
         DrawerMenuItem(
             path = NavigationItem.OrdersDestination.route,
-            text = "Order view and edit"
+            text = "Order view"
         ),
     )
     Scaffold(
