@@ -23,6 +23,7 @@ import agency.five.codebase.android.ordermanager.ui.individualstaff.IndividualSt
 import agency.five.codebase.android.ordermanager.ui.login.LoginRoute
 import agency.five.codebase.android.ordermanager.ui.login.LoginViewModel
 import agency.five.codebase.android.ordermanager.ui.menu.CreateMenuItemRoute
+import agency.five.codebase.android.ordermanager.ui.menu.DeleteMenuItemRoute
 import agency.five.codebase.android.ordermanager.ui.menu.MenuViewModel
 import agency.five.codebase.android.ordermanager.ui.order.OrdersRoute
 import agency.five.codebase.android.ordermanager.ui.order.OrdersViewModel
@@ -141,6 +142,12 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         derivedStateOf {
             navBackStackEntry?.destination?.route == NavigationItem.ApprovedStaffDestination.route
                     || navBackStackEntry?.destination?.route == NavigationItem.NotApprovedStaffDestination.route
+        }
+    }
+    val menuManagement by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.CreateMenuItemDestination.route
+                    || navBackStackEntry?.destination?.route == NavigationItem.DeleteMenuItemDestination.route
         }
     }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -281,6 +288,21 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                     destinations = listOf(
                         NavigationItem.ApprovedStaffDestination,
                         NavigationItem.NotApprovedStaffDestination,
+                    ),
+                    onNavigateToDestination = {
+                        navController.navigate(it.route) {
+                            popUpTo(it.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    currentDestination = navBackStackEntry?.destination
+                )
+            } else if (menuManagement) {
+                BottomNavigationBar(
+                    destinations = listOf(
+                        NavigationItem.CreateMenuItemDestination,
+                        NavigationItem.DeleteMenuItemDestination,
                     ),
                     onNavigateToDestination = {
                         navController.navigate(it.route) {
@@ -524,6 +546,23 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         )
                         println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
                     },
+                )
+            }
+            composable(
+                route = NavigationItem.DeleteMenuItemDestination.route,
+            ) {
+                val viewModel: MenuViewModel = getViewModel(
+                    parameters = { parametersOf(snackbarHostState, userData.establishmentId) }
+                )
+                val deletionResult = viewModel.deletionResult.value
+                DeleteMenuItemRoute(
+                    snackbarHostState = snackbarHostState,
+                    onClickDeleteButton = { id ->
+                        viewModel.deleteMenuItem(
+                            id,
+                        )
+                    },
+                    viewModel = viewModel,
                 )
             }
         }
