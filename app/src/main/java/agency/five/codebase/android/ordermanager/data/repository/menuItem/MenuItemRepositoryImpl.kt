@@ -37,7 +37,7 @@ class MenuItemRepositoryImpl(
     }
 
     override suspend fun removeMenuItem(id: String): Result<Unit> {
-        return removeMenuItem(id)
+        return menuItemService.removeMenuItem(id)
     }
 }
 

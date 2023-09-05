@@ -9,6 +9,7 @@ import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrd
 import agency.five.codebase.android.ordermanager.ui.confirmorder.di.confirmOrderModule
 import agency.five.codebase.android.ordermanager.ui.individualstaff.di.individualStaffModule
 import agency.five.codebase.android.ordermanager.ui.login.di.authenticationModule
+import agency.five.codebase.android.ordermanager.ui.menu.di.menuModule
 import agency.five.codebase.android.ordermanager.ui.order.di.ordersModule
 import agency.five.codebase.android.ordermanager.ui.registerstaff.di.registerStaffModule
 import agency.five.codebase.android.ordermanager.ui.selection.di.selectionModule
@@ -42,6 +43,7 @@ class OrderManagerApp : Application() {
                 registerStaffModule,
                 firebaseModule,
                 individualStaffModule,
+                menuModule,
             )
             GlobalScope.launch {
             }

@@ -10,6 +10,8 @@ const val LOGIN_ROUTE = "Login"
 const val APPROVED_STAFF_ROUTE = "ApprovedStaff"
 const val NOT_APPROVED_STAFF_ROUTE = "NotApprovedStaff"
 const val REGISTER_ROUTE = "RegisterStaff"
+const val CREATE_MENU_ITEM_ROUTE = "CreateMenuItem"
+const val DELETE_MENU_ITEM_ROUTE = "DeleteMenuItem"
 
 sealed class NavigationItem(
     override val route: String,
@@ -54,5 +56,15 @@ sealed class NavigationItem(
     data object RegisterStaffDestination : NavigationItem(
         route = REGISTER_ROUTE,
         labelId = R.string.register_staff
+    )
+
+    data object CreateMenuItemDestination : NavigationItem(
+        route = CREATE_MENU_ITEM_ROUTE,
+        labelId = R.string.create_menu_item
+    )
+
+    data object DeleteMenuItemDestination : NavigationItem(
+        route = DELETE_MENU_ITEM_ROUTE,
+        labelId = R.string.delete_menu_item
     )
 }
