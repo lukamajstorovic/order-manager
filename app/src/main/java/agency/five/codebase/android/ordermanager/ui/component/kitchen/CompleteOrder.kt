@@ -3,7 +3,6 @@ package agency.five.codebase.android.ordermanager.ui.component.kitchen
 import agency.five.codebase.android.ordermanager.ROUNDED_CORNER_PERCENT_30
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -30,32 +28,26 @@ fun OrderButton(
     onClick: () -> Unit,
     text: String,
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
+    Button(
+        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
+        onClick = { onClick() },
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = LightGray,
+            backgroundColor = LightGray
+        ),
+        modifier = Modifier
+            .padding(20.dp)
     ) {
-        Button(
-            shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
-            onClick = { onClick() },
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = LightGray,
-                backgroundColor = LightGray
-            ),
+        Text(
+            text = text,
+            color = DarkGreen,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .align(Center)
-                .padding(20.dp)
-        ) {
-            Text(
-                text = text,
-                color = DarkGreen,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Default,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(10.dp)
-            )
-        }
+                .padding(10.dp)
+        )
     }
 }
 

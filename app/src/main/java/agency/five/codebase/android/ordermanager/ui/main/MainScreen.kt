@@ -385,11 +385,12 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             ) {
                 val orderId = it.arguments?.getString(ORDER_KEY)
                 val viewModel: CompleteOrderViewModel =
-                    getViewModel(parameters = { parametersOf(orderId) })
+                    getViewModel(parameters = { parametersOf(orderId, snackbarHostState) })
                 CompleteOrderRoute(
                     viewModel = viewModel,
-                    onCompleteOrder = { navController.navigateUp() },
+                    onClickButton = { navController.navigateUp() },
                     currentUser = userData,
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -403,7 +404,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         navController.navigate(
                             CompleteOrderDestination.createNavigationRoute(it)
                         )
-                    }
+                    },
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -426,7 +428,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             ) {
                 val orderId = it.arguments?.getString(ORDER_KEY)
                 val viewModel: CompleteOrderViewModel =
-                    getViewModel(parameters = { parametersOf(orderId) })
+                    getViewModel(parameters = { parametersOf(orderId, snackbarHostState) })
                 IndividualCompletedOrderRoute(
                     viewModel = viewModel,
                     onBack = { navController.navigateUp() },

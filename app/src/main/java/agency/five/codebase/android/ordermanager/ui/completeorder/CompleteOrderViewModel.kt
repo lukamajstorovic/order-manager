@@ -4,6 +4,7 @@ import agency.five.codebase.android.ordermanager.data.currentuser.UserData
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.ui.completeorder.mapper.CompleteOrderMapper
 import agency.five.codebase.android.ordermanager.ui.order.CompletedOrdersViewState
+import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
@@ -19,6 +20,7 @@ class CompleteOrderViewModel(
     private val orderRepository: OrderRepository,
     private val completeOrderMapper: CompleteOrderMapper,
     private val orderId: String,
+    private val snackbarHostState: SnackbarHostState,
 ) : ViewModel() {
     private val _completeOrderViewState =
         MutableStateFlow(CompleteOrderViewState(orderId, emptyList()))
@@ -73,6 +75,26 @@ class CompleteOrderViewModel(
     fun completeOrder(currentUser: UserData, orderId: String) {
         viewModelScope.launch {
             orderRepository.completeOrder(currentUser, orderId)
+        }
+    }
+
+    fun cancelOrder(orderId: String) {
+        viewModelScope.launch {
+            orderRepository.deleteOrder(orderId).fold(
+                onSuccess = {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(
+                        "Cancelled successfully"
+                    )
+                },
+                onFailure = {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(
+                        it.message!!
+                    )
+                    println(it.message!! + "GHGHGHGHGHGHGH")
+                }
+            )
         }
     }
 }
