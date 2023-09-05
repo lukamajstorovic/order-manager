@@ -4,7 +4,6 @@ import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_4
 import agency.five.codebase.android.ordermanager.ui.order.CompleteOrderViewStateItem
-import agency.five.codebase.android.ordermanager.ui.order.CompletedOrderViewStateItemCollectionViewState
 import agency.five.codebase.android.ordermanager.ui.theme.DarkGreen
 import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.clickable

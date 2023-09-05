@@ -17,7 +17,7 @@ data class DbOrder(
             id = id,
             establishmentId = establishmentId,
             tableNumber = tableNumber,
-            createOrderStaffId  = createOrderStaffId,
+            createOrderStaffId = createOrderStaffId,
             completeOrderStaffId = completeOrderStaffId,
             active = active,
             createdAt = createdAt,

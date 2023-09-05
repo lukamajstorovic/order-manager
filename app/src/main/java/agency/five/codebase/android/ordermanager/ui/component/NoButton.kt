@@ -22,10 +22,11 @@ fun NoButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    OutlinedButton(onClick = { onClick() },
-        modifier= modifier,
+    OutlinedButton(
+        onClick = { onClick() },
+        modifier = modifier,
         shape = CircleShape,
-        border= BorderStroke(0.dp, Color.Transparent),
+        border = BorderStroke(0.dp, Color.Transparent),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = DarkGreen,

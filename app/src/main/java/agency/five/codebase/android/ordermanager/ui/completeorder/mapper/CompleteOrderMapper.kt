@@ -6,6 +6,13 @@ import agency.five.codebase.android.ordermanager.ui.completeorder.CompleteOrderV
 import agency.five.codebase.android.ordermanager.ui.order.CompletedOrdersViewState
 
 interface CompleteOrderMapper {
-    fun toCompleteOrderViewState(orderId: String,orderItems: List<OrderItem>): CompleteOrderViewState
-    fun toCompletedOrderViewState(order: Order, orderItems: List<OrderItem>): CompletedOrdersViewState
+    fun toCompleteOrderViewState(
+        orderId: String,
+        orderItems: List<OrderItem>
+    ): CompleteOrderViewState
+
+    fun toCompletedOrderViewState(
+        order: Order,
+        orderItems: List<OrderItem>
+    ): CompletedOrdersViewState
 }

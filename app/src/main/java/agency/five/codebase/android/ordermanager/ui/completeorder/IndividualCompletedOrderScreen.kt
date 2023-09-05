@@ -1,10 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.completeorder
 
-import agency.five.codebase.android.ordermanager.WEIGHT_1
 import agency.five.codebase.android.ordermanager.WEIGHT_2
-import agency.five.codebase.android.ordermanager.WEIGHT_3
 import agency.five.codebase.android.ordermanager.WEIGHT_4
-import agency.five.codebase.android.ordermanager.WEIGHT_5
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.ItemToComplete
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderButton
 import agency.five.codebase.android.ordermanager.ui.component.kitchen.OrderItemViewState

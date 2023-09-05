@@ -1,6 +1,5 @@
 package agency.five.codebase.android.ordermanager.ui.selection.mapper
 
-import agency.five.codebase.android.ordermanager.R
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import agency.five.codebase.android.ordermanager.ui.component.service.SelectionCardViewState
 import agency.five.codebase.android.ordermanager.ui.selection.SelectionViewState

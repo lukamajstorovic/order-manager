@@ -1,7 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.repository.establishment
 
 import agency.five.codebase.android.ordermanager.model.Establishment
-import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.flow.Flow
 
 interface EstablishmentRepository {

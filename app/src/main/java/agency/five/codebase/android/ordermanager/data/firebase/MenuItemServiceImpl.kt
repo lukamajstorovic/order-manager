@@ -1,9 +1,6 @@
 package agency.five.codebase.android.ordermanager.data.firebase
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbMenuItem
-import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrder
-import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
-import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.exceptions.FirestoreException
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
@@ -18,7 +15,7 @@ const val FIRESTORE_COLLECTION_MENU_ITEMS = "menuItems"
 
 class MenuItemServiceImpl(
     private val fireStore: FirebaseFirestore
-): MenuItemService {
+) : MenuItemService {
 
     private fun mapMenuItemDocumentToDbMenuItem(menuItem: DocumentSnapshot): DbMenuItem {
         return DbMenuItem(

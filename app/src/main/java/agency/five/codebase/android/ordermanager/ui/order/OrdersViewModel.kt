@@ -32,7 +32,8 @@ class OrdersViewModel(
                 initialValue = ordersMapper.toOrderViewState(emptyList())
             )
 
-    private val _completedOrdersViewState = MutableStateFlow(CompletedOrderViewStateItemCollectionViewState(emptyList()))
+    private val _completedOrdersViewState =
+        MutableStateFlow(CompletedOrderViewStateItemCollectionViewState(emptyList()))
 
     val completedOrdersViewState: StateFlow<CompletedOrderViewStateItemCollectionViewState> =
         _completedOrdersViewState

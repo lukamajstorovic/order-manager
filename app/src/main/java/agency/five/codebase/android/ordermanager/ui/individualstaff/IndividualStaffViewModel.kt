@@ -5,7 +5,6 @@ import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepo
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordException
-import agency.five.codebase.android.ordermanager.exceptions.UsernameAlreadyExistsException
 import agency.five.codebase.android.ordermanager.exceptions.WeakPasswordException
 import agency.five.codebase.android.ordermanager.model.Staff
 import agency.five.codebase.android.ordermanager.ui.registerstaff.MIN_PASSWORD_LENGTH
@@ -58,7 +57,9 @@ class IndividualStaffViewModel(
                 },
                 onFailure = { exception ->
                     snackbarHostState.currentSnackbarData?.dismiss()
-                    snackbarHostState.showSnackbar(exception.message ?: "Failed getting staff by ID.")
+                    snackbarHostState.showSnackbar(
+                        exception.message ?: "Failed getting staff by ID."
+                    )
                 }
             )
         }
@@ -70,7 +71,11 @@ class IndividualStaffViewModel(
         viewModelScope.launch {
             val dif = async {
                 _validationResult.value =
-                    validateUserData(staffData.value.name, staffData.value.username, staffData.value.password)
+                    validateUserData(
+                        staffData.value.name,
+                        staffData.value.username,
+                        staffData.value.password
+                    )
                 if (validationResult.value.isSuccess) {
                     _validationResult.value = staffRepository.updateStaff(staffData.value)
                 }

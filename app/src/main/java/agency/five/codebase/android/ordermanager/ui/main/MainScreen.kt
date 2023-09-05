@@ -554,7 +554,6 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 val viewModel: MenuViewModel = getViewModel(
                     parameters = { parametersOf(snackbarHostState, userData.establishmentId) }
                 )
-                val deletionResult = viewModel.deletionResult.value
                 DeleteMenuItemRoute(
                     snackbarHostState = snackbarHostState,
                     onClickDeleteButton = { id ->

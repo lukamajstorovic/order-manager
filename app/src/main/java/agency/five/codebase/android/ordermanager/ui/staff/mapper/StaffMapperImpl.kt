@@ -4,9 +4,9 @@ import agency.five.codebase.android.ordermanager.model.Staff
 import agency.five.codebase.android.ordermanager.ui.component.staff.StaffCardViewState
 import agency.five.codebase.android.ordermanager.ui.staff.StaffViewState
 
-class StaffMapperImpl: StaffMapper {
+class StaffMapperImpl : StaffMapper {
     override fun toStaffViewState(staff: List<Staff>): StaffViewState {
-    val staffCardViewStateCollection = staff.map { mapStaff(it) }
+        val staffCardViewStateCollection = staff.map { mapStaff(it) }
         return StaffViewState(
             staffCardViewStateCollection = staffCardViewStateCollection
         )

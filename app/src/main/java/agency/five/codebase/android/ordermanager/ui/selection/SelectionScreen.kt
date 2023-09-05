@@ -27,7 +27,11 @@ fun SelectionRoute(
 
     SelectionScreen(
         selectionViewState = selectionViewState,
-        onClickSelectionCard = { orderItemName -> viewModel.addOrderItemOrIncrementAmount(orderItemName) }
+        onClickSelectionCard = { orderItemName ->
+            viewModel.addOrderItemOrIncrementAmount(
+                orderItemName
+            )
+        }
     )
 }
 

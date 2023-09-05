@@ -16,7 +16,7 @@ import androidx.datastore.dataStore
 val Context.dataStore by dataStore("user-data.json", UserDataSerializer)
 
 class MainActivity : ComponentActivity() {
-//    private lateinit var auth: FirebaseAuth
+    //    private lateinit var auth: FirebaseAuth
     private val userDataViewModel: UserDataViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

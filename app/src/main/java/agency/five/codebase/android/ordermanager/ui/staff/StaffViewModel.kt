@@ -2,17 +2,11 @@ package agency.five.codebase.android.ordermanager.ui.staff
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
 import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
-import agency.five.codebase.android.ordermanager.model.Staff
 import agency.five.codebase.android.ordermanager.ui.staff.mapper.StaffMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class StaffViewModel(

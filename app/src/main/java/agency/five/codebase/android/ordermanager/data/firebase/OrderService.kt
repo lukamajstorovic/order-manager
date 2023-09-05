@@ -2,8 +2,6 @@ package agency.five.codebase.android.ordermanager.data.firebase
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrder
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
-import agency.five.codebase.android.ordermanager.model.Order
-import agency.five.codebase.android.ordermanager.model.OrderItem
 import kotlinx.coroutines.flow.Flow
 
 interface OrderService {
