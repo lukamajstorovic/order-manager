@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -82,11 +84,15 @@ private fun RegisterStaffScreen(
     val focusRequesterPassword = remember { FocusRequester() }
     val focusRequesterEstablishment = remember { FocusRequester() }
     val registerStaffViewModel: RegisterStaffViewModel = viewModel()
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Column(
             modifier = modifier
                 .background(color = LightGray)
-                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
 
         ) {
             Text(
@@ -97,7 +103,7 @@ private fun RegisterStaffScreen(
                 fontFamily = FontFamily.Default,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(vertical = 30.dp)
+                    .padding(horizontal = 16.dp, vertical = 30.dp)
                     .align(Alignment.CenterHorizontally)
             )
             Text(
@@ -107,12 +113,13 @@ private fun RegisterStaffScreen(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 16.dp, 10.dp)
                     .align(Alignment.Start)
             )
             Card(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp,),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 elevation = 10.dp,
                 backgroundColor = LightGray,
@@ -156,12 +163,13 @@ private fun RegisterStaffScreen(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 16.dp, 10.dp)
                     .align(Alignment.Start)
             )
             Card(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp,),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 elevation = 10.dp,
                 backgroundColor = LightGray,
@@ -206,12 +214,13 @@ private fun RegisterStaffScreen(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 16.dp, 10.dp)
                     .align(Alignment.Start)
             )
             Card(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp,),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 elevation = 10.dp,
                 backgroundColor = LightGray,
@@ -254,7 +263,7 @@ private fun RegisterStaffScreen(
             Card(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 20.dp),
+                    .padding(vertical = 20.dp, horizontal = 16.dp),
                 shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT_30),
                 elevation = 10.dp,
                 backgroundColor = LightGray,
@@ -313,7 +322,7 @@ private fun RegisterStaffScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(horizontal = 80.dp)
-                    .padding(top = 20.dp),
+                    .padding(top = 20.dp, bottom = 20.dp),
             ) {
                 Text(
                     text = "To login",
@@ -329,7 +338,9 @@ private fun RegisterStaffScreen(
         }
         BottomSnackbar(
             snackbarHostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 16.dp)
         )
     }
 }

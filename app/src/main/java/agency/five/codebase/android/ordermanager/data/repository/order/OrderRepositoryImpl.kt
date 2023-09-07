@@ -14,7 +14,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
@@ -165,6 +167,29 @@ class OrderRepositoryImpl(
                 Result.failure(exception)
             }
         )
+    }
+
+    override suspend fun deleteOrder(orderId: String): Result<Unit> {
+        try {
+            val orderItemsFlow = orderItems(orderId)
+            orderItemsFlow.map { orderItems ->
+                println(orderItems.toString())
+                orderItems.forEach { orderItem ->
+                    println(orderItem)
+                    deleteOrderItem(orderItem.id).onFailure {
+                        throw(it)
+                    }
+                }
+            }
+            orderService.deleteOrder(orderId)
+        } catch (exception: Exception) {
+            return Result.failure(exception)
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun deleteOrderItem(orderItemId: String): Result<Unit> {
+        return orderService.deleteOrderItem(orderItemId)
     }
 
     override fun notConfirmedOrderedItems(): Flow<List<NotConfirmedOrderItem>> =

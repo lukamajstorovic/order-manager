@@ -13,4 +13,6 @@ interface OrderService {
     suspend fun addOrderItem(orderItem: DbOrderItem): Result<Unit>
     suspend fun updateOrder(order: DbOrder): Result<Unit>
     suspend fun updateOrderItem(orderItem: DbOrderItem): Result<Unit>
+    suspend fun deleteOrder(orderId: String): Result<Unit>
+    suspend fun deleteOrderItem(orderItemId: String): Result<Unit>
 }

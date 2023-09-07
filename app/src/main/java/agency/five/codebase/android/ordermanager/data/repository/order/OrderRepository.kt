@@ -20,6 +20,8 @@ interface OrderRepository {
     suspend fun updateOrderItem(orderItem: OrderItem): Result<Unit>
     suspend fun confirmOrder(order: Order): Result<Unit>
     suspend fun completeOrder(currentUser: UserData, orderId: String): Result<Unit>
+    suspend fun deleteOrder(orderId: String): Result<Unit>
+    suspend fun deleteOrderItem(orderItemId: String): Result<Unit>
 
     /*NOT CONFIRMED ORDER SERVICE*/
     fun notConfirmedOrderedItems(): Flow<List<NotConfirmedOrderItem>>

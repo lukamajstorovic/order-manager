@@ -203,4 +203,28 @@ class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService 
             Result.failure(FirestoreException(exception))
         }
     }
+
+    override suspend fun deleteOrder(orderId: String): Result<Unit> {
+        return try {
+            fireStore.collection(FIRESTORE_COLLECTION_ORDERS)
+                .document(orderId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(FirestoreException(exception))
+        }
+    }
+
+    override suspend fun deleteOrderItem(orderItemId: String): Result<Unit> {
+        return try {
+            fireStore.collection(FIRESTORE_COLLECTION_ORDER_ITEMS)
+                .document(orderItemId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(FirestoreException(exception))
+        }
+    }
 }

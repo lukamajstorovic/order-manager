@@ -175,7 +175,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         ),
         DrawerMenuItem(
             path = NavigationItem.OrdersDestination.route,
-            text = "Order view and edit"
+            text = "Order view"
         ),
     )
     val adminDrawerMenuItem = listOf(
@@ -189,7 +189,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
         ),
         DrawerMenuItem(
             path = NavigationItem.OrdersDestination.route,
-            text = "Order view and edit"
+            text = "Order view"
         ),
     )
     Scaffold(
@@ -361,10 +361,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 NavigationItem.SelectionDestination.route,
             ) {
                 val viewModel: SelectionViewModel = getViewModel(
-                    parameters = { parametersOf(userData.establishmentId) }
+                    parameters = { parametersOf(userData.establishmentId, snackbarHostState) }
                 )
                 SelectionRoute(
                     viewModel = viewModel,
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -385,11 +386,12 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             ) {
                 val orderId = it.arguments?.getString(ORDER_KEY)
                 val viewModel: CompleteOrderViewModel =
-                    getViewModel(parameters = { parametersOf(orderId) })
+                    getViewModel(parameters = { parametersOf(orderId, snackbarHostState) })
                 CompleteOrderRoute(
                     viewModel = viewModel,
-                    onCompleteOrder = { navController.navigateUp() },
+                    onClickButton = { navController.navigateUp() },
                     currentUser = userData,
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -403,7 +405,8 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                         navController.navigate(
                             CompleteOrderDestination.createNavigationRoute(it)
                         )
-                    }
+                    },
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(
@@ -426,7 +429,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
             ) {
                 val orderId = it.arguments?.getString(ORDER_KEY)
                 val viewModel: CompleteOrderViewModel =
-                    getViewModel(parameters = { parametersOf(orderId) })
+                    getViewModel(parameters = { parametersOf(orderId, snackbarHostState) })
                 IndividualCompletedOrderRoute(
                     viewModel = viewModel,
                     onBack = { navController.navigateUp() },

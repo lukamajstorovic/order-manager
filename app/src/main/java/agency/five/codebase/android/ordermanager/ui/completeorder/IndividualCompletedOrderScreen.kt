@@ -11,12 +11,16 @@ import agency.five.codebase.android.ordermanager.ui.theme.LightGray
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,6 +57,7 @@ private fun IndividualCompletedOrderScreen(
         Column(
             modifier = Modifier
                 .weight(WEIGHT_2)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = "TABLE: " + completedOrdersViewState.tableNumber,
@@ -62,7 +67,6 @@ private fun IndividualCompletedOrderScreen(
                 color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
-                textAlign = TextAlign.Center
             )
             Text(
                 text = "DATE: " + SimpleDateFormat(
@@ -77,7 +81,6 @@ private fun IndividualCompletedOrderScreen(
                 color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
-                textAlign = TextAlign.Center
             )
             Text(
                 text = "CREATED: ${completedOrdersViewState.createOrderStaffId}",
@@ -87,7 +90,6 @@ private fun IndividualCompletedOrderScreen(
                 color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
-                textAlign = TextAlign.Center
             )
             Text(
                 text = "COMPLETED: ${completedOrdersViewState.completeOrderStaffId}",
@@ -97,7 +99,6 @@ private fun IndividualCompletedOrderScreen(
                 color = DarkGreen,
                 modifier = Modifier
                     .padding(10.dp),
-                textAlign = TextAlign.Center
             )
         }
         LazyColumn(
@@ -120,10 +121,11 @@ private fun IndividualCompletedOrderScreen(
         }
         Column(
             modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
                 .weight(WEIGHT_2)
         ) {
             OrderButton(
-                modifier = Modifier,
                 onClick = {
                     onBack()
                 },
