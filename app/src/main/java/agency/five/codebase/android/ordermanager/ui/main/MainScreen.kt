@@ -361,10 +361,11 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                 NavigationItem.SelectionDestination.route,
             ) {
                 val viewModel: SelectionViewModel = getViewModel(
-                    parameters = { parametersOf(userData.establishmentId) }
+                    parameters = { parametersOf(userData.establishmentId, snackbarHostState) }
                 )
                 SelectionRoute(
                     viewModel = viewModel,
+                    snackbarHostState = snackbarHostState,
                 )
             }
             composable(

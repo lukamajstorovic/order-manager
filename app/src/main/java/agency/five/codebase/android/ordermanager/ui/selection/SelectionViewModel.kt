@@ -4,6 +4,7 @@ import agency.five.codebase.android.ordermanager.data.repository.menuItem.MenuIt
 import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper
+import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,6 +16,7 @@ class SelectionViewModel(
     private val menuItemRepository: MenuItemRepository,
     private val selectionMapper: SelectionMapper,
     private val establishmentId: String,
+    private val snackbarHostState: SnackbarHostState,
 ) : ViewModel() {
     private val _selectionViewState = MutableStateFlow(SelectionViewState(emptyList()))
 
@@ -49,6 +51,10 @@ class SelectionViewModel(
             } else {
                 orderRepository.incrementNotCompletedOrderItemAmount(orderItem.name)
             }
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                "Successfully added item"
+            )
         }
     }
 }
