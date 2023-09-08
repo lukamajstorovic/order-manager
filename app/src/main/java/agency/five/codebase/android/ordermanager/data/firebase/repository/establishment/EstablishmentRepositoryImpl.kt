@@ -1,5 +1,6 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.establishment
 
+import agency.five.codebase.android.ordermanager.data.firebase.repository.staff.FIRESTORE_COLLECTION_STAFF
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbEstablishment
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
@@ -11,7 +12,8 @@ import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_ESTABLISHMENTS = "establishments"
 
-class EstablishmentServiceImpl(private val fireStore: FirebaseFirestore) : EstablishmentService {
+class EstablishmentRepositoryImpl(private val fireStore: FirebaseFirestore) :
+    EstablishmentRepository {
 
     private fun mapEstablishmentDocumentToDbEstablishment(establishment: DocumentSnapshot): DbEstablishment {
         return DbEstablishment(

@@ -1,9 +1,9 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.staff
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import kotlinx.coroutines.flow.Flow
 
-interface StaffService {
+interface StaffRepository {
     fun getAllStaff(): Flow<List<DbStaff>>
     suspend fun getStaffById(staffId: String): Result<DbStaff>
     suspend fun getStaffByCredentials(username: String, password: String): DbStaff?

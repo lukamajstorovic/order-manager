@@ -1,7 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.completeorder
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
-import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.service.order.OrderService
 import agency.five.codebase.android.ordermanager.ui.completeorder.mapper.CompleteOrderMapper
 import agency.five.codebase.android.ordermanager.ui.order.CompletedOrdersViewState
 import androidx.compose.material.SnackbarHostState
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class CompleteOrderViewModel(
-    private val orderRepository: OrderRepository,
+    private val orderService: OrderService,
     private val completeOrderMapper: CompleteOrderMapper,
     private val orderId: String,
     private val snackbarHostState: SnackbarHostState,
@@ -27,7 +27,7 @@ class CompleteOrderViewModel(
     val completeOrderViewState: StateFlow<CompleteOrderViewState> =
         _completeOrderViewState
             .flatMapLatest {
-                orderRepository.orderItems(it.orderId)
+                orderService.orderItems(it.orderId)
                     .map { orderItems ->
                         completeOrderMapper.toCompleteOrderViewState(orderId, orderItems)
                     }
@@ -54,8 +54,8 @@ class CompleteOrderViewModel(
     val individualCompletedOrderViewState: StateFlow<CompletedOrdersViewState> =
         _individualCompletedOrderViewState
             .flatMapLatest {
-                val order = orderRepository.orderById(orderId).getOrNull()!!
-                orderRepository.orderItems(orderId)
+                val order = orderService.orderById(orderId).getOrNull()!!
+                orderService.orderItems(orderId)
                     .map { orderItems ->
                         completeOrderMapper.toCompletedOrderViewState(order, orderItems)
                     }
@@ -74,13 +74,13 @@ class CompleteOrderViewModel(
 
     fun completeOrder(currentUser: UserData, orderId: String) {
         viewModelScope.launch {
-            orderRepository.completeOrder(currentUser, orderId)
+            orderService.completeOrder(currentUser, orderId)
         }
     }
 
     fun cancelOrder(orderId: String) {
         viewModelScope.launch {
-            orderRepository.deleteOrder(orderId).fold(
+            orderService.deleteOrder(orderId).fold(
                 onSuccess = {
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(

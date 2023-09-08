@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.room
+package agency.five.codebase.android.ordermanager.data.room.repository
 
 import agency.five.codebase.android.ordermanager.data.room.dao.NotConfirmedOrderItemDao
 import agency.five.codebase.android.ordermanager.data.room.model.DbNotConfirmedOrderItem
@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
-class NotConfirmedOrderServiceImpl(
+class NotConfirmedOrderRepositoryImpl(
     private val orderedItemDao: NotConfirmedOrderItemDao,
     private val bgDispatcher: CoroutineDispatcher,
-) : NotConfirmedOrderService {
+) : NotConfirmedOrderRepository {
 
     override fun orderedItems(): Flow<List<DbNotConfirmedOrderItem>> =
         orderedItemDao.getOrderItems().map {

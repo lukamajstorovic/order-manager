@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.staff
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbStaff
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
@@ -17,7 +17,7 @@ import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_STAFF = "staff"
 
-class StaffServiceImpl(private val fireStore: FirebaseFirestore) : StaffService {
+class StaffRepositoryImpl(private val fireStore: FirebaseFirestore) : StaffRepository {
 
     private fun stringToStaffRole(value: String): StaffRoles? {
         return try {

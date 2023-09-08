@@ -1,7 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.selection
 
-import agency.five.codebase.android.ordermanager.data.repository.menuItem.MenuItemRepository
-import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.service.menuItem.MenuItemService
+import agency.five.codebase.android.ordermanager.data.service.order.OrderService
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.ui.selection.mapper.SelectionMapper
 import androidx.compose.material.SnackbarHostState
@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SelectionViewModel(
-    private val orderRepository: OrderRepository,
-    private val menuItemRepository: MenuItemRepository,
+    private val orderService: OrderService,
+    private val menuItemService: MenuItemService,
     private val selectionMapper: SelectionMapper,
     private val establishmentId: String,
     private val snackbarHostState: SnackbarHostState,
@@ -24,7 +24,7 @@ class SelectionViewModel(
     val selectionViewState: StateFlow<SelectionViewState> =
         _selectionViewState
             .flatMapLatest {
-                menuItemRepository.getMenuItems(establishmentId = establishmentId)
+                menuItemService.getMenuItems(establishmentId = establishmentId)
                     .map { menuItems ->
                         selectionMapper.toSelectionViewState(menuItems)
                     }
@@ -37,19 +37,19 @@ class SelectionViewModel(
 
     fun addOrderItemOrIncrementAmount(orderItemName: String) {
         viewModelScope.launch {
-            val orderItems = orderRepository.notConfirmedOrderedItems().first()
+            val orderItems = orderService.notConfirmedOrderedItems().first()
             val orderItem = orderItems.firstOrNull { orderItemFromList ->
                 orderItemFromList.name == orderItemName
             }
             if (orderItem == null) {
-                orderRepository.addNotConfirmedOrderedItem(
+                orderService.addNotConfirmedOrderedItem(
                     NotConfirmedOrderItem(
                         name = orderItemName,
                         amount = 1,
                     )
                 )
             } else {
-                orderRepository.incrementNotCompletedOrderItemAmount(orderItem.name)
+                orderService.incrementNotCompletedOrderItemAmount(orderItem.name)
             }
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(

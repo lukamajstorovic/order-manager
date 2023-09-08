@@ -1,6 +1,6 @@
-package agency.five.codebase.android.ordermanager.data.repository.establishment
+package agency.five.codebase.android.ordermanager.data.service.establishment
 
-import agency.five.codebase.android.ordermanager.data.firebase.EstablishmentService
+import agency.five.codebase.android.ordermanager.data.firebase.repository.establishment.EstablishmentRepository
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbEstablishment
 import agency.five.codebase.android.ordermanager.model.Establishment
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
-class EstablishmentRepositoryImpl(
+class EstablishmentServiceImpl(
     private val bgDispatcher: CoroutineDispatcher,
-    private val establishmentService: EstablishmentService,
-) : EstablishmentRepository {
+    private val establishmentRepository: EstablishmentRepository,
+) : EstablishmentService {
     override fun allEstablishments(): Flow<List<Establishment>> =
-        establishmentService.getAllEstablishments().map {
+        establishmentRepository.getAllEstablishments().map {
             it.map { dbEstablishment ->
                 dbEstablishment.toEstablishment()
             }
@@ -28,14 +28,14 @@ class EstablishmentRepositoryImpl(
 
     override suspend fun establishmentById(establishmentId: String): Establishment? {
         return withContext(bgDispatcher) {
-            val dbEstablishment = establishmentService.getEstablishmentById(establishmentId)
+            val dbEstablishment = establishmentRepository.getEstablishmentById(establishmentId)
             dbEstablishment?.toEstablishment()
         }
     }
 
     override suspend fun addEstablishment(establishment: Establishment) {
         withContext(bgDispatcher) {
-            establishmentService.addEstablishment(
+            establishmentRepository.addEstablishment(
                 DbEstablishment(
                     name = establishment.name,
                 )

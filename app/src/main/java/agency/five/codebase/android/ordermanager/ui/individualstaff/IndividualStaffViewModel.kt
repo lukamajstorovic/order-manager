@@ -1,7 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.individualstaff
 
 import agency.five.codebase.android.ordermanager.PASSWORD_REGEX
-import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.service.staff.StaffService
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordException
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 class IndividualStaffViewModel(
-    private val staffRepository: StaffRepository,
+    private val staffService: StaffService,
     private val snackbarHostState: SnackbarHostState,
     private val staffId: String,
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class IndividualStaffViewModel(
 
     private fun getStaffById() {
         viewModelScope.launch {
-            staffRepository.staffById(staffId).fold(
+            staffService.staffById(staffId).fold(
                 onSuccess = { staff ->
                     updateStaffState(staff)
                 },
@@ -77,7 +77,7 @@ class IndividualStaffViewModel(
                         staffData.value.password
                     )
                 if (validationResult.value.isSuccess) {
-                    _validationResult.value = staffRepository.updateStaff(staffData.value)
+                    _validationResult.value = staffService.updateStaff(staffData.value)
                 }
             }
             dif.await()

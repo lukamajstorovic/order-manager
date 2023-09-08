@@ -1,9 +1,9 @@
-package agency.five.codebase.android.ordermanager.data.repository.staff
+package agency.five.codebase.android.ordermanager.data.service.staff
 
 import agency.five.codebase.android.ordermanager.model.Staff
 import kotlinx.coroutines.flow.Flow
 
-interface StaffRepository {
+interface StaffService {
     fun allStaff(): Flow<List<Staff>>
     suspend fun staffById(staffId: String): Result<Staff>
     suspend fun staffByCredentials(username: String, password: String): Staff?

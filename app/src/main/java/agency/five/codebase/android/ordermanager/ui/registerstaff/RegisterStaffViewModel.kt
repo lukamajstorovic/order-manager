@@ -1,8 +1,8 @@
 package agency.five.codebase.android.ordermanager.ui.registerstaff
 
 import agency.five.codebase.android.ordermanager.PASSWORD_REGEX
-import agency.five.codebase.android.ordermanager.data.repository.establishment.EstablishmentRepository
-import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.service.establishment.EstablishmentService
+import agency.five.codebase.android.ordermanager.data.service.staff.StaffService
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.exceptions.ShortPasswordException
@@ -30,8 +30,8 @@ const val MIN_PASSWORD_LENGTH = 8
 
 
 class RegisterStaffViewModel(
-    private val staffRepository: StaffRepository,
-    private val establishmentRepository: EstablishmentRepository,
+    private val staffService: StaffService,
+    private val establishmentService: EstablishmentService,
     private val establishmentMapper: EstablishmentMapper,
 ) : ViewModel() {
     private val _isLoading = mutableStateOf(false)
@@ -48,7 +48,7 @@ class RegisterStaffViewModel(
     val establishmentCollectionViewState: StateFlow<EstablishmentCollectionViewState> =
         _establishmentCollectionViewState
             .flatMapLatest {
-                establishmentRepository.allEstablishments()
+                establishmentService.allEstablishments()
                     .map { establishments ->
                         establishmentMapper.toEstablishmentCollectionViewState(establishments)
                     }
@@ -89,7 +89,7 @@ class RegisterStaffViewModel(
                         establishmentId = establishmentId,
                         approved = false,
                     )
-                    _validationResult.value = staffRepository.addStaff(staff)
+                    _validationResult.value = staffService.addStaff(staff)
                 }
             }
             dif.await()
@@ -124,7 +124,7 @@ class RegisterStaffViewModel(
             return Result.failure(WeakPasswordException())
         }
 
-        return staffRepository.staffUsernameExists(username).fold(
+        return staffService.staffUsernameExists(username).fold(
             onSuccess = { usernameExists ->
                 if (usernameExists) {
                     Result.failure(UsernameAlreadyExistsException())

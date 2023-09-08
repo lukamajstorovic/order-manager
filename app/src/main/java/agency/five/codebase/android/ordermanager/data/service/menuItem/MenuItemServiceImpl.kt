@@ -1,6 +1,6 @@
-package agency.five.codebase.android.ordermanager.data.repository.menuItem
+package agency.five.codebase.android.ordermanager.data.service.menuItem
 
-import agency.five.codebase.android.ordermanager.data.firebase.MenuItemService
+import agency.five.codebase.android.ordermanager.data.firebase.repository.menuitem.MenuItemRepository
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
-class MenuItemRepositoryImpl(
-    private val menuItemService: MenuItemService,
+class MenuItemServiceImpl(
+    private val menuItemRepository: MenuItemRepository,
     private val bgDispatcher: CoroutineDispatcher,
-) : MenuItemRepository {
+) : MenuItemService {
     override fun getMenuItems(establishmentId: String): Flow<List<MenuItem>> =
-        menuItemService.getMenuItems(establishmentId).map {
+        menuItemRepository.getMenuItems(establishmentId).map {
             it.map { dbMenuItem ->
                 dbMenuItem.toMenuItem()
             }
@@ -25,19 +25,13 @@ class MenuItemRepositoryImpl(
         )
 
     override suspend fun addMenuItem(menuItem: MenuItem): Result<Unit> {
-        return menuItemService.addMenuItem(
-            menuItem.toDbMenuItem()
-        )
-    }
-
-    override suspend fun updateMenuItem(menuItem: MenuItem): Result<Unit> {
-        return menuItemService.updateMenuItem(
+        return menuItemRepository.addMenuItem(
             menuItem.toDbMenuItem()
         )
     }
 
     override suspend fun removeMenuItem(id: String): Result<Unit> {
-        return menuItemService.removeMenuItem(id)
+        return menuItemRepository.removeMenuItem(id)
     }
 }
 

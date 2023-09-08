@@ -1,11 +1,10 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.menuitem
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbMenuItem
 import agency.five.codebase.android.ordermanager.exceptions.FirestoreException
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -13,9 +12,9 @@ import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_COLLECTION_MENU_ITEMS = "menuItems"
 
-class MenuItemServiceImpl(
+class MenuItemRepositoryImpl(
     private val fireStore: FirebaseFirestore
-) : MenuItemService {
+) : MenuItemRepository {
 
     private fun mapMenuItemDocumentToDbMenuItem(menuItem: DocumentSnapshot): DbMenuItem {
         return DbMenuItem(
@@ -62,18 +61,6 @@ class MenuItemServiceImpl(
         return try {
             fireStore.collection(FIRESTORE_COLLECTION_MENU_ITEMS)
                 .add(menuItem)
-                .await()
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(FirestoreException(exception))
-        }
-    }
-
-    override suspend fun updateMenuItem(menuItem: DbMenuItem): Result<Unit> {
-        return try {
-            fireStore.collection(FIRESTORE_COLLECTION_MENU_ITEMS)
-                .document(menuItem.id)
-                .set(menuItem, SetOptions.merge())
                 .await()
             Result.success(Unit)
         } catch (exception: Exception) {

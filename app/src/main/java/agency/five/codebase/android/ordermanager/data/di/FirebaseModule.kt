@@ -1,13 +1,13 @@
 package agency.five.codebase.android.ordermanager.data.di
 
-import agency.five.codebase.android.ordermanager.data.firebase.EstablishmentService
-import agency.five.codebase.android.ordermanager.data.firebase.EstablishmentServiceImpl
-import agency.five.codebase.android.ordermanager.data.firebase.MenuItemService
-import agency.five.codebase.android.ordermanager.data.firebase.MenuItemServiceImpl
-import agency.five.codebase.android.ordermanager.data.firebase.OrderService
-import agency.five.codebase.android.ordermanager.data.firebase.OrderServiceImpl
-import agency.five.codebase.android.ordermanager.data.firebase.StaffService
-import agency.five.codebase.android.ordermanager.data.firebase.StaffServiceImpl
+import agency.five.codebase.android.ordermanager.data.firebase.repository.establishment.EstablishmentRepository
+import agency.five.codebase.android.ordermanager.data.firebase.repository.establishment.EstablishmentRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.firebase.repository.menuitem.MenuItemRepository
+import agency.five.codebase.android.ordermanager.data.firebase.repository.menuitem.MenuItemRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.firebase.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.firebase.repository.order.OrderRepositoryImpl
+import agency.five.codebase.android.ordermanager.data.firebase.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.firebase.repository.staff.StaffRepositoryImpl
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.dsl.module
 
@@ -15,16 +15,16 @@ val firebaseModule = module {
     single {
         FirebaseFirestore.getInstance()
     }
-    single<OrderService> {
-        OrderServiceImpl(get())
+    single<OrderRepository> {
+        OrderRepositoryImpl(get())
     }
-    single<StaffService> {
-        StaffServiceImpl(get())
+    single<StaffRepository> {
+        StaffRepositoryImpl(get())
     }
-    single<EstablishmentService> {
-        EstablishmentServiceImpl(get())
+    single<EstablishmentRepository> {
+        EstablishmentRepositoryImpl(get())
     }
-    single<MenuItemService> {
-        MenuItemServiceImpl(get())
+    single<MenuItemRepository> {
+        MenuItemRepositoryImpl(get())
     }
 }

@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.login
 
-import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.service.staff.StaffService
 import agency.five.codebase.android.ordermanager.enums.StaffRoles
 import agency.five.codebase.android.ordermanager.model.Staff
 import androidx.compose.runtime.State
@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val staffRepository: StaffRepository
+    private val staffService: StaffService
 ) : ViewModel() {
     private val _staffRole = mutableStateOf(StaffRoles.NONE)
     val staffRole: State<StaffRoles> = _staffRole
@@ -34,7 +34,7 @@ class LoginViewModel(
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                val staff = staffRepository.staffByCredentials(username, password)
+                val staff = staffService.staffByCredentials(username, password)
                 if (staff != null) {
                     _staff.value = staff
                     _staffRole.value = staff.role

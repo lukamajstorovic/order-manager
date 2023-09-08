@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.order
 
-import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.service.order.OrderService
 import agency.five.codebase.android.ordermanager.ui.order.mapper.OrdersMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class OrdersViewModel(
-    private val orderRepository: OrderRepository,
+    private val orderService: OrderService,
     private val ordersMapper: OrdersMapper,
     private val establishmentId: String,
 ) : ViewModel() {
@@ -21,7 +21,7 @@ class OrdersViewModel(
     val ordersViewState: StateFlow<OrdersViewState> =
         _ordersViewState
             .flatMapLatest {
-                orderRepository.allActiveOrders(establishmentId)
+                orderService.allActiveOrders(establishmentId)
                     .map { orders ->
                         ordersMapper.toOrderViewState(orders)
                     }
@@ -38,7 +38,7 @@ class OrdersViewModel(
     val completedOrdersViewState: StateFlow<CompletedOrderViewStateItemCollectionViewState> =
         _completedOrdersViewState
             .flatMapLatest {
-                orderRepository.allCompletedOrders(establishmentId)
+                orderService.allCompletedOrders(establishmentId)
                     .map { orders ->
                         ordersMapper.toCompletedOrdersMinimalInfoViewState(orders)
                     }
