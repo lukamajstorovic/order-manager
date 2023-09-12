@@ -3,6 +3,7 @@ package agency.five.codebase.android.ordermanager
 import agency.five.codebase.android.ordermanager.data.di.dataModule
 import agency.five.codebase.android.ordermanager.data.di.databaseModule
 import agency.five.codebase.android.ordermanager.data.di.firebaseModule
+import agency.five.codebase.android.ordermanager.data.di.repositoryModule
 import agency.five.codebase.android.ordermanager.data.service.order.OrderService
 import agency.five.codebase.android.ordermanager.data.service.staff.StaffService
 import agency.five.codebase.android.ordermanager.ui.completeorder.di.completeOrderModule
@@ -42,6 +43,7 @@ class OrderManagerApp : Application() {
                 authenticationModule,
                 registerStaffModule,
                 firebaseModule,
+                repositoryModule,
                 individualStaffModule,
                 menuModule,
             )

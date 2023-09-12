@@ -28,7 +28,6 @@ import java.util.regex.Pattern
 
 const val MIN_PASSWORD_LENGTH = 8
 
-
 class RegisterStaffViewModel(
     private val staffService: StaffService,
     private val establishmentService: EstablishmentService,

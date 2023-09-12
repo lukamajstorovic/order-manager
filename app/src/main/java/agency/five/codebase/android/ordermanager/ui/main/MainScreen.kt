@@ -503,10 +503,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                             )
                         }
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(
-                            validationResult.getOrNull()
-                                .toString() + validationResult.exceptionOrNull()?.message + "TEEST"
-                        )
+                        snackbarHostState.showSnackbar(validationResult.exceptionOrNull()?.message.toString())
                         println("TEST " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST")
                         clickedButton.value = false
                     }
@@ -523,7 +520,7 @@ fun MainScreen(userDataViewModel: UserDataViewModel) {
                                 NavigationItem.LoginDestination.route
                             )
                         }
-                        println("TEST2 " + validationResult.getOrNull() + validationResult.exceptionOrNull()?.message + " TEST2")
+                        println(validationResult.exceptionOrNull()?.message)
                     },
                     registerStaffViewModel = viewModel,
                     onClickNavigateLoginButton = {
