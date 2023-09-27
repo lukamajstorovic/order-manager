@@ -1,10 +1,10 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.order
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrder
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
 import kotlinx.coroutines.flow.Flow
 
-interface OrderService {
+interface OrderRepository {
     fun getAllActiveOrders(establishmentId: String): Flow<List<DbOrder>>
     fun getAllCompletedOrders(establishmentId: String): Flow<List<DbOrder>>
     fun getOrderItems(orderId: String): Flow<List<DbOrderItem>>

@@ -1,6 +1,6 @@
 package agency.five.codebase.android.ordermanager.ui.menu
 
-import agency.five.codebase.android.ordermanager.data.repository.menuItem.MenuItemRepository
+import agency.five.codebase.android.ordermanager.data.service.menuItem.MenuItemService
 import agency.five.codebase.android.ordermanager.exceptions.EmptyFieldException
 import agency.five.codebase.android.ordermanager.model.MenuItem
 import androidx.compose.material.SnackbarHostState
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class MenuViewModel(
     private val snackbarHostState: SnackbarHostState,
-    private val menuItemRepository: MenuItemRepository,
+    private val menuItemService: MenuItemService,
     private val establishmentId: String,
 ) : ViewModel() {
 
@@ -33,7 +33,7 @@ class MenuViewModel(
     val menuItems: StateFlow<List<MenuItem>> =
         _menuItems
             .flatMapLatest {
-                menuItemRepository.getMenuItems(establishmentId)
+                menuItemService.getMenuItems(establishmentId)
             }
             .stateIn(
                 scope = viewModelScope,
@@ -54,7 +54,7 @@ class MenuViewModel(
                         name = name,
                         establishmentId = establishmentId,
                     )
-                    _validationResult.value = menuItemRepository.addMenuItem(menuItem)
+                    _validationResult.value = menuItemService.addMenuItem(menuItem)
                 }
             }
             dif.await()
@@ -69,7 +69,7 @@ class MenuViewModel(
     fun deleteMenuItem(id: String) {
         viewModelScope.launch {
             val dif = async {
-                _deletionResult.value = menuItemRepository.removeMenuItem(id)
+                _deletionResult.value = menuItemService.removeMenuItem(id)
             }
             dif.await()
             snackbarHostState.currentSnackbarData?.dismiss()

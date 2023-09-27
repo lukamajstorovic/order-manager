@@ -1,4 +1,4 @@
-package agency.five.codebase.android.ordermanager.data.firebase
+package agency.five.codebase.android.ordermanager.data.firebase.repository.order
 
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrder
 import agency.five.codebase.android.ordermanager.data.firebase.model.DbOrderItem
@@ -18,7 +18,7 @@ import kotlinx.coroutines.tasks.await
 const val FIRESTORE_COLLECTION_ORDERS = "orders"
 const val FIRESTORE_COLLECTION_ORDER_ITEMS = "orderItems"
 
-class OrderServiceImpl(private val fireStore: FirebaseFirestore) : OrderService {
+class OrderRepositoryImpl(private val fireStore: FirebaseFirestore) : OrderRepository {
     private fun mapOrderDocumentToDbOrder(order: DocumentSnapshot): DbOrder {
         return DbOrder(
             id = order.id,

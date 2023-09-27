@@ -1,7 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.staff
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserDataViewModel
-import agency.five.codebase.android.ordermanager.data.repository.staff.StaffRepository
+import agency.five.codebase.android.ordermanager.data.service.staff.StaffService
 import agency.five.codebase.android.ordermanager.ui.staff.mapper.StaffMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class StaffViewModel(
-    private val staffRepository: StaffRepository,
+    private val staffService: StaffService,
     private val staffMapper: StaffMapper,
 ) : ViewModel() {
     private val _establishmentId = MutableStateFlow("")
@@ -36,7 +36,7 @@ class StaffViewModel(
 
     private fun refreshApprovedStaffViewState() {
         viewModelScope.launch {
-            staffRepository.getApprovedStaff(currentEstablishmentId ?: "")
+            staffService.getApprovedStaff(currentEstablishmentId ?: "")
                 .collect { staffList ->
                     val staffViewState = staffMapper.toStaffViewState(staffList)
                     _approvedStaffViewState.value = staffViewState
@@ -46,7 +46,7 @@ class StaffViewModel(
 
     private fun refreshNotApprovedStaffViewState() {
         viewModelScope.launch {
-            staffRepository.getNotApprovedStaff(currentEstablishmentId ?: "")
+            staffService.getNotApprovedStaff(currentEstablishmentId ?: "")
                 .collect { staffList ->
                     val staffViewState = staffMapper.toStaffViewState(staffList)
                     _notApprovedStaffViewState.value = staffViewState

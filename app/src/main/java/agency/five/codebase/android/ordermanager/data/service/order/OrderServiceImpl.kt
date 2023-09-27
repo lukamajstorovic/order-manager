@@ -1,8 +1,8 @@
-package agency.five.codebase.android.ordermanager.data.repository.order
+package agency.five.codebase.android.ordermanager.data.service.order
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
-import agency.five.codebase.android.ordermanager.data.firebase.OrderService
-import agency.five.codebase.android.ordermanager.data.room.NotConfirmedOrderService
+import agency.five.codebase.android.ordermanager.data.firebase.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.room.repository.NotConfirmedOrderRepository
 import agency.five.codebase.android.ordermanager.data.room.model.DbNotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.model.NotConfirmedOrderItem
 import agency.five.codebase.android.ordermanager.model.Order
@@ -14,21 +14,19 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
-class OrderRepositoryImpl(
-    private val orderService: OrderService,
-    private val notConfirmedOrderService: NotConfirmedOrderService,
+class OrderServiceImpl(
+    private val orderRepository: OrderRepository,
+    private val notConfirmedOrderRepository: NotConfirmedOrderRepository,
     private val bgDispatcher: CoroutineDispatcher,
-) : OrderRepository {
+) : OrderService {
 
     override fun orderItems(orderId: String): Flow<List<OrderItem>> =
-        orderService.getOrderItems(orderId).map {
+        orderRepository.getOrderItems(orderId).map {
             it.map { dbOrderItem ->
                 dbOrderItem.toOrderItem()
             }
@@ -39,7 +37,7 @@ class OrderRepositoryImpl(
         )
 
     override fun allActiveOrders(establishmentId: String): Flow<List<Order>> =
-        orderService.getAllActiveOrders(establishmentId).map {
+        orderRepository.getAllActiveOrders(establishmentId).map {
             it.map { dbOrder ->
                 dbOrder.toOrder()
             }
@@ -50,7 +48,7 @@ class OrderRepositoryImpl(
         )
 
     override fun allCompletedOrders(establishmentId: String): Flow<List<Order>> =
-        orderService.getAllCompletedOrders(establishmentId).map {
+        orderRepository.getAllCompletedOrders(establishmentId).map {
             it.map { dbOrder ->
                 dbOrder.toOrder()
             }
@@ -61,19 +59,19 @@ class OrderRepositoryImpl(
         )
 
     override suspend fun orderById(id: String): Result<Order> {
-        return orderService.getOrderById(id).map { dbOrder ->
+        return orderRepository.getOrderById(id).map { dbOrder ->
             dbOrder.toOrder()
         }
     }
 
     override suspend fun addOrder(order: Order): Result<String> {
-        return orderService.addOrder(
+        return orderRepository.addOrder(
             order.toDbOrder()
         )
     }
 
     override suspend fun addOrderItem(orderItem: OrderItem): Result<Unit> {
-        return orderService.addOrderItem(
+        return orderRepository.addOrderItem(
             orderItem.toDbOrderItem()
         )
     }
@@ -87,7 +85,7 @@ class OrderRepositoryImpl(
         val deferredResults = orderItems.map { orderItem ->
             val dbOrderItem = orderItem.toOrderItem(orderId = orderId).toDbOrderItem()
             scope.async {
-                orderService.addOrderItem(dbOrderItem)
+                orderRepository.addOrderItem(dbOrderItem)
             }
         }
 
@@ -110,14 +108,14 @@ class OrderRepositoryImpl(
         try {
             println("Starting confirmOrder function")
 
-            val orderId = orderService.addOrder(order.toDbOrder())
+            val orderId = orderRepository.addOrder(order.toDbOrder())
             println("Order added successfully with orderId: $orderId")
 
-            val orderItems = notConfirmedOrderService.orderedItems()
+            val orderItems = notConfirmedOrderRepository.orderedItems()
             processOrderItems(orderId.getOrNull()!!, orderItems.firstOrNull()!!)
 
             println("All order items added successfully")
-            notConfirmedOrderService.deleteAllOrderItems()
+            notConfirmedOrderRepository.deleteAllOrderItems()
 
             println("Finished confirmOrder function")
             return Result.success(Unit)
@@ -131,24 +129,24 @@ class OrderRepositoryImpl(
 
     override suspend fun incrementNotCompletedOrderItemAmount(orderItemName: String) {
         withContext(bgDispatcher) {
-            notConfirmedOrderService.incrementOrderedItemAmount(orderItemName)
+            notConfirmedOrderRepository.incrementOrderedItemAmount(orderItemName)
         }
     }
 
     override suspend fun subtractNotCompletedOrderItemAmount(orderItemId: Int) {
         withContext(bgDispatcher) {
-            notConfirmedOrderService.subtractOrderedItemAmount(orderItemId)
+            notConfirmedOrderRepository.subtractOrderedItemAmount(orderItemId)
         }
     }
 
     override suspend fun updateOrder(order: Order): Result<Unit> {
-        return orderService.updateOrder(
+        return orderRepository.updateOrder(
             order.toDbOrder()
         )
     }
 
     override suspend fun updateOrderItem(orderItem: OrderItem): Result<Unit> {
-        return orderService.updateOrderItem(
+        return orderRepository.updateOrderItem(
             orderItem.toDbOrderItem()
         )
     }
@@ -156,7 +154,7 @@ class OrderRepositoryImpl(
     override suspend fun completeOrder(currentUser: UserData, orderId: String): Result<Unit> {
         return orderById(orderId).fold(
             onSuccess = { order ->
-                orderService.updateOrder(
+                orderRepository.updateOrder(
                     order.copy(
                         completeOrderStaffId = currentUser.id,
                         active = false
@@ -181,7 +179,7 @@ class OrderRepositoryImpl(
                     }
                 }
             }
-            orderService.deleteOrder(orderId)
+            orderRepository.deleteOrder(orderId)
         } catch (exception: Exception) {
             return Result.failure(exception)
         }
@@ -189,11 +187,11 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun deleteOrderItem(orderItemId: String): Result<Unit> {
-        return orderService.deleteOrderItem(orderItemId)
+        return orderRepository.deleteOrderItem(orderItemId)
     }
 
     override fun notConfirmedOrderedItems(): Flow<List<NotConfirmedOrderItem>> =
-        notConfirmedOrderService.orderedItems().map {
+        notConfirmedOrderRepository.orderedItems().map {
             it.map { dbNotConfirmedOrderItem ->
                 dbNotConfirmedOrderItem.toNotConfirmedOrderItem()
             }
@@ -204,6 +202,6 @@ class OrderRepositoryImpl(
         )
 
     override suspend fun addNotConfirmedOrderedItem(orderedItem: NotConfirmedOrderItem) {
-        notConfirmedOrderService.addOrderedItem(orderedItem.toDbNotConfirmedOrderItem())
+        notConfirmedOrderRepository.addOrderedItem(orderedItem.toDbNotConfirmedOrderItem())
     }
 }

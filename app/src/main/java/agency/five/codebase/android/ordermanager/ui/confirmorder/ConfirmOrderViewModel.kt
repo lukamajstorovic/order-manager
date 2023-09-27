@@ -1,7 +1,7 @@
 package agency.five.codebase.android.ordermanager.ui.confirmorder
 
 import agency.five.codebase.android.ordermanager.data.currentuser.UserData
-import agency.five.codebase.android.ordermanager.data.repository.order.OrderRepository
+import agency.five.codebase.android.ordermanager.data.service.order.OrderService
 import agency.five.codebase.android.ordermanager.model.Order
 import agency.five.codebase.android.ordermanager.ui.confirmorder.mapper.ConfirmOrderMapper
 import androidx.lifecycle.ViewModel
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ConfirmOrderViewModel(
-    private val orderRepository: OrderRepository,
+    private val orderService: OrderService,
     private val confirmOrderMapper: ConfirmOrderMapper,
 ) : ViewModel() {
     private val _confirmOrderViewState = MutableStateFlow(ConfirmOrderViewState(emptyList()))
@@ -23,7 +23,7 @@ class ConfirmOrderViewModel(
     val confirmOrderViewState: StateFlow<ConfirmOrderViewState> =
         _confirmOrderViewState
             .flatMapLatest {
-                orderRepository.notConfirmedOrderedItems()
+                orderService.notConfirmedOrderedItems()
                     .map { orderItems ->
                         confirmOrderMapper.toConfirmOrderViewState(orderItems)
                     }
@@ -36,7 +36,7 @@ class ConfirmOrderViewModel(
 
     fun confirmOrder(currentUser: UserData, tableNumber: String) {
         viewModelScope.launch {
-            orderRepository.confirmOrder(
+            orderService.confirmOrder(
                 Order(
                     establishmentId = currentUser.establishmentId,
                     tableNumber = tableNumber,
@@ -59,7 +59,7 @@ class ConfirmOrderViewModel(
 
     fun subtractOrderItemAmount(orderItemId: Int) {
         viewModelScope.launch {
-            orderRepository.subtractNotCompletedOrderItemAmount(orderItemId)
+            orderService.subtractNotCompletedOrderItemAmount(orderItemId)
         }
     }
 }
